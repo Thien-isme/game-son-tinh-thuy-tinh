@@ -1,4 +1,4 @@
-﻿[gd_scene format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
 
@@ -3512,13 +3512,3 @@ debug_color = Color(1, 0.3, 0, 0.42)
 [connection signal="body_exited" from="DetectZone" to="." method="_on_detect_zone_body_exited"]
 [connection signal="body_entered" from="AttackZone" to="." method="_on_attack_zone_body_entered"]
 [connection signal="body_exited" from="AttackZone" to="." method="_on_attack_zone_body_exited"]
-
-[node name="MeleeHitbox" type="Area2D" parent="."]
-monitoring = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
-position = Vector2(40, 0)
-shape = SubResource("RectangleShape2D_melee")
-debug_color = Color(1, 0.3, 0, 0.42)
-
-[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
