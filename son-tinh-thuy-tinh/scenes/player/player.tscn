@@ -1,15 +1,24 @@
-[gd_scene format=3 uid="uid://ba8fo4hh82c7e"]
+[gd_scene format=3 uid="uid://dt5yit4kpwikk"]
 
 [ext_resource type="Script" uid="uid://b0bmuio01aa83" path="res://scenes/player/player.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://shodd82584la" path="res://assets/audio/character/player/jump.mp3" id="2_cps8l"]
 [ext_resource type="Texture2D" uid="uid://dtvqmq3v5d807" path="res://assets/sprites/son-tinh/attack/0001.png" id="2_wsyia"]
+[ext_resource type="AudioStream" uid="uid://cokuo2q70tgc2" path="res://assets/audio/character/player/run.mp3" id="3_dvjb1"]
 [ext_resource type="Texture2D" uid="uid://tp1pql36stki" path="res://assets/sprites/son-tinh/attack/0002.png" id="3_if8tu"]
 [ext_resource type="Texture2D" uid="uid://dnui5aokf0u1w" path="res://assets/sprites/son-tinh/attack/0003.png" id="4_5ydru"]
+[ext_resource type="AudioStream" uid="uid://ce10r08wwx7c5" path="res://assets/audio/character/player/idle.mp3" id="4_cprfw"]
 [ext_resource type="Texture2D" uid="uid://cyf1hsl04q1ld" path="res://assets/sprites/son-tinh/attack/0004.png" id="5_1mhk6"]
+[ext_resource type="AudioStream" uid="uid://cribucdgrmqqa" path="res://assets/audio/character/player/hurt.mp3" id="5_ssqnq"]
+[ext_resource type="AudioStream" uid="uid://3g04yqhhdxdi" path="res://assets/audio/character/player/die.mp3" id="6_6ddys"]
 [ext_resource type="Texture2D" uid="uid://bx65gpo5givhd" path="res://assets/sprites/son-tinh/attack/0005.png" id="6_a5xpt"]
 [ext_resource type="Texture2D" uid="uid://cxl4rmmvkdhfo" path="res://assets/sprites/son-tinh/attack/0006.png" id="7_8lhyl"]
+[ext_resource type="AudioStream" uid="uid://clpeihb0fyqkg" path="res://assets/audio/character/player/attack.mp3" id="7_mpq1w"]
 [ext_resource type="Texture2D" uid="uid://db8hyr5vsenpr" path="res://assets/sprites/son-tinh/attack/0007.png" id="8_3bcnp"]
+[ext_resource type="AudioStream" uid="uid://cg5f4ogc4pwal" path="res://assets/audio/character/player/crouch.mp3" id="8_p2pte"]
+[ext_resource type="AudioStream" uid="uid://bcdf4irds4ih2" path="res://assets/audio/character/player/skill_w.mp3" id="9_07fbi"]
 [ext_resource type="Texture2D" uid="uid://dfg371nytcss0" path="res://assets/sprites/son-tinh/attack/0008.png" id="9_ql1ni"]
 [ext_resource type="Texture2D" uid="uid://ciyu0tr5ypw2n" path="res://assets/sprites/son-tinh/attack/0009.png" id="10_17kai"]
+[ext_resource type="AudioStream" uid="uid://0csyruw1kngi" path="res://assets/audio/character/player/skill_e.mp3" id="10_b7fhk"]
 [ext_resource type="Texture2D" uid="uid://bdwx1qnjwggcj" path="res://assets/sprites/son-tinh/attack/0010.png" id="11_f3imq"]
 [ext_resource type="Texture2D" uid="uid://lnbdmtx3h6xo" path="res://assets/sprites/son-tinh/attack/0011.png" id="12_610vm"]
 [ext_resource type="Texture2D" uid="uid://dcxh3fim4kfum" path="res://assets/sprites/son-tinh/attack/0012.png" id="13_007kg"]
@@ -1493,7 +1502,7 @@
 [ext_resource type="Texture2D" uid="uid://crirhmal32sb1" path="res://assets/sprites/son-tinh/skill-w/0191.png" id="1301_5c8cv"]
 [ext_resource type="Texture2D" uid="uid://dbo61kfiqvhbf" path="res://assets/sprites/son-tinh/run/0191.png" id="1301_rsu6v"]
 [ext_resource type="Texture2D" uid="uid://bi44kjt5h16bf" path="res://assets/sprites/son-tinh/run/0192.png" id="1302_obre0"]
-[ext_resource type="Script" uid="uid://hpiksclfeage" path="res://scenes/player/camera_lock.gd" id="camera_lock_script"]
+[ext_resource type="Script" uid="uid://hpiksclfeage" path="res://player_old/camera_lock.gd" id="camera_lock_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tbvis"]
 size = Vector2(48, 151)
@@ -2079,7 +2088,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack",
-"speed": 20.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -2660,7 +2669,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"crouch",
-"speed": 5.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -3133,7 +3142,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"die",
-"speed": 5.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -3693,7 +3702,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"hurt",
-"speed": 5.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -4274,7 +4283,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -4855,7 +4864,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"jump",
-"speed": 5.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -5436,7 +5445,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"run",
-"speed": 3.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -6014,14 +6023,24 @@ animations = [{
 }],
 "loop": false,
 "name": &"skill_w",
-"speed": 5.0
+"speed": 60.0
 }]
 
 [node name="player" type="CharacterBody2D" unique_id=2060062756]
+position = Vector2(577, 323)
 script = ExtResource("1_script")
+jump_sfx = ExtResource("2_cps8l")
+run_sfx = ExtResource("3_dvjb1")
+idle_sfx = ExtResource("4_cprfw")
+hit_sfx = ExtResource("5_ssqnq")
+die_sfx = ExtResource("6_6ddys")
+attack_sfx = ExtResource("7_mpq1w")
+crouch_sfx = ExtResource("8_p2pte")
+skill_w_sfx = ExtResource("9_07fbi")
+skill_e_sfx = ExtResource("10_b7fhk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2042003537]
-position = Vector2(2, 0.5)
+position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_tbvis")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1004988390]
@@ -6031,9 +6050,13 @@ drag_vertical_enabled = true
 script = ExtResource("camera_lock_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1002837255]
-position = Vector2(5, -35)
+position = Vector2(0, -35)
 scale = Vector2(0.30937502, 0.33611113)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
-animation = &"run"
-frame_progress = 0.39580092
-speed_scale = 3.0
+animation = &"attack"
+frame_progress = 0.70042086
+speed_scale = 2.0
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]
+
+[node name="SFXPlayerLoop" type="AudioStreamPlayer" parent="." unique_id=2089341235]

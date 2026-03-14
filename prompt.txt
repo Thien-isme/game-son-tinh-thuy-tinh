@@ -1,0 +1,1 @@
+tôi cần bạn vào asset đọc xem animation đó có bao nhiêu frame (tổng frame đó được cắt từ video 8s) rồi tự tính và khi audio bật lên hãy điều chỉnh cho tôi tốc độ cho phù hợp

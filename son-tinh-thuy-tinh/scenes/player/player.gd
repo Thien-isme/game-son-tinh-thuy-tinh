@@ -3,20 +3,44 @@ extends CharacterBody2D
 const SPEED = 200
 const JUMP_FORCE = -550
 const GRAVITY = 900
-#const MAX_HEALTH = 500.0
+
+# Tốc độ gốc của SpriteFrames (set trong editor)
+const SPRITEFRAMES_SPEED = 60.0
+# Audio của tất cả animation đều 8 giây (cắt từ video 8s)
+const AUDIO_DURATION = 8.0
+# Số frame thực tế (đếm từ folder assets\sprites\son-tinh)
+const ANIM_FRAME_COUNTS = {
+	"attack": 192, "crouch": 192, "die": 156,
+	"hurt": 185, "idle": 192, "jump": 192,
+	"run": 192, "skill_w": 191, "skill_e": 192
+}
 
 @onready var anim = $AnimatedSprite2D
 @onready var camera = $Camera2D
-#@onready var hud = $HUD
-#@onready var sfx_player = $SFXPlayer        # Dùng cho âm thanh ngắn (nhảy, chết, bị đánh)
-#@onready var sfx_loop = $SFXPlayerLoop      # Dùng cho âm thanh lặp (chạy, đứng yên, cúi)
+@onready var sfx_player = $SFXPlayer
+@onready var sfx_loop = $SFXPlayerLoop
+
+# ---- Audio Exports (gán trực tiếp qua Inspector hoặc .tscn) ----
+@export_category("Audio")
+@export var jump_sfx: AudioStream
+@export var run_sfx: AudioStream
+@export var idle_sfx: AudioStream
+@export var hit_sfx: AudioStream
+@export var die_sfx: AudioStream
+@export var attack_sfx: AudioStream
+@export var crouch_sfx: AudioStream
+@export var skill_w_sfx: AudioStream
+@export var skill_e_sfx: AudioStream
+
+# Audio cache (auto-load fallback)
+var _sfx_cache: Dictionary = {}
+var _prev_anim: String = ""
 
 # Health & State
-#var health: float = 500.0
 var is_dead: bool = false
-var is_attacking: bool = false   # Đang attack (chuột trái)
+var is_attacking: bool = false
 var is_crouching: bool = false
-var is_skill_active: bool = false  # Đang phát animation skill (W/Q/E/R)
+var is_skill_active: bool = false
 
 # Camera bounds
 var limit_left_x: float = -10000.0
@@ -25,11 +49,58 @@ var limit_right_x: float = 10000.0
 # ---- Lifecycle ----
 
 func _ready():
+	_load_player_audio()
 	anim.animation_finished.connect(_on_animation_finished)
-	# animation_looped: fire khi animation loop - cần thiết vì animation_finished
-	# KHÔNG emit cho animation đang loop (idle/run/attack loop)
 	if anim.animation_looped.get_connections().size() == 0:
 		anim.animation_looped.connect(_on_animation_finished)
+
+func _load_player_audio():
+	# Đưa @export vars vào cache trước
+	var export_map = {
+		"jump": jump_sfx, "run": run_sfx, "idle": idle_sfx,
+		"hurt": hit_sfx, "die": die_sfx, "attack": attack_sfx,
+		"crouch": crouch_sfx, "skill_w": skill_w_sfx, "skill_e": skill_e_sfx
+	}
+	for key in export_map:
+		if export_map[key] != null:
+			_sfx_cache[key] = export_map[key]
+
+	# Auto-load fallback từ folder player/ cho các key chưa có
+	var audio_folder = "res://assets/audio/character/player"
+	var fallback_anims = ["idle", "run", "jump", "attack", "crouch", "die", "hurt", "skill_w", "skill_e"]
+	for anim_name in fallback_anims:
+		if not _sfx_cache.has(anim_name):
+			var path = "%s/%s.mp3" % [audio_folder, anim_name]
+			if ResourceLoader.exists(path):
+				_sfx_cache[anim_name] = load(path)
+				print("[PlayerSFX] Auto-loaded: ", path)
+
+func _play_sfx(anim_name: String):
+	if not _sfx_cache.has(anim_name): return
+	if sfx_player and not sfx_player.playing:
+		# Pitch = AUDIO_DURATION / anim_duration
+		# Animation chạy 3.2s (192f/60fps) → audio phải speed up 8s/3.2s = 2.5x
+		var key = anim_name.replace("-", "_")
+		var pitch = 1.0
+		if ANIM_FRAME_COUNTS.has(key):
+			var effective_fps = SPRITEFRAMES_SPEED * anim.speed_scale
+			var anim_duration = ANIM_FRAME_COUNTS[key] / effective_fps
+			pitch = clampf(AUDIO_DURATION / anim_duration, 0.1, 4.0)
+			print("[PlayerSFX] %s → speed_scale=%.2f anim=%.2fs pitch=%.2fx" % [anim_name, anim.speed_scale, anim_duration, pitch])
+		sfx_player.pitch_scale = pitch
+		sfx_player.stream = _sfx_cache[anim_name]
+		sfx_player.play()
+
+func _play_loop_sfx(anim_name: String):
+	if not _sfx_cache.has(anim_name): return
+	if sfx_loop:
+		if sfx_loop.stream != _sfx_cache[anim_name]:
+			sfx_loop.stream = _sfx_cache[anim_name]
+			sfx_loop.play()
+
+func _stop_loop_sfx():
+	if sfx_loop and sfx_loop.playing:
+		sfx_loop.stop()
 
 # ---- Level Bounds ----
 
@@ -128,26 +199,27 @@ func _physics_process(delta):
 
 # ---- Animation ----
 
+func _calc_anim_speed_scale(anim_name: String) -> float:
+	# Animation chạy full 60fps (speed_scale = 1.0)
+	# Audio sẽ tự speed up để khớp với animation ngắn hơn
+	return 1.0
+
 func _play_attack():
-	# Chỉ attack nếu animation 'attack' tồn tại trong SpriteFrames
 	var frames = anim.sprite_frames
 	if frames == null or not frames.has_animation("attack"):
-		return  # Không có animation attack → bỏ qua
+		return
 	is_attacking = true
-	anim.speed_scale = 20.0
+	anim.speed_scale = 3.0  # attack chạy 3x (60fps ×3 = 180fps, 192f/180 ≈ 1.07s)
 	anim.play("attack")
+	_play_sfx("attack")  # pitch tự tính: 8s / 1.07s ≈ 7.5x (clamp →4.0)
 
 func _play_skill(anim_name: String):
-	# Nếu animation tên đó không tồn tại thì fallback về "attack"
 	var frames = anim.sprite_frames
-	if frames and frames.has_animation(anim_name):
-		is_skill_active = true
-		anim.speed_scale = 20.0
-		anim.play(anim_name)
-	else:
-		is_skill_active = true
-		anim.speed_scale = 20.0
-		anim.play("attack")
+	var target = anim_name if (frames and frames.has_animation(anim_name)) else "attack"
+	is_skill_active = true
+	anim.speed_scale = 1.0  # skill chạy 60fps (bình thường)
+	anim.play(target)
+	_play_sfx(target)  # pitch: 8/3.2 = 2.5x
 
 func _on_animation_finished():
 	if is_attacking:
@@ -157,30 +229,34 @@ func _on_animation_finished():
 
 func _update_animations(direction: float):
 	# Thứ tự ưu tiên: die > attack > skill > jump > crouch > run > idle
+	var new_anim = ""
 	if is_dead:
-		if anim.animation != "die":
-			anim.speed_scale = 20.0
-			anim.play("die")
+		new_anim = "die"
 	elif is_attacking:
-		pass  # attack đang phát, giữ nguyên
+		new_anim = "attack"
 	elif is_skill_active:
 		pass  # skill đang phát, giữ nguyên
 	elif not is_on_floor():
-		if anim.animation != "jump":
-			anim.speed_scale = 20.0
-			anim.play("jump")
+		new_anim = "jump"
 	elif is_crouching:
-		if anim.animation != "crouch":
-			anim.speed_scale = 20.0
-			anim.play("crouch")
+		new_anim = "crouch"
 	elif direction != 0:
-		if anim.animation != "run":
-			anim.speed_scale = 20.0
-			anim.play("run")
+		new_anim = "run"
 	else:
-		if anim.animation != "idle":
-			anim.speed_scale = 20.0
-			anim.play("idle")
+		new_anim = "idle"
+
+	if new_anim != "" and anim.animation != new_anim:
+		# Tất cả animation đều speed_scale = 1.0 (60fps)
+		# Chỉ attack được set riêng trong _play_attack() với speed_scale=3.0
+		anim.speed_scale = 1.0
+		anim.play(new_anim)
+		# Play sfx khi animation thay đổi
+		if new_anim in ["run", "idle", "crouch"]:
+			_play_loop_sfx(new_anim)
+		else:
+			_stop_loop_sfx()
+			if new_anim not in ["attack", "skill_w", "skill_e"]:  # Skill/attack đã play trong hàm riêng
+				_play_sfx(new_anim)
 
 # ---- Health & Death ----
 

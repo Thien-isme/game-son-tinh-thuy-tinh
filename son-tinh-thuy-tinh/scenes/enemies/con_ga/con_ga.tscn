@@ -1,4 +1,4 @@
-[gd_scene format=3]
+﻿[gd_scene format=3]
 
 [ext_resource type="Script" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
 
@@ -200,17 +200,17 @@ animations = [{
 "frames": [],
 "loop": true,
 "name": &"attack",
-"speed": 10.0
+"speed": 60.0
 }, {
 "frames": [],
 "loop": true,
 "name": &"die",
-"speed": 10.0
+"speed": 60.0
 }, {
 "frames": [],
 "loop": true,
 "name": &"hurt",
-"speed": 10.0
+"speed": 60.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -791,12 +791,12 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 10.0
+"speed": 60.0
 }, {
 "frames": [],
 "loop": true,
 "name": &"run",
-"speed": 10.0
+"speed": 60.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
