@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dhgtjrdgmyc20"]
+
+[ext_resource type="PackedScene" uid="uid://ba8fo4hh82c7e" path="res://scenes/player/player.tscn" id="1_hmvul"]
+[ext_resource type="PackedScene" uid="uid://cnlx2263majuv" path="res://scenes/background/background.tscn" id="2_tj73d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k8fs8"]
+size = Vector2(1894, 70)
+
+[node name="Map1" type="Node2D" unique_id=2098514324]
+
+[node name="Floor" type="StaticBody2D" parent="." unique_id=566709860]
+position = Vector2(463, 518)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=247842373]
+shape = SubResource("RectangleShape2D_k8fs8")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Floor" unique_id=1469797735]
+shape = SubResource("RectangleShape2D_k8fs8")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Floor" unique_id=251629388]
+position = Vector2(276, -158)
+shape = SubResource("RectangleShape2D_k8fs8")
+
+[node name="Node2D" parent="." unique_id=2060062756 instance=ExtResource("1_hmvul")]
+
+[node name="Background" parent="." unique_id=1515793634 instance=ExtResource("2_tj73d")]
+z_index = -3000
+position = Vector2(538, 61)

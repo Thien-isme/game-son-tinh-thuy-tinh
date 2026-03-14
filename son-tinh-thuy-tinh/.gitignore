@@ -1,0 +1,17 @@
+# Godot-specific ignores
+.godot/
+.import/
+export_presets.cfg
+
+# Mono-specific ignores (nếu bạn dùng C#)
+.mono/
+bin/
+obj/
+
+# OS-specific ignores
+.DS_Store
+Thumbs.db
+
+# Build/Export folders (tên folder bạn thường dùng để xuất game)
+build/
+dist/
