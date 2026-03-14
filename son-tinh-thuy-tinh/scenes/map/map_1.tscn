@@ -6,7 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://csmxac4hjvvtb" path="res://assets/background/level_1/ground.png" id="3_ground"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/spawner/enemy_spawner_controller.tscn" id="3_r0gqw"]
 [ext_resource type="Script" uid="uid://dl0svakokooik" path="res://components/level_bounds.gd" id="4_bounds"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/tom_tinh/tom_tinh.tscn" id="4_r0gqw"]
+[ext_resource type="PackedScene" uid="uid://dxvai1bys7qto" path="res://scenes/enemies/tom_tinh/tom_tinh.tscn" id="4_r0gqw"]
+[ext_resource type="Script" uid="uid://cip4cgqrli7dq" path="res://scenes/enemies/spawner/enemy_spawner_item.gd" id="5_b8at0"]
+[ext_resource type="PackedScene" uid="uid://cpqt3g7fop1gy" path="res://scenes/enemies/heo_rung/heo_rung.tscn" id="6_qi7jk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dmek6"]
 texture = ExtResource("2_tj73d")
@@ -2129,12 +2131,12 @@ texture_region_size = Vector2i(16, 15)
 [sub_resource type="TileSet" id="TileSet_66cy4"]
 sources/2 = SubResource("TileSetAtlasSource_dmek6")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b8at0"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iv4q7"]
 resource_local_to_scene = true
 size = Vector2(1200, 645)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
-size = Vector2(8093, 30)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qi7jk"]
+size = Vector2(5095, 28)
 
 [node name="Map1" type="Node2D" unique_id=2098514324]
 metadata/_edit_horizontal_guides_ = [-152.0]
@@ -2152,24 +2154,38 @@ position = Vector2(463, 518)
 [node name="Enemies" type="Node2D" parent="World" unique_id=1000000003]
 
 [node name="EnemySpawnerController" parent="World/Enemies" unique_id=251355429 instance=ExtResource("3_r0gqw")]
-position = Vector2(583, 367)
+position = Vector2(982, 385)
+enemy_scene = ExtResource("4_r0gqw")
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController" index="0"]
-position = Vector2(392, 12)
+position = Vector2(262, -53)
 enemy_scene = ExtResource("4_r0gqw")
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
-shape = SubResource("RectangleShape2D_b8at0")
+shape = SubResource("RectangleShape2D_iv4q7")
+
+[node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=1949497157]
+position = Vector2(110, -1)
+gizmo_extents = 30.0
+script = ExtResource("5_b8at0")
+enemy_scene = ExtResource("4_r0gqw")
+
+[node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=1745668869]
+position = Vector2(-23, -107)
+gizmo_extents = 30.0
+script = ExtResource("5_b8at0")
+enemy_scene = ExtResource("6_qi7jk")
 
 [node name="Items" type="Node2D" parent="World" unique_id=1000000004]
 
 [node name="Ground" type="StaticBody2D" parent="World" unique_id=1000000010]
+z_index = -20
 position = Vector2(0, 450)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground" unique_id=1000000013]
 z_index = 2
-position = Vector2(4041.5, 106)
-shape = SubResource("RectangleShape2D_ground")
+position = Vector2(2550, 122)
+shape = SubResource("RectangleShape2D_qi7jk")
 
 [node name="Sprite1" type="Sprite2D" parent="World/Ground" unique_id=1000000012]
 position = Vector2(-6, -312)
@@ -2178,7 +2194,7 @@ texture = ExtResource("3_ground")
 centered = false
 
 [node name="Sprite2" type="Sprite2D" parent="World/Ground" unique_id=124984264]
-position = Vector2(841, -312)
+position = Vector2(839, -311.99997)
 scale = Vector2(1.2119141, 1.2624632)
 texture = ExtResource("3_ground")
 centered = false
@@ -2219,6 +2235,6 @@ script = ExtResource("4_bounds")
 is_right_bound = true
 
 [node name="Player" parent="." unique_id=2060062756 instance=ExtResource("1_player")]
-position = Vector2(900, 317)
+position = Vector2(533, 526)
 
 [editable path="World/Enemies/EnemySpawnerController"]

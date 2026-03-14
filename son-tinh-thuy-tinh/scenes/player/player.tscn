@@ -1502,10 +1502,9 @@
 [ext_resource type="Texture2D" uid="uid://crirhmal32sb1" path="res://assets/sprites/son-tinh/skill-w/0191.png" id="1301_5c8cv"]
 [ext_resource type="Texture2D" uid="uid://dbo61kfiqvhbf" path="res://assets/sprites/son-tinh/run/0191.png" id="1301_rsu6v"]
 [ext_resource type="Texture2D" uid="uid://bi44kjt5h16bf" path="res://assets/sprites/son-tinh/run/0192.png" id="1302_obre0"]
-[ext_resource type="Script" uid="uid://hpiksclfeage" path="res://player_old/camera_lock.gd" id="camera_lock_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tbvis"]
-size = Vector2(48, 151)
+size = Vector2(48, 144)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_rpgdq"]
 animations = [{
@@ -6026,7 +6025,7 @@ animations = [{
 "speed": 60.0
 }]
 
-[node name="player" type="CharacterBody2D" unique_id=2060062756]
+[node name="player" type="CharacterBody2D" unique_id=2060062756 groups=["player"]]
 position = Vector2(577, 323)
 script = ExtResource("1_script")
 jump_sfx = ExtResource("2_cps8l")
@@ -6040,18 +6039,12 @@ skill_w_sfx = ExtResource("9_07fbi")
 skill_e_sfx = ExtResource("10_b7fhk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2042003537]
-position = Vector2(0, 0.5)
+position = Vector2(0, -49)
 shape = SubResource("RectangleShape2D_tbvis")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1004988390]
-position_smoothing_enabled = true
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
-script = ExtResource("camera_lock_script")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1002837255]
-position = Vector2(0, -35)
-scale = Vector2(0.30937502, 0.33611113)
+position = Vector2(8.000027, -79.99999)
+scale = Vector2(0.5602892, 0.6640624)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
 animation = &"attack"
 frame_progress = 0.70042086

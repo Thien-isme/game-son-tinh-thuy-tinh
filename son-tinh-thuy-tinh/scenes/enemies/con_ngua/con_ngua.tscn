@@ -1,4 +1,4 @@
-﻿[gd_scene format=3]
+[gd_scene format=3 uid="uid://dcon_ngua00001"]
 
 [ext_resource type="Script" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
 

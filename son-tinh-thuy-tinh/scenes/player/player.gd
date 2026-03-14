@@ -16,7 +16,7 @@ const ANIM_FRAME_COUNTS = {
 }
 
 @onready var anim = $AnimatedSprite2D
-@onready var camera = $Camera2D
+var camera: Camera2D = null
 @onready var sfx_player = $SFXPlayer
 @onready var sfx_loop = $SFXPlayerLoop
 
@@ -46,13 +46,83 @@ var is_skill_active: bool = false
 var limit_left_x: float = -10000.0
 var limit_right_x: float = 10000.0
 
+# Collision standing values (saved from .tscn in _ready)
+var _col_stand_y: float = -49.0   # giá trị từ editor
+var _col_stand_h: float = 100.0   # giá trị từ editor
+
 # ---- Lifecycle ----
 
 func _ready():
+	# Lưu giá trị gốc từ editor, duplicate shape để tránh shared resource
+	if $CollisionShape2D.shape:
+		$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
+		if $CollisionShape2D.shape is RectangleShape2D:
+			_col_stand_y = $CollisionShape2D.position.y
+			_col_stand_h = $CollisionShape2D.shape.size.y
+
+	# Tạo Camera2D nếu chưa có trong scene
+	if not has_node("Camera2D"):
+		var cam = Camera2D.new()
+		cam.name = "Camera2D"
+		cam.position = Vector2(0, 0)
+		cam.zoom = Vector2(1, 1)
+		cam.position_smoothing_enabled = true
+		cam.position_smoothing_speed = 5.0
+		cam.drag_horizontal_enabled = true
+		cam.drag_vertical_enabled = true
+		cam.drag_left_margin = 0.2
+		cam.drag_right_margin = 0.2
+		cam.drag_top_margin = 0.2
+		cam.drag_bottom_margin = 0.2
+		cam.limit_smoothed = true
+		# Giới hạn camera không scroll ra ngoài map theo chiều dọc
+		cam.limit_top = 0
+		cam.limit_bottom = 648  # chiều cao viewport (1152x648)
+		add_child(cam)
+		camera = cam
+	else:
+		camera = $Camera2D
+		camera.limit_top = 0
+		camera.limit_bottom = 648
+
 	_load_player_audio()
 	anim.animation_finished.connect(_on_animation_finished)
 	if anim.animation_looped.get_connections().size() == 0:
 		anim.animation_looped.connect(_on_animation_finished)
+
+	# Tìm và apply Level Boundaries sau khi cả scene đã load xong
+	call_deferred("_find_level_bounds")
+
+func _find_level_bounds():
+	# Scan toàn bộ scene tree để tìm LevelBounds nodes
+	var root = get_tree().current_scene
+	if root == null:
+		return
+	var bounds_nodes = []
+	_collect_level_bounds(root, bounds_nodes)
+
+	for node in bounds_nodes:
+		if not node.has_method("_is_right"):
+			continue
+		var gx = node.global_position.x
+		if node._is_right():
+			set_right_bound(gx)
+		else:
+			set_left_bound(gx)
+
+func _collect_level_bounds(node: Node, result: Array):
+	if node.get_script() != null:
+		var script = node.get_script()
+		# Kiểm tra class_name là LevelBounds
+		if script.get_global_name() == "LevelBounds" or node.get_class() == "LevelBounds":
+			result.append(node)
+			return
+		# Kiểm tra nếu node có is_right_bound property (duck typing)
+		if node.has_method("_is_right"):
+			result.append(node)
+			return
+	for child in node.get_children():
+		_collect_level_bounds(child, result)
 
 func _load_player_audio():
 	# Đưa @export vars vào cache trước
@@ -175,15 +245,16 @@ func _physics_process(delta):
 		velocity.x = 0
 		if not was_crouching:
 			if $CollisionShape2D.shape is RectangleShape2D:
-				# Đáy đứng: position.y + size.y/2 = 0.5 + 75.5 = 76
-				# Khi cúi: size.y=90 → position.y = 76 - 45 = 31
-				$CollisionShape2D.shape.size.y = 90.0
-				$CollisionShape2D.position.y = 31.0
+				var crouch_h = _col_stand_h * 0.62  # thu nhỏ xuống 62%
+				var bottom = _col_stand_y + _col_stand_h * 0.5  # đáy cố định
+				$CollisionShape2D.shape.size.y = crouch_h
+				$CollisionShape2D.position.y = bottom - crouch_h * 0.5
 	else:
 		if was_crouching:
 			if $CollisionShape2D.shape is RectangleShape2D:
-				$CollisionShape2D.shape.size.y = 151.0
-				$CollisionShape2D.position.y = 0.5
+				# Khôi phục về giá trị gốc từ editor
+				$CollisionShape2D.shape.size.y = _col_stand_h
+				$CollisionShape2D.position.y = _col_stand_y
 		# Block nếu đang ở biên và nhấn phím đi ra ngoài
 		if global_position.x <= limit_left_x and direction < 0:
 			velocity.x = 0

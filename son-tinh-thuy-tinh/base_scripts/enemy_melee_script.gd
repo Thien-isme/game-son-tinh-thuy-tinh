@@ -60,9 +60,11 @@ const ENEMY_FRAME_COUNTS = {
 
 func _update_shape(zone_name: String, radius_value: float):
 	if Engine.is_editor_hint() and is_inside_tree() and has_node(zone_name + "/CollisionShape2D"):
-		var shape = get_node(zone_name + "/CollisionShape2D").shape as CircleShape2D
-		if shape:
-			shape.set_deferred("radius", radius_value)
+		# Tạo shape MỚI thay vì sửa trực tiếp resource gốc (tránh lỗi shared resource)
+		var col_node = get_node(zone_name + "/CollisionShape2D")
+		var new_shape = CircleShape2D.new()
+		new_shape.radius = radius_value
+		col_node.shape = new_shape
 
 # State
 var player = null
@@ -134,18 +136,14 @@ func _ready():
 	patrol_target_x = start_x + patrol_distance * patrol_dir
 
 	if detect_radius > 0 and has_node("DetectZone/CollisionShape2D"):
-		var d_shape = $DetectZone/CollisionShape2D.shape as CircleShape2D
-		if d_shape:
-			var new_d = d_shape.duplicate()
-			new_d.radius = detect_radius
-			$DetectZone/CollisionShape2D.set_deferred("shape", new_d)
+		var new_d = CircleShape2D.new()
+		new_d.radius = detect_radius
+		$DetectZone/CollisionShape2D.set_deferred("shape", new_d)
 
 	if attack_radius > 0 and has_node("AttackZone/CollisionShape2D"):
-		var a_shape = $AttackZone/CollisionShape2D.shape as CircleShape2D
-		if a_shape:
-			var new_a = a_shape.duplicate()
-			new_a.radius = attack_radius
-			$AttackZone/CollisionShape2D.set_deferred("shape", new_a)
+		var new_a = CircleShape2D.new()
+		new_a.radius = attack_radius
+		$AttackZone/CollisionShape2D.set_deferred("shape", new_a)
 
 	max_health = health
 	_create_health_bar()
@@ -250,9 +248,12 @@ func _physics_process(delta):
 	if is_attacking:
 		velocity.x = 0
 		var facing_dir = -1 if player.global_position.x < global_position.x else 1
-		anim.flip_h = facing_dir < 0
-		if has_node("MeleeHitbox"):
-			$MeleeHitbox.position.x = abs($MeleeHitbox.position.x) * facing_dir
+		# Sprite mặc định nhìn TRÁI → flip khi facing phải
+		anim.flip_h = facing_dir > 0
+		# Dịch hitbox về phía player: flip CollisionShape2D (con của MeleeHitbox)
+		if has_node("MeleeHitbox/CollisionShape2D"):
+			var col = $"MeleeHitbox/CollisionShape2D"
+			col.position.x = abs(col.position.x) * facing_dir
 		if anim.sprite_frames.has_animation("attack"):
 			_play_anim("attack")  # speed_scale = khớp audio 8s
 		else:
@@ -273,7 +274,8 @@ func _physics_process(delta):
 			_play_anim("idle", true)
 		else:
 			velocity.x = facing_dir * speed
-			anim.flip_h = facing_dir < 0
+			# Sprite mặc định nhìn TRÁI → flip khi facing phải
+			anim.flip_h = facing_dir > 0
 			if anim.sprite_frames.has_animation("run"):
 				_play_anim("run", true)
 			elif anim.sprite_frames.has_animation("move"):
@@ -302,7 +304,8 @@ func _patrol_update():
 		return
 
 	velocity.x = patrol_dir * patrol_speed
-	anim.flip_h = patrol_dir < 0
+	# Sprite mặc định nhìn TRÁI → flip khi đi phải
+	anim.flip_h = patrol_dir > 0
 	if anim.sprite_frames.has_animation("run"):
 		_play_anim("run", true)
 	else:
