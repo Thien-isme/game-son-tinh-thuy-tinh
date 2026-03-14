@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://y6dc33xidags"]
+
+[ext_resource type="Texture2D" uid="uid://cyum3b0v3ddy" path="res://assets/sprites/player/animation_shoot_rapid_fire.png" id="1_v5ob2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v5ob2"]
+atlas = ExtResource("1_v5ob2")
+region = Rect2(266, 0, 570, 742)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_atsg4"]
+atlas = ExtResource("1_v5ob2")
+region = Rect2(963, 0, 570, 742)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_btpa8"]
+atlas = ExtResource("1_v5ob2")
+region = Rect2(1663, 0, 570, 742)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8bh0q"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v5ob2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_atsg4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_btpa8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="ShootRapidFire" type="Area2D" unique_id=179425207]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=163337018]
+position = Vector2(285, -6)
+rotation = 0.0034906585
+sprite_frames = SubResource("SpriteFrames_8bh0q")
+frame_progress = 0.906283

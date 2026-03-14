@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://daa5gtd1o3tdm"]
+
+[ext_resource type="Texture2D" uid="uid://c8o3pex0a1c70" path="res://assets/background/level_1/Background.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://40cflu238st3" path="res://assets/background/level_1/Midground.png" id="2_mid"]
+[ext_resource type="Texture2D" uid="uid://cueenmpp2rk4i" path="res://assets/background/level_1/Foreground.png" id="3_fg"]
+[ext_resource type="Script" path="res://scenes/background/parallax_auto_mirror.gd" id="4_script"]
+
+[node name="Level1Background" type="ParallaxBackground" unique_id=97684796]
+script = ExtResource("4_script")
+
+[node name="Layer1_Far" type="ParallaxLayer" parent="." unique_id=613639858]
+motion_scale = Vector2(0.1, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Layer1_Far" unique_id=74950588]
+texture = ExtResource("1_bg")
+centered = false
+
+[node name="Layer2_Mid" type="ParallaxLayer" parent="." unique_id=107248667]
+motion_scale = Vector2(0.4, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Layer2_Mid" unique_id=85432121]
+texture = ExtResource("2_mid")
+centered = false
+
+[node name="Layer3_Near" type="ParallaxLayer" parent="." unique_id=766136485]
+motion_scale = Vector2(0.7, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Layer3_Near" unique_id=2053228871]
+texture = ExtResource("3_fg")
+centered = false

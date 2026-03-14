@@ -1493,10 +1493,11 @@
 [ext_resource type="Texture2D" uid="uid://crirhmal32sb1" path="res://assets/sprites/son-tinh/skill-w/0191.png" id="1301_5c8cv"]
 [ext_resource type="Texture2D" uid="uid://dbo61kfiqvhbf" path="res://assets/sprites/son-tinh/run/0191.png" id="1301_rsu6v"]
 [ext_resource type="Texture2D" uid="uid://bi44kjt5h16bf" path="res://assets/sprites/son-tinh/run/0192.png" id="1302_obre0"]
+[ext_resource type="Script" uid="uid://hpiksclfeage" path="res://player/camera_lock.gd" id="camera_lock_script"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7q8w3"]
 radius = 35.0
-height = 92.0
+height = 150.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_rpgdq"]
 animations = [{
@@ -5436,7 +5437,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"run",
-"speed": 5.0
+"speed": 3.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -6019,21 +6020,22 @@ animations = [{
 
 [node name="player" type="CharacterBody2D" unique_id=2060062756]
 script = ExtResource("1_script")
+groups = ["player"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2042003537]
 position = Vector2(1, 1)
 shape = SubResource("CapsuleShape2D_7q8w3")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1004988390]
-position = Vector2(230, 15)
-zoom = Vector2(1.5, 1.5)
+position = Vector2(420, -62)
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
+script = ExtResource("camera_lock_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1002837255]
-position = Vector2(4.7683716e-07, -26)
-scale = Vector2(0.1890625, 0.18888888)
+position = Vector2(5, -35)
+scale = Vector2(0.30937502, 0.33611113)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
-animation = &"attack"
-frame_progress = 0.49689558
-speed_scale = 20.0
+animation = &"run"
+frame_progress = 0.39580092
+speed_scale = 3.0

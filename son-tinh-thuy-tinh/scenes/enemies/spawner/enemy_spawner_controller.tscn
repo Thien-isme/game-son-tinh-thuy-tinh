@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/spawner/enemy_spawner_controller.gd" id="1_controller"]
+[ext_resource type="Script" path="res://scenes/enemies/spawner/enemy_spawner_item.gd" id="2_item"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
+resource_local_to_scene = true
+size = Vector2(1200, 645)
+
+[node name="EnemySpawnerController" type="Node2D"]
+script = ExtResource("1_controller")
+
+[node name="SpawnPoint1" type="Marker2D" parent="."]
+position = Vector2(0, 0)
+gizmo_extents = 30.0
+script = ExtResource("2_item")
+
+[node name="DetectArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectArea"]
+shape = SubResource("RectangleShape2D_detect")
+debug_color = Color(0.1, 0.8, 0.1, 0.15)
+
+[connection signal="body_entered" from="DetectArea" to="." method="_on_detect_area_body_entered"]
+[connection signal="body_exited" from="DetectArea" to="." method="_on_detect_area_body_exited"]

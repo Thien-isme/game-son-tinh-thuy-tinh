@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://level2_bg_scene"]
+
+[node name="Level2Background" type="ParallaxBackground" unique_id=200000001]
+script = ExtResource("4_script")
+
+[node name="Layer1_Far" type="ParallaxLayer" parent="." unique_id=200000002]
+motion_scale = Vector2(0.1, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Layer1_Far" unique_id=200000003]
+centered = false
+
+[node name="Layer2_Mid" type="ParallaxLayer" parent="." unique_id=200000004]
+motion_scale = Vector2(0.4, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Layer2_Mid" unique_id=200000005]
+centered = false
+
+[node name="Layer3_Near" type="ParallaxLayer" parent="." unique_id=200000006]
+motion_scale = Vector2(0.7, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Layer3_Near" unique_id=200000007]
+centered = false

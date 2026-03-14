@@ -6,6 +6,7 @@ const GRAVITY = 900
 #const MAX_HEALTH = 500.0
 
 @onready var anim = $AnimatedSprite2D
+@onready var camera = $Camera2D
 #@onready var hud = $HUD
 #@onready var sfx_player = $SFXPlayer        # Dùng cho âm thanh ngắn (nhảy, chết, bị đánh)
 #@onready var sfx_loop = $SFXPlayerLoop      # Dùng cho âm thanh lặp (chạy, đứng yên, cúi)
@@ -17,6 +18,10 @@ var is_attacking: bool = false   # Đang attack (chuột trái)
 var is_crouching: bool = false
 var is_skill_active: bool = false  # Đang phát animation skill (W/Q/E/R)
 
+# Camera bounds
+var limit_left_x: float = -10000.0
+var limit_right_x: float = 10000.0
+
 # ---- Lifecycle ----
 
 func _ready():
@@ -25,6 +30,18 @@ func _ready():
 	# KHÔNG emit cho animation đang loop (idle/run/attack loop)
 	if anim.animation_looped.get_connections().size() == 0:
 		anim.animation_looped.connect(_on_animation_finished)
+
+# ---- Level Bounds ----
+
+func set_left_bound(x: float):
+	limit_left_x = x
+	if camera:
+		camera.limit_left = int(x)
+
+func set_right_bound(x: float):
+	limit_right_x = x
+	if camera:
+		camera.limit_right = int(x)
 
 # ---- Physics ----
 
@@ -95,11 +112,11 @@ func _physics_process(delta):
 
 	move_and_slide()
 
-	# Giới hạn map
-	#	if global_position.x < limit_left_x:
-	#		global_position.x = limit_left_x
-	#	elif global_position.x > limit_right_x:
-	#		global_position.x = limit_right_x
+	# Giới hạn map (player không đi qua biên)
+	if global_position.x < limit_left_x:
+		global_position.x = limit_left_x
+	elif global_position.x > limit_right_x:
+		global_position.x = limit_right_x
 
 	# Animation trạng thái thường
 	_update_animations(direction)

@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://ccbykevlh8obl"]
+
+[ext_resource type="Texture2D" uid="uid://dsc5675a5w38w" path="res://assets/background/background.png" id="1_bg"]
+[ext_resource type="PackedScene" path="res://scenes/levels/components/level_bounds.tscn" id="2_bounds"]
+[ext_resource type="AudioStream" uid="uid://iymimyhn2qh" path="res://assets/audio/sfx/player/skills/skill_e_sfx.mp3" id="3_4s5u3"]
+[ext_resource type="PackedScene" uid="uid://uyp3og6rd3ng" path="res://scenes/player/player.tscn" id="3_player"]
+[ext_resource type="AudioStream" uid="uid://dy7isfg0ufclh" path="res://assets/audio/sfx/player/skills/skill_r_sfx.mp3" id="4_eokde"]
+
+[node name="LevelTemplate" type="Node2D" unique_id=875464296]
+
+[node name="Environment" type="Node2D" parent="." unique_id=281121930]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="Environment" unique_id=1417745669]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Environment/ParallaxBackground" unique_id=1950711179]
+
+[node name="Background_1" type="Sprite2D" parent="Environment/ParallaxBackground/ParallaxLayer" unique_id=119188798]
+position = Vector2(1, 3)
+scale = Vector2(0.420397, 0.552827)
+texture = ExtResource("1_bg")
+centered = false
+
+[node name="TileMap" type="TileMap" parent="Environment" unique_id=1170526189]
+scale = Vector2(0.3, 0.3)
+format = 2
+
+[node name="BoundaryLine" type="Node2D" parent="." unique_id=1482434575]
+
+[node name="Entities" type="Node2D" parent="." unique_id=546494529]
+
+[node name="Player" parent="Entities" unique_id=995554852 instance=ExtResource("3_player")]
+position = Vector2(200, 198)
+skill_e_sfx = ExtResource("3_4s5u3")
+skill_r_sfx = ExtResource("4_eokde")
+
+[node name="Enemies" type="Node2D" parent="Entities" unique_id=1165099368]
+
+[node name="Interactable" type="Node2D" parent="." unique_id=815068778]
+
+[node name="LevelBounds" parent="." unique_id=1130732088 instance=ExtResource("2_bounds")]
+
+[node name="Trigger" type="Node2D" parent="." unique_id=1051130091]

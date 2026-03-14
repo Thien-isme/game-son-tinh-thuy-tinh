@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://map3_scene"]
+
+[ext_resource type="PackedScene" uid="uid://ba8fo4hh82c7e" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://level3_bg_scene" path="res://scenes/background/level_3.tscn" id="2_bg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(5343, 70)
+
+[node name="Map3" type="Node2D" unique_id=3100000001]
+
+[node name="Background" parent="." unique_id=3100000002 instance=ExtResource("2_bg")]
+z_index = -10
+
+[node name="World" type="Node2D" parent="." unique_id=3100000003]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="World" unique_id=3100000004]
+
+[node name="Floor" type="StaticBody2D" parent="World" unique_id=3100000005]
+position = Vector2(463, 518)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Floor" unique_id=3100000006]
+position = Vector2(146, 76)
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Enemies" type="Node2D" parent="World" unique_id=3100000007]
+
+[node name="Items" type="Node2D" parent="World" unique_id=3100000008]
+
+[node name="LevelBounds" type="Node2D" parent="." unique_id=3100000009]
+
+[node name="Player" parent="." unique_id=3100000010 instance=ExtResource("1_player")]
+position = Vector2(158, 386)

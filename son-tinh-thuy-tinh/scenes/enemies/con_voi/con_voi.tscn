@@ -1,4 +1,6 @@
-[gd_scene format=3]
+﻿[gd_scene format=3]
+
+[ext_resource type="Script" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
 
 [ext_resource type="Texture2D" uid="uid://2pm0r5lef3bu" path="res://assets/sprites/con_voi/idle/0001.png" id="1_sprite"]
 [ext_resource type="Texture2D" uid="uid://bmk18lw75x6s0" path="res://assets/sprites/con_voi/idle/0002.png" id="2_sprite"]
@@ -807,6 +809,8 @@ radius = 200.0
 radius = 50.0
 
 [node name="con_voi" type="CharacterBody2D"]
+script = ExtResource("1_melee_script")
+groups = ["enemy"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_1")
@@ -826,3 +830,52 @@ debug_color = Color(0, 0.6, 0.7, 0.42)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone"]
 shape = SubResource("CircleShape2D_3")
 debug_color = Color(0.7, 0, 0.1, 0.42)
+[node name="MeleeHitbox" type="Area2D" parent="."]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+position = Vector2(40, 0)
+shape = SubResource("RectangleShape2D_melee")
+debug_color = Color(1, 0.3, 0, 0.42)
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
+
+[connection signal="body_entered" from="DetectZone" to="." method="_on_detect_zone_body_entered"]
+[connection signal="body_exited" from="DetectZone" to="." method="_on_detect_zone_body_exited"]
+[connection signal="body_entered" from="AttackZone" to="." method="_on_attack_zone_body_entered"]
+[connection signal="body_exited" from="AttackZone" to="." method="_on_attack_zone_body_exited"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
+size = Vector2(60, 60)
+
+[node name="MeleeHitbox" type="Area2D" parent="."]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+position = Vector2(40, 0)
+shape = SubResource("RectangleShape2D_melee")
+debug_color = Color(1, 0.3, 0, 0.42)
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
+
+[connection signal="body_entered" from="DetectZone" to="." method="_on_detect_zone_body_entered"]
+[connection signal="body_exited" from="DetectZone" to="." method="_on_detect_zone_body_exited"]
+[connection signal="body_entered" from="AttackZone" to="." method="_on_attack_zone_body_entered"]
+[connection signal="body_exited" from="AttackZone" to="." method="_on_attack_zone_body_exited"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
+size = Vector2(60, 60)
+
+[node name="MeleeHitbox" type="Area2D" parent="."]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+position = Vector2(40, 0)
+shape = SubResource("RectangleShape2D_melee")
+debug_color = Color(1, 0.3, 0, 0.42)
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
+
+[connection signal="body_entered" from="DetectZone" to="." method="_on_detect_zone_body_entered"]
+[connection signal="body_exited" from="DetectZone" to="." method="_on_detect_zone_body_exited"]
+[connection signal="body_entered" from="AttackZone" to="." method="_on_attack_zone_body_entered"]
+[connection signal="body_exited" from="AttackZone" to="." method="_on_attack_zone_body_exited"]

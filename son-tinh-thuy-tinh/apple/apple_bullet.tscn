@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://nr3kl5san3sw"]
+
+[ext_resource type="Script" uid="uid://bp5yf1fhl75w" path="res://scenes/Enemies/base_scripts/enemy_bullet.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bg15p4hwv3ib0" path="res://assets/sprites/enemies/apple/apple_bullet.png" id="2_da54q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_da54q"]
+size = Vector2(37, 11)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_da54q"]
+atlas = ExtResource("2_da54q")
+region = Rect2(1598, 0, 799, 896)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2qy4v"]
+atlas = ExtResource("2_da54q")
+region = Rect2(0, 0, 799, 896)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aw0n5"]
+atlas = ExtResource("2_da54q")
+region = Rect2(799, 0, 799, 896)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bullet"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_da54q")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2qy4v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aw0n5")
+}],
+"loop": false,
+"name": &"fly",
+"speed": 5.0
+}]
+
+[node name="apple_bullet" type="Area2D" unique_id=763050216]
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=687808004]
+position = Vector2(6, 0)
+shape = SubResource("RectangleShape2D_da54q")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1217868503]
+scale = Vector2(0.08641906, 0.039773125)
+sprite_frames = SubResource("SpriteFrames_bullet")
+animation = &"fly"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
