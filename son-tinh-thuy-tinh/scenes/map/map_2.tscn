@@ -1,7 +1,8 @@
-[gd_scene format=3 uid="uid://map2_scene"]
+[gd_scene format=3 uid="uid://b0kl5652sj0qd"]
 
-[ext_resource type="PackedScene" uid="uid://ba8fo4hh82c7e" path="res://scenes/player/player.tscn" id="1_player"]
-[ext_resource type="PackedScene" uid="uid://level2_bg_scene" path="res://scenes/background/level_2.tscn" id="2_bg"]
+[ext_resource type="PackedScene" uid="uid://dt5yit4kpwikk" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://c174dqdo01lue" path="res://scenes/background/level_2.tscn" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bkhhgiilp30t1" path="res://assets/background/level_2/ground1.png" id="2_oirh6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(5343, 70)
@@ -9,7 +10,6 @@ size = Vector2(5343, 70)
 [node name="Map2" type="Node2D" unique_id=2100000001]
 
 [node name="Background" parent="." unique_id=2100000002 instance=ExtResource("2_bg")]
-z_index = -10
 
 [node name="World" type="Node2D" parent="." unique_id=2100000003]
 
@@ -21,6 +21,16 @@ position = Vector2(463, 518)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Floor" unique_id=2100000006]
 position = Vector2(146, 76)
 shape = SubResource("RectangleShape2D_floor")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Floor" unique_id=47595824]
+position = Vector2(1267.0001, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D2" type="Sprite2D" parent="World/Floor" unique_id=1225118219]
+position = Vector2(112.00002, -207.5)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
 
 [node name="Enemies" type="Node2D" parent="World" unique_id=2100000007]
 

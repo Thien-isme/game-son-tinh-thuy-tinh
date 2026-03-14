@@ -6025,6 +6025,9 @@ animations = [{
 "speed": 60.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(195, 80)
+
 [node name="player" type="CharacterBody2D" unique_id=2060062756 groups=["player"]]
 position = Vector2(577, 323)
 script = ExtResource("1_script")
@@ -6053,3 +6056,12 @@ speed_scale = 2.0
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]
 
 [node name="SFXPlayerLoop" type="AudioStreamPlayer" parent="." unique_id=2089341235]
+
+[node name="MeleeHitbox" type="Area2D" parent="." unique_id=2100000001]
+collision_layer = 0
+collision_mask = 1
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=2100000002]
+position = Vector2(107.5, -50)
+shape = SubResource("RectangleShape2D_hitbox")

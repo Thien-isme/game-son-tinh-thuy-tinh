@@ -3587,13 +3587,13 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 129.062
+radius = 45.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 200.0
+radius = 350.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3"]
-radius = 50.0
+radius = 80.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
 size = Vector2(60, 60)
@@ -3612,6 +3612,7 @@ shape = SubResource("CircleShape2D_1")
 [node name="DetectZone" type="Area2D" parent="." unique_id=901362081]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone" unique_id=489232050]
+position = Vector2(-1, 4)
 shape = SubResource("CircleShape2D_2")
 
 [node name="AttackZone" type="Area2D" parent="." unique_id=240595364]
@@ -3624,12 +3625,7 @@ debug_color = Color(0.7, 0, 0.1, 0.42)
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=2070230214]
-position = Vector2(40, 0)
-shape = SubResource("RectangleShape2D_melee")
-debug_color = Color(1, 0.3, 0, 0.42)
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="MeleeHitbox" unique_id=1364888731]
-position = Vector2(40, 0)
+position = Vector2(-140, 54)
 shape = SubResource("RectangleShape2D_melee")
 debug_color = Color(1, 0.3, 0, 0.42)
 

@@ -16,9 +16,14 @@ const ANIM_FRAME_COUNTS = {
 }
 
 @onready var anim = $AnimatedSprite2D
+@onready var melee_hitbox: Area2D = $MeleeHitbox
 var camera: Camera2D = null
 @onready var sfx_player = $SFXPlayer
 @onready var sfx_loop = $SFXPlayerLoop
+
+# ---- Combat Exports ----
+@export_category("Combat")
+@export var attack_damage: float = 20.0
 
 # ---- Audio Exports (gán trực tiếp qua Inspector hoặc .tscn) ----
 @export_category("Audio")
@@ -89,6 +94,12 @@ func _ready():
 	anim.animation_finished.connect(_on_animation_finished)
 	if anim.animation_looped.get_connections().size() == 0:
 		anim.animation_looped.connect(_on_animation_finished)
+
+	# Kết nối MeleeHitbox signal
+	if melee_hitbox:
+		melee_hitbox.monitoring = false
+		if not melee_hitbox.body_entered.is_connected(_on_melee_hit):
+			melee_hitbox.body_entered.connect(_on_melee_hit)
 
 	# Tìm và apply Level Boundaries sau khi cả scene đã load xong
 	call_deferred("_find_level_bounds")
@@ -286,6 +297,17 @@ func _play_attack():
 	anim.speed_scale = 3.0  # attack chạy 3x (60fps ×3 = 180fps, 192f/180 ≈ 1.07s)
 	anim.play("attack")
 	_play_sfx("attack")  # pitch tự tính: 8s / 1.07s ≈ 7.5x (clamp →4.0)
+	# Bật hitbox và định hướng theo chiều nhìn
+	if melee_hitbox:
+		var dir = -1 if anim.flip_h else 1
+		if melee_hitbox.has_node("CollisionShape2D"):
+			melee_hitbox.get_node("CollisionShape2D").position.x = abs(melee_hitbox.get_node("CollisionShape2D").position.x) * dir
+		melee_hitbox.monitoring = true
+		# Đợi 1 physics frame rồi check overlapping (body_entered không fire nếu body đã ở trong zone)
+		await get_tree().physics_frame
+		if melee_hitbox and melee_hitbox.monitoring:
+			for body in melee_hitbox.get_overlapping_bodies():
+				_on_melee_hit(body)
 
 func _play_skill(anim_name: String):
 	var frames = anim.sprite_frames
@@ -298,8 +320,18 @@ func _play_skill(anim_name: String):
 func _on_animation_finished():
 	if is_attacking:
 		is_attacking = false
+		# Tắt hitbox khi attack animation kết thúc
+		if melee_hitbox:
+			melee_hitbox.monitoring = false
 	if is_skill_active:
 		is_skill_active = false
+
+# ---- Combat ----
+
+func _on_melee_hit(body: Node):
+	if body == self: return
+	if body.has_method("take_damage"):
+		body.take_damage(attack_damage)
 
 func _update_animations(direction: float):
 	# Thứ tự ưu tiên: die > attack > skill > jump > crouch > run > idle
