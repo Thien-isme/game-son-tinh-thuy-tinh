@@ -2192,15 +2192,15 @@ texture = ExtResource("3_ground")
 centered = false
 
 [node name="LevelBounds" type="Node2D" parent="." unique_id=1000000005]
+visible = false
 
 [node name="LeftBoundary" type="Marker2D" parent="LevelBounds" unique_id=1000000030]
 script = ExtResource("4_bounds")
-is_right_bound = false
 
 [node name="RightBoundary" type="Marker2D" parent="LevelBounds" unique_id=1000000031]
-position = Vector2(5482, 101)
+position = Vector2(5045, 86)
 script = ExtResource("4_bounds")
 is_right_bound = true
 
 [node name="Player" parent="." unique_id=2060062756 instance=ExtResource("1_player")]
-position = Vector2(353, 386)
+position = Vector2(459, 324)

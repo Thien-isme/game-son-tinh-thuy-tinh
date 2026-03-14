@@ -1493,11 +1493,10 @@
 [ext_resource type="Texture2D" uid="uid://crirhmal32sb1" path="res://assets/sprites/son-tinh/skill-w/0191.png" id="1301_5c8cv"]
 [ext_resource type="Texture2D" uid="uid://dbo61kfiqvhbf" path="res://assets/sprites/son-tinh/run/0191.png" id="1301_rsu6v"]
 [ext_resource type="Texture2D" uid="uid://bi44kjt5h16bf" path="res://assets/sprites/son-tinh/run/0192.png" id="1302_obre0"]
-[ext_resource type="Script" uid="uid://hpiksclfeage" path="res://player/camera_lock.gd" id="camera_lock_script"]
+[ext_resource type="Script" uid="uid://hpiksclfeage" path="res://scenes/player/camera_lock.gd" id="camera_lock_script"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7q8w3"]
-radius = 35.0
-height = 150.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tbvis"]
+size = Vector2(48, 151)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_rpgdq"]
 animations = [{
@@ -6020,14 +6019,13 @@ animations = [{
 
 [node name="player" type="CharacterBody2D" unique_id=2060062756]
 script = ExtResource("1_script")
-groups = ["player"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2042003537]
-position = Vector2(1, 1)
-shape = SubResource("CapsuleShape2D_7q8w3")
+position = Vector2(2, 0.5)
+shape = SubResource("RectangleShape2D_tbvis")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1004988390]
-position = Vector2(420, -62)
+position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
 script = ExtResource("camera_lock_script")

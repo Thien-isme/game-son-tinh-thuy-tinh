@@ -100,23 +100,28 @@ func _physics_process(delta):
 	if is_crouching:
 		velocity.x = 0
 		if not was_crouching:
-			if $CollisionShape2D.shape is CapsuleShape2D:
-				$CollisionShape2D.shape.height = 52.0
-			$CollisionShape2D.position.y = 6.0
+			if $CollisionShape2D.shape is RectangleShape2D:
+				# Đáy đứng: position.y + size.y/2 = 0.5 + 75.5 = 76
+				# Khi cúi: size.y=90 → position.y = 76 - 45 = 31
+				$CollisionShape2D.shape.size.y = 90.0
+				$CollisionShape2D.position.y = 31.0
 	else:
 		if was_crouching:
-			if $CollisionShape2D.shape is CapsuleShape2D:
-				$CollisionShape2D.shape.height = 70.0
-			$CollisionShape2D.position.y = -3.0
-		velocity.x = direction * SPEED
+			if $CollisionShape2D.shape is RectangleShape2D:
+				$CollisionShape2D.shape.size.y = 151.0
+				$CollisionShape2D.position.y = 0.5
+		# Block nếu đang ở biên và nhấn phím đi ra ngoài
+		if global_position.x <= limit_left_x and direction < 0:
+			velocity.x = 0
+		elif global_position.x >= limit_right_x and direction > 0:
+			velocity.x = 0
+		else:
+			velocity.x = direction * SPEED
 
 	move_and_slide()
 
-	# Giới hạn map (player không đi qua biên)
-	if global_position.x < limit_left_x:
-		global_position.x = limit_left_x
-	elif global_position.x > limit_right_x:
-		global_position.x = limit_right_x
+	# Clamp thêm 1 lần nữa để chắc chắn (trường hợp bị đẩy bởi physics)
+	global_position.x = clampf(global_position.x, limit_left_x, limit_right_x)
 
 	# Animation trạng thái thường
 	_update_animations(direction)
