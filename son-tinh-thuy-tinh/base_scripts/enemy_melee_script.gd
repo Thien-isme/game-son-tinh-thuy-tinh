@@ -127,7 +127,6 @@ func _ready():
 	_enemy_key = _resolve_enemy_key()
 	if _enemy_key != "":
 		_frame_counts = ENEMY_FRAME_COUNTS[_enemy_key]
-		print("[Enemy] %s: found %d anim frame counts" % [name, _frame_counts.size()])
 
 	_load_audio_for_enemy()
 
@@ -190,7 +189,6 @@ func _load_audio_for_enemy():
 		var path = "res://assets/audio/character/%s/%s.mp3" % [folder, anim_name]
 		if ResourceLoader.exists(path):
 			_sfx_cache[anim_name] = load(path)
-			print("[EnemySFX] Loaded: ", path)
 
 func _play_sfx(anim_name: String):
 	if _sfx_cache.has(anim_name) and sfx_player:

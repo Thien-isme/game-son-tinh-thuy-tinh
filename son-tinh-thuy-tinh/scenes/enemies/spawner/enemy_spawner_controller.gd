@@ -61,10 +61,7 @@ func _ready():
 			if "enemy_scene" in child and child.enemy_scene != null:
 				point_data["enemy_scene"] = child.enemy_scene
 
-			print("Spawner [%s] → Point [%s]: %s" % [
-				name, child.name,
-				point_data["enemy_scene"].resource_path if point_data["enemy_scene"] else "CHƯA GẮN QUÁI!"
-			])
+
 
 			var interval = spawn_interval
 			if "spawn_interval" in child and child.spawn_interval > 0:

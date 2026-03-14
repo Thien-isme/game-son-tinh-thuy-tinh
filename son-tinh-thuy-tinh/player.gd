@@ -365,7 +365,6 @@ func _physics_process(delta):
 			$CollisionShape2D.position.y = -3.0
 
 	if Input.is_action_just_pressed("skill_r"):
-		print(">>> Phat hien ban phim go nut R! (is_shooting: ", is_shooting, ", is_on_floor: ", is_on_floor(), ", is_dashing: ", is_dashing, ")")
 
 	# Ngắm Q: Kích hoạt chế độ ngắm
 	if is_on_floor() and not is_dashing and not is_shooting and not is_crouching and not is_aiming_q:
@@ -562,7 +561,7 @@ func _cast_skill(skill_scene: PackedScene, cooldown: float, cast_anim: String, s
 		# Khởi tạo lại các giá trị vị trí phòng trường hợp nhân vật di chuyển (nếu bị đẩy, v.v.)
 		# Hoặc nếu người chơi bấm lật mặt trong lúc niệm
 		
-		print(">>> Dang ban Skill: ", skill_scene.resource_path)
+
 		var skill_instance = skill_scene.instantiate()
 		
 		# Khởi tạo target_pos cho kỹ năng (như Skill Q) nếu có điểm custom_spawn_pos (nhập từ chuột)
@@ -577,7 +576,7 @@ func _cast_skill(skill_scene: PackedScene, cooldown: float, cast_anim: String, s
 			var offset_x = 80 if not anim.flip_h else -80
 			skill_instance.global_position = global_position + Vector2(offset_x, -10)
 		
-		print(">>> Da them Skill vao Scene, Toa do: ", skill_instance.global_position)
+
 		
 		# Truyền hướng mặt vào Skill (nếu skill có hỗ trợ lật hình)
 		if "is_player_facing_right" in skill_instance:
@@ -609,18 +608,9 @@ func set_right_bound(x_pos: float):
 # --- Hàm phát âm thanh ---
 func _play_sfx(stream: AudioStream, volume_db: float = 0.0):
 	if stream and sfx_player:
-		if sfx_player.playing:
-			var temp_player = AudioStreamPlayer.new()
-			temp_player.stream = stream
-			temp_player.bus = "SFX"
-			temp_player.volume_db = volume_db
-			add_child(temp_player)
-			temp_player.play()
-			temp_player.finished.connect(temp_player.queue_free)
-		else:
-			sfx_player.stream = stream
-			sfx_player.volume_db = volume_db
-			sfx_player.play()
+		sfx_player.stream = stream
+		sfx_player.volume_db = volume_db
+		sfx_player.play()
 
 func _play_loop_sfx(stream: AudioStream, volume_db: float = 0.0):
 	if stream and sfx_loop:
