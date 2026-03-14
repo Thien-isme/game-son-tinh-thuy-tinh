@@ -193,9 +193,9 @@ func _load_audio_for_enemy():
 			print("[EnemySFX] Loaded: ", path)
 
 func _play_sfx(anim_name: String):
-	if _sfx_cache.has(anim_name) and sfx_player and not sfx_player.playing:
-		# pitch = AUDIO_DURATION / anim_duration = audio speed up để khớp animation
-		# Ví dụ: attack 192f@60fps = 3.2s → pitch = 8/3.2 = 2.5x
+	if _sfx_cache.has(anim_name) and sfx_player:
+		# Dừng audio cũ ngay, không chờ kết thúc
+		sfx_player.stop()
 		var pitch = 1.0
 		if _frame_counts.has(anim_name):
 			var effective_fps = SPRITEFRAMES_SPEED * anim.speed_scale

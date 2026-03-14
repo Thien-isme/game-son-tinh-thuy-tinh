@@ -77,25 +77,28 @@ func _load_player_audio():
 
 func _play_sfx(anim_name: String):
 	if not _sfx_cache.has(anim_name): return
-	if sfx_player and not sfx_player.playing:
-		# Pitch = AUDIO_DURATION / anim_duration
-		# Animation chạy 3.2s (192f/60fps) → audio phải speed up 8s/3.2s = 2.5x
-		var key = anim_name.replace("-", "_")
-		var pitch = 1.0
-		if ANIM_FRAME_COUNTS.has(key):
-			var effective_fps = SPRITEFRAMES_SPEED * anim.speed_scale
-			var anim_duration = ANIM_FRAME_COUNTS[key] / effective_fps
-			pitch = clampf(AUDIO_DURATION / anim_duration, 0.1, 4.0)
-			print("[PlayerSFX] %s → speed_scale=%.2f anim=%.2fs pitch=%.2fx" % [anim_name, anim.speed_scale, anim_duration, pitch])
-		sfx_player.pitch_scale = pitch
-		sfx_player.stream = _sfx_cache[anim_name]
-		sfx_player.play()
+	if not sfx_player: return
+	# Dừng audio cũ ngay lập tức, không đợi nó kết thúc
+	sfx_player.stop()
+	var key = anim_name.replace("-", "_")
+	var pitch = 1.0
+	if ANIM_FRAME_COUNTS.has(key):
+		var effective_fps = SPRITEFRAMES_SPEED * anim.speed_scale
+		var anim_duration = ANIM_FRAME_COUNTS[key] / effective_fps
+		pitch = clampf(AUDIO_DURATION / anim_duration, 0.1, 4.0)
+	sfx_player.pitch_scale = pitch
+	sfx_player.stream = _sfx_cache[anim_name]
+	sfx_player.play()
 
 func _play_loop_sfx(anim_name: String):
 	if not _sfx_cache.has(anim_name): return
 	if sfx_loop:
+		# Dừng audio cũ rồi play mới ngị lp
 		if sfx_loop.stream != _sfx_cache[anim_name]:
+			sfx_loop.stop()
 			sfx_loop.stream = _sfx_cache[anim_name]
+			sfx_loop.play()
+		elif not sfx_loop.playing:
 			sfx_loop.play()
 
 func _stop_loop_sfx():
