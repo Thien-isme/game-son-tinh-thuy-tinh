@@ -3287,7 +3287,7 @@ size = Vector2(60, 60)
 script = ExtResource("1_melee_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=118635721]
-scale = Vector2(2, 2)
+scale = Vector2(1.2, 1.2)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 

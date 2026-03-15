@@ -817,7 +817,7 @@ attack_radius = 0.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1201630575]
 position = Vector2(3, -16.999992)
-scale = Vector2(0.18333338, 0.23425926)
+scale = Vector2(1, 1.279)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 
