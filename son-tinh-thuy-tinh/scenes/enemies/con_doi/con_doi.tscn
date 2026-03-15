@@ -4431,8 +4431,9 @@ animations = [{
 "speed": 60.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 74.672615
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_134j5"]
+radius = 32.0
+height = 96.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
 radius = 718.8832
@@ -4448,7 +4449,6 @@ script = ExtResource("1_melee_script")
 speed = 100.0
 attack_cooldown = 2.5
 melee_damage = 5.0
-flip_sprite_default = false
 can_fly = true
 fly_speed = 90.0
 fly_hover_amplitude = 25.0
@@ -4464,24 +4464,30 @@ animation = &"attack"
 frame_progress = 0.66952425
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=357467306]
-position = Vector2(4, -16)
-shape = SubResource("CircleShape2D_1")
+position = Vector2(12, 8)
+shape = SubResource("CapsuleShape2D_134j5")
 
 [node name="DetectZone" type="Area2D" parent="." unique_id=1092803163]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone" unique_id=709640602]
+visible = false
 shape = SubResource("CircleShape2D_2")
 
 [node name="AttackZone" type="Area2D" parent="." unique_id=65252899]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone" unique_id=1910944161]
+visible = false
 shape = SubResource("CircleShape2D_134j5")
 debug_color = Color(0.7, 0, 0.1, 0.42)
 
 [node name="MeleeHitbox" type="Area2D" parent="." unique_id=1159028728]
+visible = false
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=605964523]
+visible = false
 position = Vector2(-145.27574, 114.16724)
 rotation = -0.710349
 shape = SubResource("RectangleShape2D_134j5")
@@ -4490,6 +4496,7 @@ debug_color = Color(1, 0.3, 0, 0.42)
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=1287953631]
 
 [node name="MeleeHitbox2" type="Area2D" parent="." unique_id=115401511]
+visible = false
 position = Vector2(-5, -10)
 monitoring = false
 
