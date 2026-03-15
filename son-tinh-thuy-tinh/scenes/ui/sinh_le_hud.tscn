@@ -1,7 +1,222 @@
 [gd_scene format=3 uid="uid://h5w5xfbo3nr4"]
 
-[ext_resource type="Script" uid="uid://be68gb6h0bplh" path="res://scenes/ui/sinh_le_hud.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://be68gb6h0bplh" path="res://scenes/ui/sinh_le_hud.gd" id="1_nhm4i"]
+[ext_resource type="Texture2D" uid="uid://bbpl5osqchwre" path="res://assets/sprites/con_ga/idle/0001.png" id="2_8lqvt"]
+[ext_resource type="Texture2D" uid="uid://2pm0r5lef3bu" path="res://assets/sprites/con_voi/idle/0001.png" id="3_6j4h2"]
+[ext_resource type="Texture2D" uid="uid://70bukhiltqhl" path="res://assets/sprites/con_ngua/idle/0001.png" id="4_v72j1"]
 
-[node name="SinhLeHud" type="CanvasLayer" unique_id=2134092785]
-layer = 5
-script = ExtResource("1_script")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oab2v"]
+bg_color = Color(0, 0, 0, 0.55)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.85098, 0.301961, 0.8)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+expand_margin_left = 12.0
+expand_margin_top = 8.0
+expand_margin_right = 12.0
+expand_margin_bottom = 8.0
+
+[sub_resource type="Theme" id="Theme_xk5h3"]
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_oab2v")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0q41i"]
+bg_color = Color(0.1, 0.1, 0.1, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.5, 0.5, 0.7)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
+[sub_resource type="Theme" id="Theme_7jldc"]
+Panel/styles/panel = SubResource("StyleBoxFlat_0q41i")
+
+[node name="SinhLeHud" type="CanvasLayer" unique_id=1954622142]
+script = ExtResource("1_nhm4i")
+
+[node name="SinhLePanel" type="PanelContainer" parent="." unique_id=766044086]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 246.0
+offset_bottom = 124.0
+theme = SubResource("Theme_xk5h3")
+
+[node name="VBox" type="VBoxContainer" parent="SinhLePanel" unique_id=1417029908]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="SinhLePanel/VBox" unique_id=1201955688]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.94902, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "🎁 Sính Lễ"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="SinhLePanel/VBox" unique_id=428068665]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="SinhLePanel/VBox" unique_id=1254125942]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="SlotGa" type="VBoxContainer" parent="SinhLePanel/VBox/HBox" unique_id=1765963856]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="BgConGa" type="Panel" parent="SinhLePanel/VBox/HBox/SlotGa" unique_id=383361628]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme = SubResource("Theme_7jldc")
+
+[node name="IconConGa" type="TextureRect" parent="SinhLePanel/VBox/HBox/SlotGa/BgConGa" unique_id=268758326]
+unique_name_in_owner = true
+modulate = Color(0.34902, 0.34902, 0.34902, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(28, 28)
+texture = ExtResource("2_8lqvt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CheckConGa" type="Label" parent="SinhLePanel/VBox/HBox/SlotGa/BgConGa" unique_id=646072417]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+theme_override_colors/font_color = Color(0.2, 1, 0.301961, 1)
+theme_override_font_sizes/font_size = 22
+text = "✓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LblGa" type="Label" parent="SinhLePanel/VBox/HBox/SlotGa" unique_id=2146028134]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
+theme_override_font_sizes/font_size = 11
+text = "Con Gà"
+horizontal_alignment = 1
+
+[node name="SlotVoi" type="VBoxContainer" parent="SinhLePanel/VBox/HBox" unique_id=555548320]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="BgConVoi" type="Panel" parent="SinhLePanel/VBox/HBox/SlotVoi" unique_id=427176504]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme = SubResource("Theme_7jldc")
+
+[node name="IconConVoi" type="TextureRect" parent="SinhLePanel/VBox/HBox/SlotVoi/BgConVoi" unique_id=1141888410]
+unique_name_in_owner = true
+modulate = Color(0.34902, 0.34902, 0.34902, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = 3.0
+offset_right = -13.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(28, 28)
+texture = ExtResource("3_6j4h2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CheckConVoi" type="Label" parent="SinhLePanel/VBox/HBox/SlotVoi/BgConVoi" unique_id=1912013175]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+theme_override_colors/font_color = Color(0.2, 1, 0.301961, 1)
+theme_override_font_sizes/font_size = 22
+text = "✓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LblVoi" type="Label" parent="SinhLePanel/VBox/HBox/SlotVoi" unique_id=300327311]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
+theme_override_font_sizes/font_size = 11
+text = "Con Voi"
+horizontal_alignment = 1
+
+[node name="SlotNgua" type="VBoxContainer" parent="SinhLePanel/VBox/HBox" unique_id=1019670673]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="BgConNgua" type="Panel" parent="SinhLePanel/VBox/HBox/SlotNgua" unique_id=1547678977]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme = SubResource("Theme_7jldc")
+
+[node name="IconConNgua" type="TextureRect" parent="SinhLePanel/VBox/HBox/SlotNgua/BgConNgua" unique_id=821124952]
+unique_name_in_owner = true
+modulate = Color(0.34902, 0.34902, 0.34902, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 6.0
+offset_right = -5.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(28, 28)
+texture = ExtResource("4_v72j1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CheckConNgua" type="Label" parent="SinhLePanel/VBox/HBox/SlotNgua/BgConNgua" unique_id=379247809]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+theme_override_colors/font_color = Color(0.2, 1, 0.301961, 1)
+theme_override_font_sizes/font_size = 22
+text = "✓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LblNgua" type="Label" parent="SinhLePanel/VBox/HBox/SlotNgua" unique_id=802308595]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
+theme_override_font_sizes/font_size = 11
+text = "Con Ngựa"
+horizontal_alignment = 1
