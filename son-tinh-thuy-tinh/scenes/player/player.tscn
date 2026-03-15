@@ -5806,11 +5806,11 @@ position = Vector2(0, -49)
 shape = SubResource("RectangleShape2D_tbvis")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1002837255]
-position = Vector2(8.000027, -79.99999)
-scale = Vector2(1, 1.186)
+position = Vector2(6.9999743, -92.99999)
+scale = Vector2(0.9921875, 1.1477962)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
 animation = &"attack"
-frame_progress = 0.9493808
+frame_progress = 0.22099154
 speed_scale = 2.0
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]

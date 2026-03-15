@@ -3481,7 +3481,7 @@ script = ExtResource("1_melee_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1910761116]
 position = Vector2(5, -61.000004)
-scale = Vector2(0.49179688, 0.50902784)
+scale = Vector2(1, 1.034)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"attack"
 frame_progress = 0.44591126
