@@ -3587,26 +3587,32 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 45.0
+radius = 116.841774
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
 radius = 350.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_3"]
-radius = 80.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_yp3gh"]
+radius = 300.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
-size = Vector2(60, 60)
+size = Vector2(228, 207)
 
 [node name="heo_rung" type="CharacterBody2D" unique_id=550544794]
 script = ExtResource("1_melee_script")
+attack_cooldown = 3.0
+melee_damage = 5.0
+post_attack_rest_time = 1.5
+post_attack_lunge_distance = 200.0
+attack_radius = 300.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=686890978]
 sprite_frames = SubResource("SpriteFrames_1")
-animation = &"idle"
+animation = &"hurt"
+frame_progress = 0.8923235
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1872472151]
-position = Vector2(4, -2)
+position = Vector2(5, 10)
 shape = SubResource("CircleShape2D_1")
 
 [node name="DetectZone" type="Area2D" parent="." unique_id=901362081]
@@ -3618,14 +3624,14 @@ shape = SubResource("CircleShape2D_2")
 [node name="AttackZone" type="Area2D" parent="." unique_id=240595364]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone" unique_id=2030127562]
-shape = SubResource("CircleShape2D_3")
+shape = SubResource("CircleShape2D_yp3gh")
 debug_color = Color(0.7, 0, 0.1, 0.42)
 
 [node name="MeleeHitbox" type="Area2D" parent="." unique_id=1413799450]
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=2070230214]
-position = Vector2(-140, 54)
+position = Vector2(-7, 11.5)
 shape = SubResource("RectangleShape2D_melee")
 debug_color = Color(1, 0.3, 0, 0.42)
 

@@ -24,6 +24,7 @@ var camera: Camera2D = null
 # ---- Combat Exports ----
 @export_category("Combat")
 @export var attack_damage: float = 20.0
+@export var attack_hitbox_delay: float = 0.25  ## Delay (giây) trước khi hitbox active sau khi vung rìu
 
 # ---- Audio Exports (gán trực tiếp qua Inspector hoặc .tscn) ----
 @export_category("Audio")
@@ -40,12 +41,22 @@ var camera: Camera2D = null
 # Audio cache (auto-load fallback)
 var _sfx_cache: Dictionary = {}
 var _prev_anim: String = ""
+# Track bodies already hit in current swing (reset mỗi khi swing)
+var _attacked_bodies: Array = []
 
 # Health & State
+var max_health: float = 100.0
+var current_health: float = 100.0
 var is_dead: bool = false
 var is_attacking: bool = false
+var is_hurting: bool = false  ## Đang nhận damage, block _physics_process
 var is_crouching: bool = false
 var is_skill_active: bool = false
+var _is_invincible: bool = false
+
+# Health HUD
+var _health_bar: ProgressBar = null
+var _hud_layer: CanvasLayer = null
 
 # Camera bounds
 var limit_left_x: float = -10000.0
@@ -100,6 +111,9 @@ func _ready():
 		melee_hitbox.monitoring = false
 		if not melee_hitbox.body_entered.is_connected(_on_melee_hit):
 			melee_hitbox.body_entered.connect(_on_melee_hit)
+
+	# Tạo Health HUD
+	_create_health_hud()
 
 	# Tìm và apply Level Boundaries sau khi cả scene đã load xong
 	call_deferred("_find_level_bounds")
@@ -212,15 +226,18 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 
-	# Đang attack hoặc skill → không nhận input di chuyển hay kỹ năng mới
+	# Đang attack hoặc skill → không nhận input, không override animation
 	if is_attacking or is_skill_active:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
+		if is_on_floor():
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+		else:
+			velocity.y += GRAVITY * get_physics_process_delta_time()
+			velocity.x = move_toward(velocity.x, 0, SPEED * 0.3)
 		move_and_slide()
-		_update_animations(0.0)
 		return
 
-	# Attack: chuột trái (chỉ khi trên sàn)
-	if is_on_floor() and Input.is_action_just_pressed("attack"):
+	# Attack: chuột trái (cả khi trên sàn lẫn trên không)
+	if Input.is_action_just_pressed("attack"):
 		_play_attack()
 		return
 
@@ -294,16 +311,22 @@ func _play_attack():
 	if frames == null or not frames.has_animation("attack"):
 		return
 	is_attacking = true
-	anim.speed_scale = 3.0  # attack chạy 3x (60fps ×3 = 180fps, 192f/180 ≈ 1.07s)
+	_attacked_bodies.clear()  # Reset danh sách body đã bị đánh
+	anim.speed_scale = 3.0
 	anim.play("attack")
-	_play_sfx("attack")  # pitch tự tính: 8s / 1.07s ≈ 7.5x (clamp →4.0)
-	# Bật hitbox và định hướng theo chiều nhìn
+	_play_sfx("attack")
+	# Cập nhật hướng hitbox
 	if melee_hitbox:
 		var dir = -1 if anim.flip_h else 1
 		if melee_hitbox.has_node("CollisionShape2D"):
 			melee_hitbox.get_node("CollisionShape2D").position.x = abs(melee_hitbox.get_node("CollisionShape2D").position.x) * dir
+		melee_hitbox.monitoring = false
+		# Delay trước khi hitbox active
+		await get_tree().create_timer(attack_hitbox_delay).timeout
+		if not is_attacking:
+			return
 		melee_hitbox.monitoring = true
-		# Đợi 1 physics frame rồi check overlapping (body_entered không fire nếu body đã ở trong zone)
+		# Đợi 1 physics frame rồi check overlapping (body đã ở trong zone)
 		await get_tree().physics_frame
 		if melee_hitbox and melee_hitbox.monitoring:
 			for body in melee_hitbox.get_overlapping_bodies():
@@ -330,7 +353,9 @@ func _on_animation_finished():
 
 func _on_melee_hit(body: Node):
 	if body == self: return
+	if body in _attacked_bodies: return  # Đã đánh body này rồi, bỏ qua
 	if body.has_method("take_damage"):
+		_attacked_bodies.append(body)
 		body.take_damage(attack_damage)
 
 func _update_animations(direction: float):
@@ -399,3 +424,131 @@ func die():
 #
 #func _stop_loop_sfx():
 #	pass
+
+# ---- Health System ----
+
+## Nhận sát thương từ enemy (gọi từ enemy_melee_script)
+func take_damage(amount: float) -> void:
+	if is_dead or is_hurting:
+		return
+
+	# Giảm máu
+	current_health = max(0.0, current_health - amount)
+	_update_health_bar()
+
+	if current_health <= 0.0:
+		_die()
+		return
+
+	# Trạng thái hurt (block physics 0.5s)
+	is_hurting = true
+	is_attacking = false
+	is_skill_active = false
+
+	# Play hurt animation + flash
+	if anim.sprite_frames.has_animation("hurt"):
+		anim.play("hurt")
+	_flash_hurt()
+
+	# Sau 0.5s: kết thúc hurt, trở về idle
+	await get_tree().create_timer(0.5).timeout
+	if not is_dead:
+		is_hurting = false
+		if anim.animation == "hurt":
+			anim.play("idle")
+
+## Flash đỏ nhắc nhở bị đánh (không block gì cả)
+func _flash_hurt() -> void:
+	var tw = create_tween().set_loops(2)
+	tw.tween_property(anim, "modulate", Color(1.0, 0.35, 0.35, 1.0), 0.07)
+	tw.tween_property(anim, "modulate", Color.WHITE, 0.07)
+
+
+
+func _die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	_is_invincible = true
+	set_physics_process(false)
+	set_process(false)
+	velocity = Vector2.ZERO
+	if anim.sprite_frames.has_animation("die"):
+		anim.play("die")
+
+## T\u1ea1o Health Bar HUD g\u1eafn v\u00e0o g\u00f3c tr\u00ean b\u00ean tr\u00e1i m\u00e0n h\u00ecnh
+func _create_health_hud() -> void:
+	_hud_layer = CanvasLayer.new()
+	_hud_layer.name = "PlayerHealthHUD"
+	_hud_layer.layer = 10
+	add_child(_hud_layer)
+
+	# Container n\u1ebbn
+	var panel = PanelContainer.new()
+	panel.position = Vector2(16, 16)
+	panel.custom_minimum_size = Vector2(220, 44)
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.08, 0.06, 0.04, 0.85)
+	style.corner_radius_top_left    = 8
+	style.corner_radius_top_right   = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.border_width_left   = 2
+	style.border_width_right  = 2
+	style.border_width_top    = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.8, 0.6, 0.1, 0.9)
+	panel.add_theme_stylebox_override("panel", style)
+	_hud_layer.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 2)
+	panel.add_child(vbox)
+
+	# Nh\u00e3n t\u00ean
+	var name_label = Label.new()
+	name_label.text = "\u2665 S\u01a1n Tinh"
+	name_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3, 1.0))
+	name_label.add_theme_font_size_override("font_size", 11)
+	vbox.add_child(name_label)
+
+	# Thanh m\u00e1u
+	_health_bar = ProgressBar.new()
+	_health_bar.min_value = 0
+	_health_bar.max_value = max_health
+	_health_bar.value = current_health
+	_health_bar.custom_minimum_size = Vector2(200, 14)
+	_health_bar.show_percentage = false
+
+	var bar_bg = StyleBoxFlat.new()
+	bar_bg.bg_color = Color(0.25, 0.05, 0.05)
+	bar_bg.corner_radius_top_left    = 4
+	bar_bg.corner_radius_top_right   = 4
+	bar_bg.corner_radius_bottom_left = 4
+	bar_bg.corner_radius_bottom_right = 4
+	_health_bar.add_theme_stylebox_override("background", bar_bg)
+
+	var bar_fill = StyleBoxFlat.new()
+	bar_fill.bg_color = Color(0.9, 0.15, 0.15)
+	bar_fill.corner_radius_top_left    = 4
+	bar_fill.corner_radius_top_right   = 4
+	bar_fill.corner_radius_bottom_left = 4
+	bar_fill.corner_radius_bottom_right = 4
+	_health_bar.add_theme_stylebox_override("fill", bar_fill)
+	vbox.add_child(_health_bar)
+
+func _update_health_bar() -> void:
+	if _health_bar == null:
+		return
+	var tw = create_tween()
+	tw.tween_property(_health_bar, "value", current_health, 0.2).set_ease(Tween.EASE_OUT)
+	# Thanh chuy\u1ec3n sang v\u00e0ng khi m\u00e1u th\u1ea5p
+	if current_health < max_health * 0.3:
+		var fill_low = StyleBoxFlat.new()
+		fill_low.bg_color = Color(0.95, 0.75, 0.0)
+		fill_low.corner_radius_top_left    = 4
+		fill_low.corner_radius_top_right   = 4
+		fill_low.corner_radius_bottom_left = 4
+		fill_low.corner_radius_bottom_right = 4
+		_health_bar.add_theme_stylebox_override("fill", fill_low)

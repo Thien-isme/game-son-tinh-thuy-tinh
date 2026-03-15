@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://h5w5xfbo3nr4"]
 
-[ext_resource type="Script" path="res://scenes/ui/sinh_le_hud.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://be68gb6h0bplh" path="res://scenes/ui/sinh_le_hud.gd" id="1_script"]
 
-[node name="SinhLeHud" type="CanvasLayer"]
+[node name="SinhLeHud" type="CanvasLayer" unique_id=2134092785]
 layer = 5
 script = ExtResource("1_script")

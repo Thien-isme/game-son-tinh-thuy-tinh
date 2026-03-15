@@ -23,12 +23,47 @@ position = Vector2(146, 76)
 shape = SubResource("RectangleShape2D_floor")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/Floor" unique_id=47595824]
-position = Vector2(1267.0001, -208)
+position = Vector2(1268, -208)
 scale = Vector2(0.93301046, 0.98401165)
 texture = ExtResource("2_oirh6")
 
 [node name="Sprite2D2" type="Sprite2D" parent="World/Floor" unique_id=1225118219]
-position = Vector2(112.00002, -207.5)
+position = Vector2(2390, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D3" type="Sprite2D" parent="World/Floor" unique_id=2121992551]
+position = Vector2(3512, -209)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D4" type="Sprite2D" parent="World/Floor" unique_id=150408838]
+position = Vector2(4364, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D5" type="Sprite2D" parent="World/Floor" unique_id=36014603]
+position = Vector2(5486, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D6" type="Sprite2D" parent="World/Floor" unique_id=976033294]
+position = Vector2(6608, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D7" type="Sprite2D" parent="World/Floor" unique_id=702176937]
+position = Vector2(7730, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D8" type="Sprite2D" parent="World/Floor" unique_id=1514231266]
+position = Vector2(8852, -208)
+scale = Vector2(0.93301046, 0.98401165)
+texture = ExtResource("2_oirh6")
+
+[node name="Sprite2D9" type="Sprite2D" parent="World/Floor" unique_id=741735816]
+position = Vector2(9974, -208)
 scale = Vector2(0.93301046, 0.98401165)
 texture = ExtResource("2_oirh6")
 

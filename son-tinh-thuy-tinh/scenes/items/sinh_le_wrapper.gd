@@ -74,13 +74,26 @@ func _disable_enemy_ai(enemy: CharacterBody2D) -> void:
 		if enemy.has_node(zone_name + "/CollisionShape2D"):
 			enemy.get_node(zone_name + "/CollisionShape2D").set_deferred("disabled", true)
 
-	# Play animation idle để đứng yên
+	# Đợi enemy._ready() chạy xong rồi xóa health bar và các UI node thừa
+	call_deferred("_remove_enemy_ui", enemy)
+
+	# Play animation idle chậm
 	await get_tree().physics_frame
 	if enemy.has_node("AnimatedSprite2D"):
 		var spr = enemy.get_node("AnimatedSprite2D")
 		if spr.sprite_frames and spr.sprite_frames.has_animation("idle"):
-			spr.speed_scale = 0.3  # Chậm lại một chút cho đẹp
+			spr.speed_scale = 0.3
 			spr.play("idle")
+
+func _remove_enemy_ui(enemy: CharacterBody2D) -> void:
+	## Xóa health bar và bất kỳ ProgressBar/Label nào enemy_melee_script tạo ra
+	for child in enemy.get_children():
+		if child is ProgressBar or child is Label:
+			child.queue_free()
+	# Cũng xóa nếu health_bar được lưu trong biến script
+	if "health_bar" in enemy and enemy.health_bar != null:
+		enemy.health_bar.queue_free()
+		enemy.health_bar = null
 
 func _add_float_label() -> void:
 	var label = Label.new()

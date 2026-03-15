@@ -32,6 +32,18 @@ const ENEMY_FRAME_COUNTS = {
 @export var health: float = 30.0
 @export var attack_cooldown: float = 1.0
 @export var melee_damage: float = 10.0
+@export var attack_charge_speed: float = 0.0  ## Tốc độ lao về phía player khi tấn công (0 = đứng yên)
+@export var post_attack_rest_time: float = 0.0 ## Dừng tại chỗ sau khi tấn công xong (giây, 0 = không dừng)
+@export var post_attack_lunge_distance: float = 0.0 ## Dịch chuyển chính xác n px về phía player sau khi tấn công (0 = không)
+
+@export_category("Flying")
+@export var can_fly: bool = false          ## Bật chế độ bay (vô hiệu hóa gravity)
+@export var fly_speed: float = 80.0        ## Tốc độ bay đuổi player
+@export var fly_preferred_distance: float = 0.0  ## Khoảng cách duy trì với player (0 = bay thẳng vào)
+@export var fly_y_offset: float = 0.0      ## Dịch chỉnh độ cao bay (số dương = thấp xuống, âm = cao lên)
+@export var fly_hover_amplitude: float = 30.0  ## Biên độ dao động (sóng sin)
+@export var fly_hover_speed: float = 2.0   ## Tốc độ lượn (rad/s)
+@export var fly_attack_rotation: float = 0.0   ## Góc xoay khi tấn công (degree, ví dụ -39.5)
 
 @export_category("Patrol Settings")
 @export var patrol_distance: float = 100.0 :
@@ -70,9 +82,11 @@ func _update_shape(zone_name: String, radius_value: float):
 var player = null
 var can_attack = true
 var is_attacking = false
+var is_hurting = false  ## Đang chịu hurt, block _physics_process
 var is_dead = false
 var max_health: float = 1.0
 var health_bar: ProgressBar = null
+var _is_resting_after_attack: bool = false  ## Đang nghỉ sau khi ủi
 
 # Patrol
 var start_x: float = 0.0
@@ -80,6 +94,10 @@ var patrol_target_x: float = 0.0
 var patrol_dir: int = 1
 var is_patrol_waiting: bool = false
 var floor_raycast: RayCast2D = null
+
+# Flying
+var _fly_time: float = 0.0
+var _fly_base_y: float = 0.0  # Y gốc khi spawn (dùng cho hover)
 
 # Audio
 var _sfx_cache: Dictionary = {}
@@ -134,6 +152,14 @@ func _ready():
 
 	start_x = global_position.x
 	patrol_target_x = start_x + patrol_distance * patrol_dir
+	# _fly_base_y sẽ được set SAU await (để spawner kịp đặt vị trí)
+
+	# Flying mode: tắt collision đất để quan sát thấy enemy bóng bay
+	if can_fly:
+		var col = get_node_or_null("CollisionShape2D")
+		if col:
+			# Giữ collision để bị tấn công được, chỉ bô gravity
+			pass
 
 	if detect_radius > 0 and has_node("DetectZone/CollisionShape2D"):
 		var new_d = CircleShape2D.new()
@@ -155,6 +181,11 @@ func _ready():
 		add_child(floor_raycast)
 
 	await get_tree().physics_frame
+
+	# Capture vị trí spawn SAU khi spawner đã đặt enemy đúng chỗ
+	_fly_base_y = global_position.y
+	start_x = global_position.x
+	patrol_target_x = start_x + patrol_distance * patrol_dir
 
 	if has_node("DetectZone"):
 		for body in $DetectZone.get_overlapping_bodies():
@@ -231,6 +262,19 @@ func _physics_process(delta):
 		move_and_slide()
 		return
 
+	# Đang chịu damage → không di chuyển hay override animation
+	if is_hurting:
+		velocity.x = 0
+		move_and_slide()
+		return
+
+	# ---- CHẾ ĐỘ BAY ----
+	if can_fly:
+		_fly_time += delta
+		_physics_flying(delta)
+		return
+
+	# ---- CHẾ ĐỘ BÌNH THƯỜNG (ground) ----
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 
@@ -245,8 +289,20 @@ func _physics_process(delta):
 
 	is_patrol_waiting = false
 
-	if is_attacking:
+	# Sau khi ủi xong: dừng tại chỗ rồi mới bắt đầu đuổi tiếp
+	if _is_resting_after_attack:
 		velocity.x = 0
+		_play_anim("idle", true)
+		move_and_slide()
+		return
+
+	if is_attacking:
+		# Lao về phía player nếu attack_charge_speed > 0 (ví dụ: heo ủi)
+		if attack_charge_speed > 0 and player != null:
+			var charge_dir = sign(player.global_position.x - global_position.x)
+			velocity.x = charge_dir * attack_charge_speed
+		else:
+			velocity.x = 0
 		var facing_dir = -1 if player.global_position.x < global_position.x else 1
 		# Sprite mặc định nhìn TRÁI → flip khi facing phải
 		anim.flip_h = facing_dir > 0
@@ -287,6 +343,96 @@ func _physics_process(delta):
 
 	move_and_slide()
 
+## Xử lý vật lý khi ở chế độ bay
+func _physics_flying(delta: float) -> void:
+	if player == null:
+		# Lượn qua lại quanh vị trí spawn (patrol)
+		if patrol_distance > 0:
+			_patrol_fly_update()
+		else:
+			velocity.x = move_toward(velocity.x, 0, fly_speed)
+			_play_anim("idle", true)
+		# Dao động Y dạng sóng sin + offset độ cao
+		var target_y = _fly_base_y + fly_y_offset + sin(_fly_time * fly_hover_speed) * fly_hover_amplitude
+		velocity.y = (target_y - global_position.y) * 5.0
+		move_and_slide()
+		return
+
+	is_patrol_waiting = false
+	var dir_to_player = (player.global_position - global_position).normalized()
+	var dist = global_position.distance_to(player.global_position)
+
+	if is_attacking:
+		velocity = Vector2.ZERO
+		var facing_dir = -1 if player.global_position.x < global_position.x else 1
+		anim.flip_h = facing_dir > 0
+		if has_node("MeleeHitbox/CollisionShape2D"):
+			var col = $"MeleeHitbox/CollisionShape2D"
+			col.position.x = abs(col.position.x) * facing_dir
+		# Xoay về góc tấn công (dive angle)
+		_set_fly_rotation(fly_attack_rotation)
+		if anim.sprite_frames.has_animation("attack"):
+			_play_anim("attack")
+		else:
+			_play_anim("idle", true)
+		if can_attack:
+			_do_melee_attack()
+	else:
+		# Reset góc về 0 khi không tấn công
+		_set_fly_rotation(0.0)
+		# ---- Giữ khoảng cách preferred ----
+		var move_dir: Vector2
+		if fly_preferred_distance > 0:
+			var diff = dist - fly_preferred_distance
+			# Trong vùng chấp nhận (+/-20px): hover tại chỗ + sóng sin Y
+			if abs(diff) < 20.0:
+				move_dir = Vector2.ZERO
+			elif diff > 0:
+				# Xa hơn preferred → tiến vào
+				move_dir = dir_to_player * min(diff / fly_preferred_distance, 1.0)
+			else:
+				# Gần hơn preferred → lùi ra
+				move_dir = -dir_to_player * min(-diff / fly_preferred_distance, 1.0)
+			velocity = move_dir * fly_speed
+			# Luôn hướng mặt về player dù đang lùi
+			anim.flip_h = player.global_position.x > global_position.x
+		else:
+			# fly_preferred_distance = 0: bay thẳng vào player
+			velocity = dir_to_player * fly_speed
+			anim.flip_h = player.global_position.x > global_position.x
+		# Ưu tiên animation bay
+		if anim.sprite_frames.has_animation("fly"):
+			_play_anim("fly", true)
+		elif anim.sprite_frames.has_animation("move"):
+			_play_anim("move", true)
+		else:
+			_play_anim("idle", true)
+
+	move_and_slide()
+
+## Patrol khi bay (di chuyển ngang, sóng sin theo Y)
+func _patrol_fly_update() -> void:
+	var dir_x = sign(patrol_target_x - global_position.x)
+	velocity.x = dir_x * (patrol_speed if patrol_speed > 0 else fly_speed * 0.5)
+	anim.flip_h = dir_x > 0
+	if anim.sprite_frames.has_animation("fly"):
+		_play_anim("fly", true)
+	elif anim.sprite_frames.has_animation("move"):
+		_play_anim("move", true)
+	# Y dao động sin
+	var target_y = _fly_base_y + sin(_fly_time * fly_hover_speed) * fly_hover_amplitude
+	velocity.y = (target_y - global_position.y) * 5.0
+	# Đều hường patrol tương tự ground
+	var reached = false
+	if patrol_dir == 1 and global_position.x >= patrol_target_x: reached = true
+	elif patrol_dir == -1 and global_position.x <= patrol_target_x: reached = true
+	if reached:
+		is_patrol_waiting = true
+		velocity.x = 0
+		patrol_dir *= -1
+		patrol_target_x = start_x + patrol_distance * patrol_dir
+		get_tree().create_timer(patrol_wait_time).timeout.connect(func(): is_patrol_waiting = false)
+
 func _do_melee_attack():
 	can_attack = false
 	_play_sfx("attack")
@@ -294,6 +440,27 @@ func _do_melee_attack():
 		player.take_damage(melee_damage)
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
+	# Dịch chuyển chính xác n px về phía player sau khi ủi xong
+	if post_attack_lunge_distance > 0.0 and player != null:
+		var lunge_dir = sign(player.global_position.x - global_position.x)
+		var target_pos = global_position + Vector2(lunge_dir * post_attack_lunge_distance, 0)
+		var tw = create_tween()
+		tw.tween_property(self, "global_position", target_pos, 0.18).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		await tw.finished
+	# Dừng tại chỗ sau khi ủi xong
+	if post_attack_rest_time > 0.0:
+		_is_resting_after_attack = true
+		await get_tree().create_timer(post_attack_rest_time).timeout
+		_is_resting_after_attack = false
+
+## Tween g\u00f3c xoay m\u01b0\u1ee3t khi chuy\u1ec3n tr\u1ea1ng th\u00e1i bay
+var _last_fly_rotation_target: float = 0.0
+func _set_fly_rotation(target_deg: float) -> void:
+	if abs(target_deg - _last_fly_rotation_target) < 0.5:
+		return  # Kh\u00f4ng t\u1ea1o tween th\u1eeba
+	_last_fly_rotation_target = target_deg
+	var tw = create_tween()
+	tw.tween_property(self, "rotation_degrees", target_deg, 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
 
 # ---- Patrol ----
 
@@ -339,11 +506,16 @@ func take_damage(amount: float):
 	health -= amount
 	if health_bar and max_health > 0:
 		health_bar.value = (health / max_health) * 100.0
-	if anim.sprite_frames.has_animation("hurt"):
-		_play_anim("hurt")
-		_play_sfx("hurt")
 	if health <= 0:
 		_die()
+		return
+	# Play hurt animation và block physics trong 0.4s
+	if anim.sprite_frames.has_animation("hurt"):
+		is_hurting = true
+		_play_anim("hurt")
+		_play_sfx("hurt")
+		await get_tree().create_timer(0.4).timeout
+		is_hurting = false
 
 func _die():
 	if is_dead: return
