@@ -3,10 +3,27 @@
 [ext_resource type="PackedScene" uid="uid://dt5yit4kpwikk" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://c174dqdo01lue" path="res://scenes/background/level_2.tscn" id="2_bg"]
 [ext_resource type="Texture2D" uid="uid://bkhhgiilp30t1" path="res://assets/background/level_2/ground1.png" id="2_oirh6"]
-[ext_resource type="Script" path="res://components/level_bounds.gd" id="4_bounds"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/spawner/enemy_spawner_controller.tscn" id="3_6bn2e"]
+[ext_resource type="Script" uid="uid://dl0svakokooik" path="res://components/level_bounds.gd" id="4_bounds"]
+[ext_resource type="PackedScene" uid="uid://dxvai1bys7qto" path="res://scenes/enemies/tom_tinh/tom_tinh.tscn" id="4_vu3cs"]
+[ext_resource type="Script" uid="uid://cip4cgqrli7dq" path="res://scenes/enemies/spawner/enemy_spawner_item.gd" id="5_proeq"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/cua_tinh/cua_tinh.tscn" id="6_3vu7s"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/bach_tuot_tinh/bach_tuot_tinh.tscn" id="7_v6y72"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(9890.5, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6fd55"]
+resource_local_to_scene = true
+size = Vector2(1200, 645)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hs4k4"]
+resource_local_to_scene = true
+size = Vector2(1200, 645)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dfpfn"]
+resource_local_to_scene = true
+size = Vector2(1200, 645)
 
 [node name="Map2" type="Node2D" unique_id=2100000001]
 
@@ -71,6 +88,59 @@ texture = ExtResource("2_oirh6")
 
 [node name="Enemies" type="Node2D" parent="World" unique_id=2100000007]
 
+[node name="EnemySpawnerController" parent="World/Enemies" unique_id=2036488893 instance=ExtResource("3_6bn2e")]
+position = Vector2(988, 317)
+enemy_scene = ExtResource("4_vu3cs")
+
+[node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController" index="0"]
+position = Vector2(191, 132)
+
+[node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=426966423]
+position = Vector2(452, 144)
+gizmo_extents = 30.0
+script = ExtResource("5_proeq")
+
+[node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
+shape = SubResource("RectangleShape2D_6fd55")
+
+[node name="EnemySpawnerController2" parent="World/Enemies" unique_id=732797186 instance=ExtResource("3_6bn2e")]
+position = Vector2(2140, 322)
+
+[node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController2" index="0"]
+enemy_scene = ExtResource("4_vu3cs")
+
+[node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController2" unique_id=452310120]
+gizmo_extents = 30.0
+script = ExtResource("5_proeq")
+enemy_scene = ExtResource("6_3vu7s")
+
+[node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController2" unique_id=493932647]
+gizmo_extents = 30.0
+script = ExtResource("5_proeq")
+enemy_scene = ExtResource("7_v6y72")
+
+[node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController2/DetectArea" index="0"]
+shape = SubResource("RectangleShape2D_hs4k4")
+
+[node name="EnemySpawnerController3" parent="World/Enemies" unique_id=660865101 instance=ExtResource("3_6bn2e")]
+position = Vector2(3310, 320)
+
+[node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController3" index="0"]
+position = Vector2(384, 125)
+
+[node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController3" unique_id=1246872178]
+position = Vector2(906, 104)
+gizmo_extents = 30.0
+script = ExtResource("5_proeq")
+
+[node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController3" unique_id=1622447104]
+position = Vector2(1366, 75)
+gizmo_extents = 30.0
+script = ExtResource("5_proeq")
+
+[node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController3/DetectArea" index="0"]
+shape = SubResource("RectangleShape2D_dfpfn")
+
 [node name="Items" type="Node2D" parent="World" unique_id=2100000008]
 
 [node name="LevelBounds" type="Node2D" parent="." unique_id=2100000009]
@@ -80,9 +150,13 @@ position = Vector2(5, 0)
 script = ExtResource("4_bounds")
 
 [node name="RightBoundary" type="Marker2D" parent="LevelBounds" unique_id=2100000021]
-position = Vector2(9880, 0)
+position = Vector2(5723, 502)
 script = ExtResource("4_bounds")
 is_right_bound = true
 
 [node name="Player" parent="." unique_id=2100000010 instance=ExtResource("1_player")]
 position = Vector2(158, 386)
+
+[editable path="World/Enemies/EnemySpawnerController"]
+[editable path="World/Enemies/EnemySpawnerController2"]
+[editable path="World/Enemies/EnemySpawnerController3"]

@@ -3474,7 +3474,7 @@ radius = 200.0
 radius = 50.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
-size = Vector2(60, 60)
+size = Vector2(151, 24)
 
 [node name="tom_tinh" type="CharacterBody2D" unique_id=1924062530]
 script = ExtResource("1_melee_script")
@@ -3484,7 +3484,7 @@ position = Vector2(5, -61.000004)
 scale = Vector2(0.49179688, 0.50902784)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"attack"
-frame_progress = 0.0830696
+frame_progress = 0.44591126
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1408434331]
 position = Vector2(4, -50)
@@ -3505,7 +3505,7 @@ debug_color = Color(0.7, 0, 0.1, 0.42)
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=363331009]
-position = Vector2(29, -7)
+position = Vector2(-49.5, -84)
 shape = SubResource("RectangleShape2D_melee")
 debug_color = Color(1, 0.3, 0, 0.42)
 

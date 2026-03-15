@@ -373,7 +373,21 @@ func _update_animations(direction: float):
 	elif is_skill_active:
 		pass  # skill đang phát, giữ nguyên
 	elif not is_on_floor():
-		new_anim = "jump"
+		if velocity.y < 0:
+			# Đang bay lên → play animation nhảy lên
+			new_anim = "jump"
+		else:
+			# Đang rơi xuống → play "fall" nếu có, không thì giữ "jump" ở frame cuối
+			if anim.sprite_frames and anim.sprite_frames.has_animation("fall"):
+				new_anim = "fall"
+			else:
+				# Không có "fall" → seek đến frame cuối của jump (pha đáp xuống)
+				if anim.animation == "jump":
+					var last_frame = anim.sprite_frames.get_frame_count("jump") - 1
+					if anim.frame != last_frame:
+						anim.pause()
+						anim.frame = last_frame
+				new_anim = ""  # Không restart animation
 	elif is_crouching:
 		new_anim = "crouch"
 	elif direction != 0:
@@ -468,7 +482,11 @@ func _flash_hurt() -> void:
 	tw.tween_property(anim, "modulate", Color(1.0, 0.35, 0.35, 1.0), 0.07)
 	tw.tween_property(anim, "modulate", Color.WHITE, 0.07)
 
-
+## Bị đẩy bởi enemy (ví dụ: heo ủi) — áp dụng lực để player văng về phía trước
+func apply_knockback(direction: Vector2, force: float) -> void:
+	if is_dead:
+		return
+	velocity += direction.normalized() * force
 
 func _die() -> void:
 	if is_dead:

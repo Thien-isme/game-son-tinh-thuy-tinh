@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://dxvai1bys7qto" path="res://scenes/enemies/tom_tinh/tom_tinh.tscn" id="4_r0gqw"]
 [ext_resource type="Script" uid="uid://cip4cgqrli7dq" path="res://scenes/enemies/spawner/enemy_spawner_item.gd" id="5_b8at0"]
 [ext_resource type="PackedScene" uid="uid://5o7hoi5lo6iy" path="res://scenes/enemies/con_doi/con_doi.tscn" id="5_jactx"]
-[ext_resource type="PackedScene" uid="uid://cpqt3g7fop1gy" path="res://scenes/enemies/heo_rung/heo_rung.tscn" id="6_qi7jk"]
 [ext_resource type="PackedScene" path="res://scenes/items/sinh_le_con_ga.tscn" id="7_sinh_ga"]
 [ext_resource type="PackedScene" path="res://scenes/items/sinh_le_con_voi.tscn" id="8_sinh_voi"]
 [ext_resource type="PackedScene" path="res://scenes/items/sinh_le_con_ngua.tscn" id="9_sinh_ngua"]
@@ -2178,11 +2177,6 @@ enemy_scene = ExtResource("5_jactx")
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
 shape = SubResource("RectangleShape2D_jactx")
 
-[node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=1745668869]
-position = Vector2(387, 100)
-gizmo_extents = 30.0
-script = ExtResource("5_b8at0")
-enemy_scene = ExtResource("6_qi7jk")
 
 [node name="EnemySpawnerController2" parent="World/Enemies" unique_id=638122718 instance=ExtResource("3_r0gqw")]
 position = Vector2(2109, 386)
@@ -2203,7 +2197,7 @@ script = ExtResource("5_b8at0")
 position = Vector2(2171, 55)
 gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
-enemy_scene = ExtResource("6_qi7jk")
+
 
 [node name="EnemySpawnerController3" parent="World/Enemies" unique_id=1017030757 instance=ExtResource("3_r0gqw")]
 position = Vector2(3497, 323)
@@ -2211,19 +2205,19 @@ enemy_scene = ExtResource("5_jactx")
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController3" index="0"]
 position = Vector2(616, 154)
-enemy_scene = ExtResource("6_qi7jk")
+
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController3/DetectArea" index="0"]
 shape = SubResource("RectangleShape2D_wdbtu")
 
 [node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController3" unique_id=335197778]
-position = Vector2(1467, 135)
+position = Vector2(1098, 118)
 gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
-enemy_scene = ExtResource("6_qi7jk")
+
 
 [node name="SpawnPoint4" type="Marker2D" parent="World/Enemies/EnemySpawnerController3" unique_id=1766604392]
-position = Vector2(1386, -105)
+position = Vector2(958, -150)
 gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
 

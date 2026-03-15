@@ -35,7 +35,8 @@ const ENEMY_FRAME_COUNTS = {
 @export var attack_charge_speed: float = 0.0
 @export var post_attack_rest_time: float = 0.0
 @export var post_attack_lunge_distance: float = 0.0
-@export var flip_sprite_default: bool = false  ## true = sprite mặc định nhìn PHẢI (như con_doi)
+@export var flip_sprite_default: bool = false
+@export var attack_damage_on_last_frame: bool = false  ## Gây sát thương vào frame cuối của attack animation (thay vì gây ngay lập tức)
 
 @export_category("Flying")
 @export var can_fly: bool = false          ## Bật chế độ bay (vô hiệu hóa gravity)
@@ -87,7 +88,8 @@ var is_hurting = false  ## Đang chịu hurt, block _physics_process
 var is_dead = false
 var max_health: float = 1.0
 var health_bar: ProgressBar = null
-var _is_resting_after_attack: bool = false  ## Đang nghỉ sau khi ủi
+var _is_resting_after_attack: bool = false
+var _is_attacking_damage: bool = false  ## Đang trong pha gây sát thương (sau windup)
 
 # Patrol
 var start_x: float = 0.0
@@ -315,12 +317,22 @@ func _physics_process(delta):
 		if has_node("MeleeHitbox/CollisionShape2D"):
 			var col = $"MeleeHitbox/CollisionShape2D"
 			col.position.x = abs(col.position.x) * facing_dir
-		if anim.sprite_frames.has_animation("attack"):
-			_play_anim("attack")  # speed_scale = khớp audio 8s
-		else:
+		if _is_attacking_damage:
+			# Pha gây sát thương: play attack animation
+			if anim.sprite_frames.has_animation("attack"):
+				_play_anim("attack")
+			else:
+				_play_anim("idle", true)
+		elif can_attack:
+			# Pha windup (chuẩn bị ủi): đứng yên với idle
 			_play_anim("idle", true)
-		if can_attack:
 			_do_melee_attack()
+		else:
+			# Đang chờ cooldown: giữ attack anim
+			if anim.sprite_frames.has_animation("attack"):
+				_play_anim("attack")
+			else:
+				_play_anim("idle", true)
 	else:
 		var facing_dir = sign(player.global_position.x - global_position.x)
 		var at_ledge = false
@@ -439,17 +451,30 @@ func _patrol_fly_update() -> void:
 
 func _do_melee_attack():
 	can_attack = false
+	_is_attacking_damage = true  # Bắt đầu pha gây sát thương
 	_play_sfx("attack")
+	# Nếu bật attack_damage_on_last_frame: chờ hết animation rồi mới gây sát thương
+	if attack_damage_on_last_frame and anim.sprite_frames.has_animation("attack"):
+		var frame_count = anim.sprite_frames.get_frame_count("attack")
+		var anim_fps   = anim.sprite_frames.get_animation_speed("attack")
+		# speed_scale = 3.0 khi play attack (xem _play_anim)
+		var anim_duration = frame_count / (anim_fps * 3.0)
+		await get_tree().create_timer(anim_duration).timeout
 	if player and player.has_method("take_damage"):
 		player.take_damage(melee_damage)
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
-	# Dịch chuyển chính xác n px về phía player sau khi ủi xong
+	_is_attacking_damage = false
+	# Dịch chuyển chính xác n px về phía player sau khi damage xong
 	if post_attack_lunge_distance > 0.0 and player != null:
 		var lunge_dir = sign(player.global_position.x - global_position.x)
 		var target_pos = global_position + Vector2(lunge_dir * post_attack_lunge_distance, 0)
 		var tw = create_tween()
 		tw.tween_property(self, "global_position", target_pos, 0.18).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		# Đẩy player theo nếu đang gần (trong tầm ủi)
+		var h_dist = abs(player.global_position.x - global_position.x)
+		if h_dist < post_attack_lunge_distance * 1.2 and player.has_method("apply_knockback"):
+			player.apply_knockback(Vector2(lunge_dir, -0.15).normalized(), 350.0)
 		await tw.finished
 	# Dừng tại chỗ sau khi ủi xong
 	if post_attack_rest_time > 0.0:

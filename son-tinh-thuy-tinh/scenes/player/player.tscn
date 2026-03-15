@@ -1120,106 +1120,55 @@
 [ext_resource type="Texture2D" uid="uid://cd8f36kqo6elk" path="res://assets/sprites/son-tinh/jump/0191.png" id="1109_i38fk"]
 [ext_resource type="Texture2D" uid="uid://bij51khu5m7wo" path="res://assets/sprites/son-tinh/jump/0192.png" id="1110_iuvpy"]
 [ext_resource type="Texture2D" uid="uid://con7trm1nfohp" path="res://assets/sprites/son-tinh/skill-w/0001.png" id="1111_iuvpy"]
-[ext_resource type="Texture2D" uid="uid://cks2yc8dmu3h1" path="res://assets/sprites/son-tinh/run/0001.png" id="1111_q7fxh"]
 [ext_resource type="Texture2D" uid="uid://dxnb5yctp8kwu" path="res://assets/sprites/son-tinh/skill-w/0002.png" id="1112_2otx2"]
-[ext_resource type="Texture2D" uid="uid://bf1hgujca3lsw" path="res://assets/sprites/son-tinh/run/0002.png" id="1112_tbvis"]
-[ext_resource type="Texture2D" uid="uid://c2ud7ajwoobqj" path="res://assets/sprites/son-tinh/run/0003.png" id="1113_qnpnp"]
 [ext_resource type="Texture2D" uid="uid://cby4s5v4m52at" path="res://assets/sprites/son-tinh/skill-w/0003.png" id="1113_vxbfa"]
-[ext_resource type="Texture2D" uid="uid://b232cenqoevga" path="res://assets/sprites/son-tinh/run/0004.png" id="1114_1c7so"]
 [ext_resource type="Texture2D" uid="uid://bardn3ufsayjs" path="res://assets/sprites/son-tinh/skill-w/0004.png" id="1114_iwu40"]
-[ext_resource type="Texture2D" uid="uid://bohm8uun8ktec" path="res://assets/sprites/son-tinh/run/0005.png" id="1115_lnq0k"]
 [ext_resource type="Texture2D" uid="uid://dviswmr600esf" path="res://assets/sprites/son-tinh/skill-w/0005.png" id="1115_rt6v4"]
 [ext_resource type="Texture2D" uid="uid://b3skopk285jxr" path="res://assets/sprites/son-tinh/skill-w/0006.png" id="1116_13msh"]
-[ext_resource type="Texture2D" uid="uid://drwopflxygynf" path="res://assets/sprites/son-tinh/run/0006.png" id="1116_yimod"]
 [ext_resource type="Texture2D" uid="uid://ix3xiwxd80kr" path="res://assets/sprites/son-tinh/skill-w/0007.png" id="1117_0r5m2"]
-[ext_resource type="Texture2D" uid="uid://pp8a013bka6y" path="res://assets/sprites/son-tinh/run/0007.png" id="1117_y1hvt"]
 [ext_resource type="Texture2D" uid="uid://chdei76jsh2xy" path="res://assets/sprites/son-tinh/skill-w/0008.png" id="1118_67jk4"]
-[ext_resource type="Texture2D" uid="uid://bh6bu74j4d7sb" path="res://assets/sprites/son-tinh/run/0008.png" id="1118_dnnqm"]
-[ext_resource type="Texture2D" uid="uid://3npb71ix4ggq" path="res://assets/sprites/son-tinh/run/0009.png" id="1119_tuy8c"]
 [ext_resource type="Texture2D" uid="uid://c80gxtfe6sfr6" path="res://assets/sprites/son-tinh/skill-w/0009.png" id="1119_y517b"]
 [ext_resource type="Texture2D" uid="uid://cw3nwbqj82wpg" path="res://assets/sprites/son-tinh/skill-w/0010.png" id="1120_manux"]
-[ext_resource type="Texture2D" uid="uid://32prhj4jxa44" path="res://assets/sprites/son-tinh/run/0010.png" id="1120_t8512"]
-[ext_resource type="Texture2D" uid="uid://dxapguuyry2sq" path="res://assets/sprites/son-tinh/run/0011.png" id="1121_cps8l"]
 [ext_resource type="Texture2D" uid="uid://duyvi7hepyqth" path="res://assets/sprites/son-tinh/skill-w/0011.png" id="1121_qx4iy"]
 [ext_resource type="Texture2D" uid="uid://ckydxlrbv02ye" path="res://assets/sprites/son-tinh/skill-w/0012.png" id="1122_37lb4"]
-[ext_resource type="Texture2D" uid="uid://cedvcu8bagjw6" path="res://assets/sprites/son-tinh/run/0012.png" id="1122_dvjb1"]
-[ext_resource type="Texture2D" uid="uid://d03mlsop2tcyg" path="res://assets/sprites/son-tinh/run/0013.png" id="1123_cprfw"]
 [ext_resource type="Texture2D" uid="uid://cd2i024ajp5ge" path="res://assets/sprites/son-tinh/skill-w/0013.png" id="1123_fspl6"]
 [ext_resource type="Texture2D" uid="uid://d3ldua1ik8tjw" path="res://assets/sprites/son-tinh/skill-w/0014.png" id="1124_fml7m"]
-[ext_resource type="Texture2D" uid="uid://cvn4ttp2j7ek5" path="res://assets/sprites/son-tinh/run/0014.png" id="1124_ssqnq"]
 [ext_resource type="Texture2D" uid="uid://cf6sm07w0ox0x" path="res://assets/sprites/son-tinh/skill-w/0015.png" id="1125_2t433"]
-[ext_resource type="Texture2D" uid="uid://cfddrgmkbcjuu" path="res://assets/sprites/son-tinh/run/0015.png" id="1125_6ddys"]
-[ext_resource type="Texture2D" uid="uid://djbrpna73ylvh" path="res://assets/sprites/son-tinh/run/0016.png" id="1126_mpq1w"]
 [ext_resource type="Texture2D" uid="uid://bm5igpajogpna" path="res://assets/sprites/son-tinh/skill-w/0016.png" id="1126_np4q5"]
 [ext_resource type="Texture2D" uid="uid://bs5m1wqmqkjor" path="res://assets/sprites/son-tinh/skill-w/0017.png" id="1127_fftai"]
-[ext_resource type="Texture2D" uid="uid://c3jupbq1k3u7k" path="res://assets/sprites/son-tinh/run/0017.png" id="1127_p2pte"]
-[ext_resource type="Texture2D" uid="uid://niukh5l0skjn" path="res://assets/sprites/son-tinh/run/0018.png" id="1128_07fbi"]
 [ext_resource type="Texture2D" uid="uid://cg13v14oa53xt" path="res://assets/sprites/son-tinh/skill-w/0018.png" id="1128_vgyyo"]
-[ext_resource type="Texture2D" uid="uid://b2hnpwko263rg" path="res://assets/sprites/son-tinh/run/0019.png" id="1129_b7fhk"]
 [ext_resource type="Texture2D" uid="uid://cr7gfaq31b0ex" path="res://assets/sprites/son-tinh/skill-w/0019.png" id="1129_pfjtb"]
-[ext_resource type="Texture2D" uid="uid://cxmu2buxd8wkf" path="res://assets/sprites/son-tinh/run/0020.png" id="1130_0pi6h"]
 [ext_resource type="Texture2D" uid="uid://b2ciwlu0a0vhe" path="res://assets/sprites/son-tinh/skill-w/0020.png" id="1130_awb6x"]
-[ext_resource type="Texture2D" uid="uid://e5vqok7hbkij" path="res://assets/sprites/son-tinh/run/0021.png" id="1131_mwkpw"]
 [ext_resource type="Texture2D" uid="uid://ic5fqornusgi" path="res://assets/sprites/son-tinh/skill-w/0021.png" id="1131_pprnr"]
 [ext_resource type="Texture2D" uid="uid://7qxn6emqg5r0" path="res://assets/sprites/son-tinh/skill-w/0022.png" id="1132_mdb2f"]
-[ext_resource type="Texture2D" uid="uid://b0ufywh7w4b7i" path="res://assets/sprites/son-tinh/run/0022.png" id="1132_upfdy"]
-[ext_resource type="Texture2D" uid="uid://cg2sj08y38fgh" path="res://assets/sprites/son-tinh/run/0023.png" id="1133_6wikd"]
 [ext_resource type="Texture2D" uid="uid://dxq73g4pdlrqd" path="res://assets/sprites/son-tinh/skill-w/0023.png" id="1133_gamki"]
 [ext_resource type="Texture2D" uid="uid://6k04cdm72lh6" path="res://assets/sprites/son-tinh/skill-w/0024.png" id="1134_2eufg"]
-[ext_resource type="Texture2D" uid="uid://chj285hen7rbs" path="res://assets/sprites/son-tinh/run/0024.png" id="1134_hoe3s"]
 [ext_resource type="Texture2D" uid="uid://b7ss0kkeucwr6" path="res://assets/sprites/son-tinh/skill-w/0025.png" id="1135_t0wol"]
-[ext_resource type="Texture2D" uid="uid://d0dhcjcc5i2e4" path="res://assets/sprites/son-tinh/run/0025.png" id="1135_w2ppt"]
 [ext_resource type="Texture2D" uid="uid://dmhpwqld6lmdu" path="res://assets/sprites/son-tinh/skill-w/0026.png" id="1136_82s6x"]
-[ext_resource type="Texture2D" uid="uid://c4cakgooe01an" path="res://assets/sprites/son-tinh/run/0026.png" id="1136_m2ib4"]
 [ext_resource type="Texture2D" uid="uid://bs66eynhqgxbr" path="res://assets/sprites/son-tinh/skill-w/0027.png" id="1137_5phfn"]
-[ext_resource type="Texture2D" uid="uid://dbp68ty76h2mq" path="res://assets/sprites/son-tinh/run/0027.png" id="1137_ih1jn"]
 [ext_resource type="Texture2D" uid="uid://ci54x5dgq00t5" path="res://assets/sprites/son-tinh/skill-w/0028.png" id="1138_b3lj2"]
-[ext_resource type="Texture2D" uid="uid://ckh8gkpbhu3ws" path="res://assets/sprites/son-tinh/run/0028.png" id="1138_qeq7o"]
 [ext_resource type="Texture2D" uid="uid://dt2u0cpsiikb" path="res://assets/sprites/son-tinh/skill-w/0029.png" id="1139_5varh"]
-[ext_resource type="Texture2D" uid="uid://bbw3oie8eodtk" path="res://assets/sprites/son-tinh/run/0029.png" id="1139_bxwtk"]
 [ext_resource type="Texture2D" uid="uid://brnn4twt1wcd" path="res://assets/sprites/son-tinh/skill-w/0030.png" id="1140_8uu5s"]
-[ext_resource type="Texture2D" uid="uid://2ar7pm6mbve1" path="res://assets/sprites/son-tinh/run/0030.png" id="1140_lbp0a"]
-[ext_resource type="Texture2D" uid="uid://mxtrhvm2clvf" path="res://assets/sprites/son-tinh/run/0031.png" id="1141_6hlo3"]
 [ext_resource type="Texture2D" uid="uid://bj0krtbxy4biq" path="res://assets/sprites/son-tinh/skill-w/0031.png" id="1141_xsqdm"]
 [ext_resource type="Texture2D" uid="uid://cylnv76fmy8dy" path="res://assets/sprites/son-tinh/skill-w/0032.png" id="1142_t6171"]
-[ext_resource type="Texture2D" uid="uid://c0fgme8qvo54y" path="res://assets/sprites/son-tinh/run/0032.png" id="1142_v27vb"]
 [ext_resource type="Texture2D" uid="uid://dkjkq7s7ej16r" path="res://assets/sprites/son-tinh/skill-w/0033.png" id="1143_gvdnj"]
-[ext_resource type="Texture2D" uid="uid://cr3rlqwvjvuoe" path="res://assets/sprites/son-tinh/run/0033.png" id="1143_wlrgr"]
-[ext_resource type="Texture2D" uid="uid://c1ymgg03gxsxh" path="res://assets/sprites/son-tinh/run/0034.png" id="1144_d75f2"]
 [ext_resource type="Texture2D" uid="uid://c8yw584v237nu" path="res://assets/sprites/son-tinh/skill-w/0034.png" id="1144_dv8wg"]
-[ext_resource type="Texture2D" uid="uid://gmmnfsgtm1t1" path="res://assets/sprites/son-tinh/run/0035.png" id="1145_8ojap"]
 [ext_resource type="Texture2D" uid="uid://dhwx0oh7d2dxu" path="res://assets/sprites/son-tinh/skill-w/0035.png" id="1145_l0ug4"]
-[ext_resource type="Texture2D" uid="uid://bdcgygp8bfp6y" path="res://assets/sprites/son-tinh/run/0036.png" id="1146_64qyc"]
 [ext_resource type="Texture2D" uid="uid://bm7ma2ar6vrxa" path="res://assets/sprites/son-tinh/skill-w/0036.png" id="1146_dp3dp"]
 [ext_resource type="Texture2D" uid="uid://dki0devqulkwi" path="res://assets/sprites/son-tinh/skill-w/0037.png" id="1147_cymv4"]
-[ext_resource type="Texture2D" uid="uid://dfvesgvo0lbtw" path="res://assets/sprites/son-tinh/run/0037.png" id="1147_lmdbh"]
-[ext_resource type="Texture2D" uid="uid://d2ytewcndr3p4" path="res://assets/sprites/son-tinh/run/0038.png" id="1148_kwmev"]
 [ext_resource type="Texture2D" uid="uid://dg6v8pacvnqkf" path="res://assets/sprites/son-tinh/skill-w/0038.png" id="1148_q0kuh"]
-[ext_resource type="Texture2D" uid="uid://i3cnvehq07lk" path="res://assets/sprites/son-tinh/run/0039.png" id="1149_dh1fd"]
 [ext_resource type="Texture2D" uid="uid://bh58mxs8nvbj0" path="res://assets/sprites/son-tinh/skill-w/0039.png" id="1149_yf7vc"]
-[ext_resource type="Texture2D" uid="uid://b8jste6hr2cfm" path="res://assets/sprites/son-tinh/run/0040.png" id="1150_j8r4r"]
 [ext_resource type="Texture2D" uid="uid://cbw61r356c7ap" path="res://assets/sprites/son-tinh/skill-w/0040.png" id="1150_yev1f"]
 [ext_resource type="Texture2D" uid="uid://dlvo1iunco7pc" path="res://assets/sprites/son-tinh/skill-w/0041.png" id="1151_pqk43"]
-[ext_resource type="Texture2D" uid="uid://dgpgs866t1mkl" path="res://assets/sprites/son-tinh/run/0041.png" id="1151_tantu"]
-[ext_resource type="Texture2D" uid="uid://de0vpuk3qxvwx" path="res://assets/sprites/son-tinh/run/0042.png" id="1152_mnrgd"]
 [ext_resource type="Texture2D" uid="uid://cjolmx1p2id38" path="res://assets/sprites/son-tinh/skill-w/0042.png" id="1152_o04yd"]
 [ext_resource type="Texture2D" uid="uid://cqodxmapr8ku4" path="res://assets/sprites/son-tinh/skill-w/0043.png" id="1153_5rvoi"]
-[ext_resource type="Texture2D" uid="uid://djlq4tcj7ihea" path="res://assets/sprites/son-tinh/run/0043.png" id="1153_w1npw"]
-[ext_resource type="Texture2D" uid="uid://7soa4eq276q" path="res://assets/sprites/son-tinh/run/0044.png" id="1154_jqo3i"]
 [ext_resource type="Texture2D" uid="uid://pwi55jwrp7i3" path="res://assets/sprites/son-tinh/skill-w/0044.png" id="1154_qt3wu"]
-[ext_resource type="Texture2D" uid="uid://cy3dsbsjtlrqx" path="res://assets/sprites/son-tinh/run/0045.png" id="1155_f3cd1"]
 [ext_resource type="Texture2D" uid="uid://dkmy2v7mf754t" path="res://assets/sprites/son-tinh/skill-w/0045.png" id="1155_sugvg"]
-[ext_resource type="Texture2D" uid="uid://c4c3uqyln6ycr" path="res://assets/sprites/son-tinh/run/0046.png" id="1156_4p22l"]
 [ext_resource type="Texture2D" uid="uid://bt84wvfvxxuhi" path="res://assets/sprites/son-tinh/skill-w/0046.png" id="1156_mfjgk"]
 [ext_resource type="Texture2D" uid="uid://ds1sar7g8p8l6" path="res://assets/sprites/son-tinh/skill-w/0047.png" id="1157_p674k"]
-[ext_resource type="Texture2D" uid="uid://ekbj3v3jdqvy" path="res://assets/sprites/son-tinh/run/0047.png" id="1157_w02al"]
 [ext_resource type="Texture2D" uid="uid://c8o0pqkowc2gq" path="res://assets/sprites/son-tinh/skill-w/0048.png" id="1158_bq5tf"]
-[ext_resource type="Texture2D" uid="uid://dqpcaicgsc2ep" path="res://assets/sprites/son-tinh/run/0048.png" id="1158_qscj6"]
 [ext_resource type="Texture2D" uid="uid://xwja5jk2ytv0" path="res://assets/sprites/son-tinh/skill-w/0049.png" id="1159_8wdja"]
-[ext_resource type="Texture2D" uid="uid://dqau8x13pmphv" path="res://assets/sprites/son-tinh/run/0049.png" id="1159_asl5p"]
-[ext_resource type="Texture2D" uid="uid://dklkn0f026qmx" path="res://assets/sprites/son-tinh/run/0050.png" id="1160_10r24"]
 [ext_resource type="Texture2D" uid="uid://b6vq0akfnuhor" path="res://assets/sprites/son-tinh/skill-w/0050.png" id="1160_eij7d"]
-[ext_resource type="Texture2D" uid="uid://v1t5kge7svn0" path="res://assets/sprites/son-tinh/run/0051.png" id="1161_5cvn8"]
 [ext_resource type="Texture2D" uid="uid://c4j2ou4alrqh0" path="res://assets/sprites/son-tinh/skill-w/0051.png" id="1161_45vss"]
 [ext_resource type="Texture2D" uid="uid://dcxh06dnaeqwg" path="res://assets/sprites/son-tinh/skill-w/0052.png" id="1162_hl0ad"]
 [ext_resource type="Texture2D" uid="uid://dqhbye65aq37e" path="res://assets/sprites/son-tinh/run/0052.png" id="1162_yjqu6"]
@@ -4867,159 +4816,6 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1111_q7fxh")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1112_tbvis")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1113_qnpnp")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1114_1c7so")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1115_lnq0k")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1116_yimod")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1117_y1hvt")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1118_dnnqm")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1119_tuy8c")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1120_t8512")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1121_cps8l")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1122_dvjb1")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1123_cprfw")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1124_ssqnq")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1125_6ddys")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1126_mpq1w")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1127_p2pte")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1128_07fbi")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1129_b7fhk")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1130_0pi6h")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1131_mwkpw")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1132_upfdy")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1133_6wikd")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1134_hoe3s")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1135_w2ppt")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1136_m2ib4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1137_ih1jn")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1138_qeq7o")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1139_bxwtk")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1140_lbp0a")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1141_6hlo3")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1142_v27vb")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1143_wlrgr")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1144_d75f2")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1145_8ojap")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1146_64qyc")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1147_lmdbh")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1148_kwmev")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1149_dh1fd")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1150_j8r4r")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1151_tantu")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1152_mnrgd")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1153_w1npw")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1154_jqo3i")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1155_f3cd1")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1156_4p22l")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1157_w02al")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1158_qscj6")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1159_asl5p")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1160_10r24")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1161_5cvn8")
-}, {
-"duration": 1.0,
 "texture": ExtResource("1162_yjqu6")
 }, {
 "duration": 1.0,
@@ -6026,7 +5822,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(195, 80)
+size = Vector2(165.5, 57)
 
 [node name="player" type="CharacterBody2D" unique_id=2060062756 groups=["player"]]
 position = Vector2(577, 323)
@@ -6049,8 +5845,8 @@ shape = SubResource("RectangleShape2D_tbvis")
 position = Vector2(8.000027, -79.99999)
 scale = Vector2(0.5602892, 0.6640624)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
-animation = &"attack"
-frame_progress = 0.70042086
+animation = &"jump"
+frame_progress = 0.8350273
 speed_scale = 2.0
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]
@@ -6059,9 +5855,8 @@ speed_scale = 2.0
 
 [node name="MeleeHitbox" type="Area2D" parent="." unique_id=2100000001]
 collision_layer = 0
-collision_mask = 1
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=2100000002]
-position = Vector2(107.5, -50)
+position = Vector2(84.25, -81.5)
 shape = SubResource("RectangleShape2D_hitbox")

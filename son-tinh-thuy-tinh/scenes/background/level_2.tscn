@@ -8,7 +8,7 @@
 script = ExtResource("4_script")
 
 [node name="Layer1_Far" type="ParallaxLayer" parent="." unique_id=200000002]
-motion_scale = Vector2(0.1, 0)
+motion_scale = Vector2(0, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="Layer1_Far" unique_id=200000003]
 position = Vector2(-4, -3)
