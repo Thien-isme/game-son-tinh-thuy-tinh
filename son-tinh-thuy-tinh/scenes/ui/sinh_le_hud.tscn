@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/sinh_le_hud.gd" id="1_script"]
+
+[node name="SinhLeHud" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_script")

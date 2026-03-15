@@ -1,7 +1,6 @@
-[gd_scene format=3 uid="uid://dcon_ga0000001"]
+[gd_scene format=3 uid="uid://c2ctulcjmowe"]
 
-[ext_resource type="Script" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
-
+[ext_resource type="Script" uid="uid://bp6nq4kq3ny3f" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
 [ext_resource type="Texture2D" uid="uid://bbpl5osqchwre" path="res://assets/sprites/con_ga/idle/0001.png" id="1_sprite"]
 [ext_resource type="Texture2D" uid="uid://dqa2pcurcywk4" path="res://assets/sprites/con_ga/idle/0002.png" id="2_sprite"]
 [ext_resource type="Texture2D" uid="uid://lkuvmr3i1bwi" path="res://assets/sprites/con_ga/idle/0003.png" id="3_sprite"]
@@ -811,37 +810,39 @@ radius = 50.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
 size = Vector2(60, 60)
 
-[node name="con_ga" type="CharacterBody2D" groups=["enemy"]]
+[node name="con_ga" type="CharacterBody2D" unique_id=880160059 groups=["enemy"]]
 script = ExtResource("1_melee_script")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1201630575]
+position = Vector2(3, -16.999992)
+scale = Vector2(0.18333338, 0.23425926)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=885660182]
+position = Vector2(0, 18)
 shape = SubResource("CircleShape2D_1")
 
-[node name="DetectZone" type="Area2D" parent="."]
+[node name="DetectZone" type="Area2D" parent="." unique_id=339003636]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone" unique_id=996711418]
 shape = SubResource("CircleShape2D_2")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
-[node name="AttackZone" type="Area2D" parent="."]
+[node name="AttackZone" type="Area2D" parent="." unique_id=713150648]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone" unique_id=1312213557]
 shape = SubResource("CircleShape2D_3")
 debug_color = Color(0.7, 0, 0.1, 0.42)
 
-[node name="MeleeHitbox" type="Area2D" parent="."]
+[node name="MeleeHitbox" type="Area2D" parent="." unique_id=270858114]
 monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=1679065026]
 position = Vector2(40, 0)
 shape = SubResource("RectangleShape2D_melee")
 debug_color = Color(1, 0.3, 0, 0.42)
 
-[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=1609673019]
 
 [connection signal="body_entered" from="DetectZone" to="." method="_on_detect_zone_body_entered"]
 [connection signal="body_exited" from="DetectZone" to="." method="_on_detect_zone_body_exited"]

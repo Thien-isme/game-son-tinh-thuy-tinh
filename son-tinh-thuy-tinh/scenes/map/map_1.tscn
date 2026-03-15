@@ -9,6 +9,11 @@
 [ext_resource type="PackedScene" uid="uid://dxvai1bys7qto" path="res://scenes/enemies/tom_tinh/tom_tinh.tscn" id="4_r0gqw"]
 [ext_resource type="Script" uid="uid://cip4cgqrli7dq" path="res://scenes/enemies/spawner/enemy_spawner_item.gd" id="5_b8at0"]
 [ext_resource type="PackedScene" uid="uid://cpqt3g7fop1gy" path="res://scenes/enemies/heo_rung/heo_rung.tscn" id="6_qi7jk"]
+[ext_resource type="PackedScene" path="res://scenes/items/sinh_le_con_ga.tscn" id="7_sinh_ga"]
+[ext_resource type="PackedScene" path="res://scenes/items/sinh_le_con_voi.tscn" id="8_sinh_voi"]
+[ext_resource type="PackedScene" path="res://scenes/items/sinh_le_con_ngua.tscn" id="9_sinh_ngua"]
+[ext_resource type="PackedScene" path="res://scenes/ui/sinh_le_hud.tscn" id="10_sinh_hud"]
+[ext_resource type="Script" uid="uid://chkecfnvpch5" path="res://scenes/map/map_1_controller.gd" id="11_m1ctrl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dmek6"]
 texture = ExtResource("2_tj73d")
@@ -2131,7 +2136,7 @@ texture_region_size = Vector2i(16, 15)
 [sub_resource type="TileSet" id="TileSet_66cy4"]
 sources/2 = SubResource("TileSetAtlasSource_dmek6")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_iv4q7"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cmyp3"]
 resource_local_to_scene = true
 size = Vector2(1200, 645)
 
@@ -2162,7 +2167,7 @@ position = Vector2(262, -53)
 enemy_scene = ExtResource("4_r0gqw")
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
-shape = SubResource("RectangleShape2D_iv4q7")
+shape = SubResource("RectangleShape2D_cmyp3")
 
 [node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=1949497157]
 position = Vector2(110, -1)
@@ -2177,6 +2182,15 @@ script = ExtResource("5_b8at0")
 enemy_scene = ExtResource("6_qi7jk")
 
 [node name="Items" type="Node2D" parent="World" unique_id=1000000004]
+
+[node name="SinhLeConGa" parent="World/Items" unique_id=-2094967295 instance=ExtResource("7_sinh_ga")]
+position = Vector2(600, 440)
+
+[node name="SinhLeConVoi" parent="World/Items" unique_id=-2094967294 instance=ExtResource("8_sinh_voi")]
+position = Vector2(2000, 390)
+
+[node name="SinhLeConNgua" parent="World/Items" unique_id=-2094967293 instance=ExtResource("9_sinh_ngua")]
+position = Vector2(3800, 410)
 
 [node name="Ground" type="StaticBody2D" parent="World" unique_id=1000000010]
 z_index = -20
@@ -2236,5 +2250,10 @@ is_right_bound = true
 
 [node name="Player" parent="." unique_id=2060062756 instance=ExtResource("1_player")]
 position = Vector2(183, 514)
+
+[node name="SinhLeHud" parent="." unique_id=-1994967295 instance=ExtResource("10_sinh_hud")]
+
+[node name="Map1Controller" type="Node" parent="." unique_id=-1994967294]
+script = ExtResource("11_m1ctrl")
 
 [editable path="World/Enemies/EnemySpawnerController"]

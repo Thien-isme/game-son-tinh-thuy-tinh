@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/items/sinh_le_wrapper.gd" id="1_wrapper"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/con_ga/con_ga.tscn" id="2_enemy"]
+
+[node name="SinhLeConGa" type="Node2D"]
+script = ExtResource("1_wrapper")
+item_name = "con_ga"
+collect_radius = 60.0
+
+[node name="ConGaVisual" parent="." instance=ExtResource("2_enemy")]
+position = Vector2(0, 0)
