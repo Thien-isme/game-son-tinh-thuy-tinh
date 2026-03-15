@@ -32,9 +32,10 @@ const ENEMY_FRAME_COUNTS = {
 @export var health: float = 30.0
 @export var attack_cooldown: float = 1.0
 @export var melee_damage: float = 10.0
-@export var attack_charge_speed: float = 0.0  ## Tốc độ lao về phía player khi tấn công (0 = đứng yên)
-@export var post_attack_rest_time: float = 0.0 ## Dừng tại chỗ sau khi tấn công xong (giây, 0 = không dừng)
-@export var post_attack_lunge_distance: float = 0.0 ## Dịch chuyển chính xác n px về phía player sau khi tấn công (0 = không)
+@export var attack_charge_speed: float = 0.0
+@export var post_attack_rest_time: float = 0.0
+@export var post_attack_lunge_distance: float = 0.0
+@export var flip_sprite_default: bool = false  ## true = sprite mặc định nhìn PHẢI (như con_doi)
 
 @export_category("Flying")
 @export var can_fly: bool = false          ## Bật chế độ bay (vô hiệu hóa gravity)
@@ -124,8 +125,13 @@ func _resolve_enemy_key() -> String:
 	return ""
 
 func _calc_anim_speed_scale(anim_name: String) -> float:
-	# Tất cả animation chạy full 60fps, audio sẽ speed up để khớp
 	return 1.0
+
+## Đặt hướng nhìn: facing_right=true → nhìn PHẢI, false → nhìn TRÁI
+## Tự xử lý flip_sprite_default để không cần sửa từng chỗ
+func _flip_toward(facing_right: bool) -> void:
+	anim.flip_h = facing_right != flip_sprite_default
+
 
 func _play_anim(anim_name: String, fast: bool = false):
 	if not anim.sprite_frames.has_animation(anim_name):
@@ -304,8 +310,7 @@ func _physics_process(delta):
 		else:
 			velocity.x = 0
 		var facing_dir = -1 if player.global_position.x < global_position.x else 1
-		# Sprite mặc định nhìn TRÁI → flip khi facing phải
-		anim.flip_h = facing_dir > 0
+		_flip_toward(facing_dir > 0)
 		# Dịch hitbox về phía player: flip CollisionShape2D (con của MeleeHitbox)
 		if has_node("MeleeHitbox/CollisionShape2D"):
 			var col = $"MeleeHitbox/CollisionShape2D"
@@ -330,8 +335,7 @@ func _physics_process(delta):
 			_play_anim("idle", true)
 		else:
 			velocity.x = facing_dir * speed
-			# Sprite mặc định nhìn TRÁI → flip khi facing phải
-			anim.flip_h = facing_dir > 0
+			_flip_toward(facing_dir > 0)
 			if anim.sprite_frames.has_animation("run"):
 				_play_anim("run", true)
 			elif anim.sprite_frames.has_animation("move"):
@@ -359,18 +363,17 @@ func _physics_flying(delta: float) -> void:
 		return
 
 	is_patrol_waiting = false
-	var dir_to_player = (player.global_position - global_position).normalized()
-	var dist = global_position.distance_to(player.global_position)
+	var h_dist = abs(player.global_position.x - global_position.x)  # Khoảng cách ngang
 
 	if is_attacking:
 		velocity = Vector2.ZERO
 		var facing_dir = -1 if player.global_position.x < global_position.x else 1
-		anim.flip_h = facing_dir > 0
+		_flip_toward(facing_dir > 0)
 		if has_node("MeleeHitbox/CollisionShape2D"):
 			var col = $"MeleeHitbox/CollisionShape2D"
 			col.position.x = abs(col.position.x) * facing_dir
-		# Xoay về góc tấn công (dive angle)
-		_set_fly_rotation(fly_attack_rotation)
+		# Xoay về góc tấn công theo hướng: facing_dir làm cho dơi luôn cắm mũi vào player
+		_set_fly_rotation(fly_attack_rotation * facing_dir)
 		if anim.sprite_frames.has_animation("attack"):
 			_play_anim("attack")
 		else:
@@ -380,26 +383,23 @@ func _physics_flying(delta: float) -> void:
 	else:
 		# Reset góc về 0 khi không tấn công
 		_set_fly_rotation(0.0)
-		# ---- Giữ khoảng cách preferred ----
-		var move_dir: Vector2
+		# ---- Trục X: giữ khoảng cách ngang preferred ----
+		var vel_x: float = 0.0
 		if fly_preferred_distance > 0:
-			var diff = dist - fly_preferred_distance
-			# Trong vùng chấp nhận (+/-20px): hover tại chỗ + sóng sin Y
+			var diff = h_dist - fly_preferred_distance
 			if abs(diff) < 20.0:
-				move_dir = Vector2.ZERO
+				vel_x = 0.0  # Trong vùng chấp nhận → đứng yên ngang
 			elif diff > 0:
-				# Xa hơn preferred → tiến vào
-				move_dir = dir_to_player * min(diff / fly_preferred_distance, 1.0)
+				# Xa hơn → tiến vào
+				vel_x = sign(player.global_position.x - global_position.x) * fly_speed * min(diff / fly_preferred_distance, 1.0)
 			else:
-				# Gần hơn preferred → lùi ra
-				move_dir = -dir_to_player * min(-diff / fly_preferred_distance, 1.0)
-			velocity = move_dir * fly_speed
-			# Luôn hướng mặt về player dù đang lùi
-			anim.flip_h = player.global_position.x > global_position.x
+				# Gần hơn → lùi ra
+				vel_x = -sign(player.global_position.x - global_position.x) * fly_speed * min(-diff / fly_preferred_distance, 1.0)
 		else:
-			# fly_preferred_distance = 0: bay thẳng vào player
-			velocity = dir_to_player * fly_speed
-			anim.flip_h = player.global_position.x > global_position.x
+			# fly_preferred_distance = 0: bay thẳng vào player (chỉ X)
+			vel_x = sign(player.global_position.x - global_position.x) * fly_speed
+		velocity.x = vel_x
+		_flip_toward(player.global_position.x > global_position.x)
 		# Ưu tiên animation bay
 		if anim.sprite_frames.has_animation("fly"):
 			_play_anim("fly", true)
@@ -408,13 +408,17 @@ func _physics_flying(delta: float) -> void:
 		else:
 			_play_anim("idle", true)
 
+	# ---- Trục Y: luôn hover sin quanh _fly_base_y (độc lập, không theo player) ----
+	var target_y = _fly_base_y + fly_y_offset + sin(_fly_time * fly_hover_speed) * fly_hover_amplitude
+	velocity.y = (target_y - global_position.y) * 5.0
+
 	move_and_slide()
 
 ## Patrol khi bay (di chuyển ngang, sóng sin theo Y)
 func _patrol_fly_update() -> void:
 	var dir_x = sign(patrol_target_x - global_position.x)
 	velocity.x = dir_x * (patrol_speed if patrol_speed > 0 else fly_speed * 0.5)
-	anim.flip_h = dir_x > 0
+	_flip_toward(dir_x > 0)
 	if anim.sprite_frames.has_animation("fly"):
 		_play_anim("fly", true)
 	elif anim.sprite_frames.has_animation("move"):
@@ -531,9 +535,12 @@ func _die():
 	if has_node("MeleeHitbox/CollisionShape2D"):
 		$MeleeHitbox/CollisionShape2D.set_deferred("disabled", true)
 	if anim.sprite_frames.has_animation("die"):
-		_play_anim("die")  # speed_scale = khớp audio 8s
+		# Đảm bảo die animation không loop → animation_finished sẽ fire đúng
+		anim.sprite_frames.set_animation_loop("die", false)
+		_play_anim("die")
 		await anim.animation_finished
 	queue_free()
+
 
 # ---- Signals ----
 

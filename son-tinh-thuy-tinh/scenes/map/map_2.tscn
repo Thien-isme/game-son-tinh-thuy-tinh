@@ -3,9 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://dt5yit4kpwikk" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://c174dqdo01lue" path="res://scenes/background/level_2.tscn" id="2_bg"]
 [ext_resource type="Texture2D" uid="uid://bkhhgiilp30t1" path="res://assets/background/level_2/ground1.png" id="2_oirh6"]
+[ext_resource type="Script" path="res://components/level_bounds.gd" id="4_bounds"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(5343, 70)
+size = Vector2(9890.5, 70)
 
 [node name="Map2" type="Node2D" unique_id=2100000001]
 
@@ -19,7 +20,8 @@ size = Vector2(5343, 70)
 position = Vector2(463, 518)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Floor" unique_id=2100000006]
-position = Vector2(146, 76)
+z_index = 4
+position = Vector2(4481.75, 61)
 shape = SubResource("RectangleShape2D_floor")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/Floor" unique_id=47595824]
@@ -63,7 +65,7 @@ scale = Vector2(0.93301046, 0.98401165)
 texture = ExtResource("2_oirh6")
 
 [node name="Sprite2D9" type="Sprite2D" parent="World/Floor" unique_id=741735816]
-position = Vector2(9974, -208)
+position = Vector2(114, -205)
 scale = Vector2(0.93301046, 0.98401165)
 texture = ExtResource("2_oirh6")
 
@@ -72,6 +74,15 @@ texture = ExtResource("2_oirh6")
 [node name="Items" type="Node2D" parent="World" unique_id=2100000008]
 
 [node name="LevelBounds" type="Node2D" parent="." unique_id=2100000009]
+
+[node name="LeftBoundary" type="Marker2D" parent="LevelBounds" unique_id=2100000020]
+position = Vector2(5, 0)
+script = ExtResource("4_bounds")
+
+[node name="RightBoundary" type="Marker2D" parent="LevelBounds" unique_id=2100000021]
+position = Vector2(9880, 0)
+script = ExtResource("4_bounds")
+is_right_bound = true
 
 [node name="Player" parent="." unique_id=2100000010 instance=ExtResource("1_player")]
 position = Vector2(158, 386)

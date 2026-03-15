@@ -57,6 +57,8 @@ var _is_invincible: bool = false
 # Health HUD
 var _health_bar: ProgressBar = null
 var _hud_layer: CanvasLayer = null
+var _bar_fill_normal: StyleBoxFlat = null  ## Cache style để tránh new() mỗi call
+var _bar_fill_low: StyleBoxFlat = null
 
 # Camera bounds
 var limit_left_x: float = -10000.0
@@ -226,8 +228,11 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 
-	# Đang attack hoặc skill → không nhận input, không override animation
+	# Đang attack hoặc skill → cho phép nhảy, nhưng không override animation di chuyển
 	if is_attacking or is_skill_active:
+		# Vẫn cho phép nhảy trong khi đánh
+		if Input.is_action_just_pressed("jump") and is_on_floor():
+			velocity.y = JUMP_FORCE
 		if is_on_floor():
 			velocity.x = move_toward(velocity.x, 0, SPEED)
 		else:
@@ -536,19 +541,26 @@ func _create_health_hud() -> void:
 	bar_fill.corner_radius_bottom_left = 4
 	bar_fill.corner_radius_bottom_right = 4
 	_health_bar.add_theme_stylebox_override("fill", bar_fill)
+	# Cache style boxes để dùng lại (không tạo mới mỗi lần update)
+	_bar_fill_normal = bar_fill
+	var bar_fill_low = StyleBoxFlat.new()
+	bar_fill_low.bg_color = Color(0.95, 0.75, 0.0)
+	bar_fill_low.corner_radius_top_left    = 4
+	bar_fill_low.corner_radius_top_right   = 4
+	bar_fill_low.corner_radius_bottom_left = 4
+	bar_fill_low.corner_radius_bottom_right = 4
+	_bar_fill_low = bar_fill_low
 	vbox.add_child(_health_bar)
 
 func _update_health_bar() -> void:
 	if _health_bar == null:
 		return
-	var tw = create_tween()
-	tw.tween_property(_health_bar, "value", current_health, 0.2).set_ease(Tween.EASE_OUT)
-	# Thanh chuy\u1ec3n sang v\u00e0ng khi m\u00e1u th\u1ea5p
+	# Cập nhật giá trị trực tiếp (không tween để tránh tạo object mỗi call)
+	_health_bar.value = current_health
+	# Đổi màu khi máu thấp (dùng cached style, không new() lại)
 	if current_health < max_health * 0.3:
-		var fill_low = StyleBoxFlat.new()
-		fill_low.bg_color = Color(0.95, 0.75, 0.0)
-		fill_low.corner_radius_top_left    = 4
-		fill_low.corner_radius_top_right   = 4
-		fill_low.corner_radius_bottom_left = 4
-		fill_low.corner_radius_bottom_right = 4
-		_health_bar.add_theme_stylebox_override("fill", fill_low)
+		if _bar_fill_low != null:
+			_health_bar.add_theme_stylebox_override("fill", _bar_fill_low)
+	else:
+		if _bar_fill_normal != null:
+			_health_bar.add_theme_stylebox_override("fill", _bar_fill_normal)

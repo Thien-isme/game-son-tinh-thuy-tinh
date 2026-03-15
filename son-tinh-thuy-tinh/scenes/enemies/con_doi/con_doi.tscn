@@ -4438,7 +4438,7 @@ radius = 74.672615
 radius = 718.8832
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_134j5"]
-radius = 300.0
+radius = 220.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_134j5"]
 size = Vector2(268, 227.43987)
@@ -4448,16 +4448,15 @@ script = ExtResource("1_melee_script")
 speed = 100.0
 attack_cooldown = 2.5
 melee_damage = 5.0
-attack_charge_speed = null
-post_attack_rest_time = null
+flip_sprite_default = false
 can_fly = true
 fly_speed = 90.0
 fly_hover_amplitude = 25.0
 fly_hover_speed = 1.8
-fly_attack_rotation = -39.5
+fly_attack_rotation = 39.5
 patrol_distance = 200.0
 detect_radius = 400.0
-attack_radius = 300.0
+attack_radius = 220.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=947446763]
 sprite_frames = SubResource("SpriteFrames_1")

@@ -2172,7 +2172,7 @@ position = Vector2(982, 385)
 enemy_scene = ExtResource("4_r0gqw")
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController" index="0"]
-position = Vector2(126, -133)
+position = Vector2(126, -78)
 enemy_scene = ExtResource("5_jactx")
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
@@ -2189,18 +2189,18 @@ position = Vector2(2109, 386)
 enemy_scene = ExtResource("5_jactx")
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController2" index="0"]
-position = Vector2(678, -235)
+position = Vector2(523, -52)
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController2/DetectArea" index="0"]
 shape = SubResource("RectangleShape2D_tcwx5")
 
 [node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController2" unique_id=2144797631]
-position = Vector2(1782, -301)
+position = Vector2(1789, -66)
 gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
 
 [node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController2" unique_id=1863786854]
-position = Vector2(731, 117)
+position = Vector2(2171, 55)
 gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
 enemy_scene = ExtResource("6_qi7jk")
@@ -2222,13 +2222,8 @@ gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
 enemy_scene = ExtResource("6_qi7jk")
 
-[node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController3" unique_id=1298057320]
-position = Vector2(782, -254)
-gizmo_extents = 30.0
-script = ExtResource("5_b8at0")
-
 [node name="SpawnPoint4" type="Marker2D" parent="World/Enemies/EnemySpawnerController3" unique_id=1766604392]
-position = Vector2(1341, -257)
+position = Vector2(1386, -105)
 gizmo_extents = 30.0
 script = ExtResource("5_b8at0")
 
