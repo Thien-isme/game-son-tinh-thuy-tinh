@@ -29,27 +29,26 @@ void fragment() {
     // surface_uv: điểm cao nhất sóng nằm tại đây (UV y)
     float surface_uv = wave_amplitude * wave;
 
-    // Vùng trên sóng → trong suốt hoàn toàn
+    // Vùng trên sóng → trong suốt; vùng dưới → màu nước
     if (uv.y < surface_uv) {
         COLOR = vec4(0.0);
-        return;
+    } else {
+        // --- Độ sâu tính từ mặt sóng xuống đáy ---
+        float depth = clamp((uv.y - surface_uv) / (1.0 - surface_uv + 0.001), 0.0, 1.0);
+
+        // --- Gradient màu ---
+        vec4 water_col = mix(water_color_surface, water_color_deep, sqrt(depth));
+
+        // --- Foam ngay dưới mặt sóng ---
+        float foam_band = 1.0 - smoothstep(0.0, wave_amplitude * 2.0, uv.y - surface_uv);
+        water_col = mix(water_col, foam_color, foam_band * 0.60);
+
+        // --- Shimmer ánh sáng ---
+        float shimmer = sin(uv.x * 9.0 * TAU + t * shimmer_speed)
+                      * sin(uv.x * 5.7 * TAU - t * shimmer_speed * 1.2) * 0.5 + 0.5;
+        shimmer *= (1.0 - smoothstep(0.0, 0.15, depth));  // Chỉ gần mặt nước
+        water_col.rgb += shimmer * shimmer_strength;
+
+        COLOR = water_col;
     }
-
-    // --- Độ sâu tính từ mặt sóng xuống đáy ---
-    float depth = clamp((uv.y - surface_uv) / (1.0 - surface_uv + 0.001), 0.0, 1.0);
-
-    // --- Gradient màu ---
-    vec4 water_col = mix(water_color_surface, water_color_deep, sqrt(depth));
-
-    // --- Foam ngay dưới mặt sóng ---
-    float foam_band = 1.0 - smoothstep(0.0, wave_amplitude * 2.0, uv.y - surface_uv);
-    water_col = mix(water_col, foam_color, foam_band * 0.60);
-
-    // --- Shimmer ánh sáng ---
-    float shimmer = sin(uv.x * 9.0 * TAU + t * shimmer_speed)
-                  * sin(uv.x * 5.7 * TAU - t * shimmer_speed * 1.2) * 0.5 + 0.5;
-    shimmer *= (1.0 - smoothstep(0.0, 0.15, depth));  // Chỉ gần mặt nước
-    water_col.rgb += shimmer * shimmer_strength;
-
-    COLOR = water_col;
 }

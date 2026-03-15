@@ -1,7 +1,6 @@
-[gd_scene format=3 uid="uid://dthuy_tinh0001"]
+[gd_scene format=3 uid="uid://b0y6ngwivdcdk"]
 
-[ext_resource type="Script" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
-
+[ext_resource type="Script" uid="uid://bp6nq4kq3ny3f" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
 [ext_resource type="Texture2D" uid="uid://cfy6cyv3knbkv" path="res://assets/sprites/thuy_tinh/attack/0001.png" id="1_sprite"]
 [ext_resource type="Texture2D" uid="uid://bbdxw5aoqolgg" path="res://assets/sprites/thuy_tinh/attack/0002.png" id="2_sprite"]
 [ext_resource type="Texture2D" uid="uid://5wiuomakt0tw" path="res://assets/sprites/thuy_tinh/attack/0003.png" id="3_sprite"]
@@ -193,7 +192,7 @@
 [ext_resource type="Texture2D" uid="uid://c1woqvb74w1je" path="res://assets/sprites/thuy_tinh/attack/0189.png" id="189_sprite"]
 [ext_resource type="Texture2D" uid="uid://bwtgb1x1enspp" path="res://assets/sprites/thuy_tinh/attack/0190.png" id="190_sprite"]
 [ext_resource type="Texture2D" uid="uid://dp1nccdm0ks6r" path="res://assets/sprites/thuy_tinh/attack/0191.png" id="191_sprite"]
-[ext_resource type="Texture2D" uid="uid://tnq3iwcfgoid" path="res://assets/sprites/thuy_tinh/attack/0192.png" id="192_sprite"]
+[ext_resource type="Texture2D" path="res://assets/sprites/thuy_tinh/attack/0192.png" id="192_sprite"]
 [ext_resource type="Texture2D" uid="uid://d1cn2ib1box2l" path="res://assets/sprites/thuy_tinh/die/0001.png" id="193_sprite"]
 [ext_resource type="Texture2D" uid="uid://d268nrijm3lpr" path="res://assets/sprites/thuy_tinh/die/0002.png" id="194_sprite"]
 [ext_resource type="Texture2D" uid="uid://b1dfd2niysvfi" path="res://assets/sprites/thuy_tinh/die/0003.png" id="195_sprite"]
@@ -3739,8 +3738,9 @@ animations = [{
 "speed": 60.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 20.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v8tu4"]
+radius = 37.0
+height = 200.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
 radius = 200.0
@@ -3751,49 +3751,62 @@ radius = 50.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
 size = Vector2(60, 60)
 
-[node name="thuy_tinh" type="CharacterBody2D"]
+[node name="thuy_tinh" type="CharacterBody2D" unique_id=123158920]
 script = ExtResource("1_melee_script")
-groups = ["enemy"]
+speed = 80.0
+attack_cooldown = 3.0
+post_attack_rest_time = 0.0
+melee_damage = 15.0
+attack_damage_delay = 0.5
+always_chase = true
+retreat_after_attack = true
+retreat_time = 2.0
+retreat_speed_multiplier = 1.2
+detect_radius = 800.0
+attack_radius = 120.0
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1165917350]
+position = Vector2(-3, -48.000004)
+scale = Vector2(0.8193966, 0.8055556)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_1")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=230367593]
+position = Vector2(5, -23)
+shape = SubResource("CapsuleShape2D_v8tu4")
 
-[node name="DetectZone" type="Area2D" parent="."]
+[node name="DetectZone" type="Area2D" parent="." unique_id=876182950]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone" unique_id=905508052]
 shape = SubResource("CircleShape2D_2")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
-[node name="AttackZone" type="Area2D" parent="."]
+[node name="AttackZone" type="Area2D" parent="." unique_id=1838258245]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone" unique_id=1654691924]
 shape = SubResource("CircleShape2D_3")
 debug_color = Color(0.7, 0, 0.1, 0.42)
-[node name="MeleeHitbox" type="Area2D" parent="."]
+
+[node name="MeleeHitbox" type="Area2D" parent="." unique_id=1129047166]
 monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=196398524]
 position = Vector2(40, 0)
 shape = SubResource("RectangleShape2D_melee")
 debug_color = Color(1, 0.3, 0, 0.42)
 
-[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="MeleeHitbox" unique_id=591181141]
+position = Vector2(40, 0)
+shape = SubResource("RectangleShape2D_melee")
+debug_color = Color(1, 0.3, 0, 0.42)
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=1619506180]
+
+[node name="MeleeHitbox2" type="Area2D" parent="." unique_id=196228576]
+monitoring = false
+
+[node name="SFXPlayer2" type="AudioStreamPlayer" parent="." unique_id=353363713]
 
 [connection signal="body_entered" from="DetectZone" to="." method="_on_detect_zone_body_entered"]
 [connection signal="body_exited" from="DetectZone" to="." method="_on_detect_zone_body_exited"]
 [connection signal="body_entered" from="AttackZone" to="." method="_on_attack_zone_body_entered"]
 [connection signal="body_exited" from="AttackZone" to="." method="_on_attack_zone_body_exited"]
-
-[node name="MeleeHitbox" type="Area2D" parent="."]
-monitoring = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
-position = Vector2(40, 0)
-shape = SubResource("RectangleShape2D_melee")
-debug_color = Color(1, 0.3, 0, 0.42)
-
-[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]

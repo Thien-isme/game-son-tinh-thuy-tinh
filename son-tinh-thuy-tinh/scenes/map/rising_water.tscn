@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://rising_water_scene"]
 
 [ext_resource type="Script" path="res://scenes/map/rising_water.gd" id="1_rwscript"]
-[ext_resource type="Shader" path="res://scenes/map/water_wave.gdshader" id="2_shader"]
+[ext_resource type="Shader" uid="uid://b0w0woynrrx1m" path="res://scenes/map/water_wave.gdshader" id="2_shader"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_water"]
 shader = ExtResource("2_shader")
@@ -23,5 +23,5 @@ offset_left = -4000.0
 offset_top = 0.0
 offset_right = 4000.0
 offset_bottom = 5000.0
-color = Color(1, 1, 1, 1)
+color = Color(0, 0, 0, 0)
 material = SubResource("ShaderMaterial_water")

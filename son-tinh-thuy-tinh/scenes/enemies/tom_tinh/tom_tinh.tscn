@@ -3467,45 +3467,54 @@ animations = [{
 radius = 18.57
 height = 136.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 200.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_55pv8"]
+radius = 800.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_3"]
-radius = 50.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_vo6ul"]
+radius = 160.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
-size = Vector2(151, 24)
+size = Vector2(180, 24)
 
 [node name="tom_tinh" type="CharacterBody2D" unique_id=1924062530]
 script = ExtResource("1_melee_script")
+attack_cooldown = 3.0
+post_attack_rest_time = 0.0
+attack_damage_delay = 0.5
+always_chase = true
+retreat_after_attack = true
+retreat_time = 2.0
+retreat_speed_multiplier = 1.2
+detect_radius = 800.0
+attack_radius = 160.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1910761116]
-position = Vector2(5, -61.000004)
-scale = Vector2(1, 1.034)
+position = Vector2(-10, -53.163998)
+scale = Vector2(0.90740746, 0.9614445)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"attack"
-frame_progress = 0.44591126
+frame_progress = 0.61844885
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1408434331]
-position = Vector2(4, -50)
+position = Vector2(-11, -39)
 shape = SubResource("CapsuleShape2D_vo6ul")
 
 [node name="DetectZone" type="Area2D" parent="." unique_id=133924805]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectZone" unique_id=1246314452]
-shape = SubResource("CircleShape2D_2")
+shape = SubResource("CircleShape2D_55pv8")
 
 [node name="AttackZone" type="Area2D" parent="." unique_id=1093625031]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone" unique_id=1976684497]
-shape = SubResource("CircleShape2D_3")
+shape = SubResource("CircleShape2D_vo6ul")
 debug_color = Color(0.7, 0, 0.1, 0.42)
 
 [node name="MeleeHitbox" type="Area2D" parent="." unique_id=1552954903]
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox" unique_id=363331009]
-position = Vector2(-49.5, -84)
+position = Vector2(-64, -84)
 shape = SubResource("RectangleShape2D_melee")
 debug_color = Color(1, 0.3, 0, 0.42)
 

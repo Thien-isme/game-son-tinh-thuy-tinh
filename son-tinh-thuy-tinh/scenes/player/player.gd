@@ -12,19 +12,27 @@ const AUDIO_DURATION = 8.0
 const ANIM_FRAME_COUNTS = {
 	"attack": 192, "crouch": 192, "die": 156,
 	"hurt": 185, "idle": 192, "jump": 192,
-	"run": 192, "skill_w": 191, "skill_e": 192
+	"run": 192, "skill_w": 191, "skill_e": 192, "skill_r": 192
 }
 
 @onready var anim = $AnimatedSprite2D
 @onready var melee_hitbox: Area2D = $MeleeHitbox
+@onready var melee_hitbox_high: Area2D = $MeleeHitboxHigh  ## Hitbox cho đòn đánh cao (attack_high)
+@onready var skill_r_hitbox: Area2D = $SkillRHitbox         ## Hitbox kỹ năng R
 var camera: Camera2D = null
+
+## Loại đòn đang dùng: "normal" hoặc "high"
+var _attack_type: String = "normal"
 @onready var sfx_player = $SFXPlayer
 @onready var sfx_loop = $SFXPlayerLoop
 
 # ---- Combat Exports ----
 @export_category("Combat")
 @export var attack_damage: float = 20.0
-@export var attack_hitbox_delay: float = 0.25  ## Delay (giây) trước khi hitbox active sau khi vung rìu
+@export var attack_hitbox_delay: float = 0.25       ## [Attack] Delay (giây) trước khi hitbox bật
+@export var attack_high_hitbox_delay: float = 0.20  ## [AttackHigh] Delay trước khi hitbox bật
+@export var skill_r_hitbox_delay: float = 0.30       ## [SkillR] Delay trước khi hitbox bật
+@export var skill_r_damage: float = 50.0             ## Sát thương kỹ năng R
 
 # ---- Audio Exports (gán trực tiếp qua Inspector hoặc .tscn) ----
 @export_category("Audio")
@@ -45,14 +53,15 @@ var _prev_anim: String = ""
 var _attacked_bodies: Array = []
 
 # Health & State
-var max_health: float = 100.0
-var current_health: float = 100.0
+var max_health: float = 3000.0   ## Tạm thời tăng để test
+var current_health: float = 3000.0
 var is_dead: bool = false
 var is_attacking: bool = false
 var is_hurting: bool = false  ## Đang nhận damage, block _physics_process
 var is_crouching: bool = false
 var is_skill_active: bool = false
 var _is_invincible: bool = false
+var _is_super_armor: bool = false  ## Skill R: chịu đòn nhưng không bị gián đoạn
 
 # Health HUD
 var _health_bar: ProgressBar = null
@@ -71,12 +80,19 @@ var _col_stand_h: float = 100.0   # giá trị từ editor
 # ---- Lifecycle ----
 
 func _ready():
+	add_to_group("player")  # Đảm bảo luôn trong group "player" cho enemy always_chase
 	# Lưu giá trị gốc từ editor, duplicate shape để tránh shared resource
 	if $CollisionShape2D.shape:
 		$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
 		if $CollisionShape2D.shape is RectangleShape2D:
 			_col_stand_y = $CollisionShape2D.position.y
 			_col_stand_h = $CollisionShape2D.shape.size.y
+
+	# ── Collision layer setup ──────────────────────────────────────────
+	# Dùng additive: giữ nguyên mask gốc, chỉ điều chỉnh layer player
+	set_collision_layer_value(3, true)   # player ở layer 3
+	set_collision_layer_value(1, false)  # bỏ khỏi layer 1
+	set_collision_mask_value(2, true)    # detect enemy (layer 2) → chặn nhau
 
 	# Tạo Camera2D nếu chưa có trong scene
 	if not has_node("Camera2D"):
@@ -108,11 +124,26 @@ func _ready():
 	if anim.animation_looped.get_connections().size() == 0:
 		anim.animation_looped.connect(_on_animation_finished)
 
-	# Kết nối MeleeHitbox signal
+	# Kết nối MeleeHitbox signal (đòn ngang)
 	if melee_hitbox:
 		melee_hitbox.monitoring = false
+		melee_hitbox.set_collision_mask_value(2, true)  # detect enemy layer 2
 		if not melee_hitbox.body_entered.is_connected(_on_melee_hit):
 			melee_hitbox.body_entered.connect(_on_melee_hit)
+
+	# Kết nối MeleeHitboxHigh signal (đòn cao)
+	if melee_hitbox_high:
+		melee_hitbox_high.monitoring = false
+		melee_hitbox_high.set_collision_mask_value(2, true)  # detect enemy layer 2
+		if not melee_hitbox_high.body_entered.is_connected(_on_melee_hit):
+			melee_hitbox_high.body_entered.connect(_on_melee_hit)
+
+	# Kết nối SkillRHitbox signal
+	if skill_r_hitbox:
+		skill_r_hitbox.monitoring = false
+		skill_r_hitbox.set_collision_mask_value(2, true)  # detect enemy layer 2
+		if not skill_r_hitbox.body_entered.is_connected(_on_skill_r_hit):
+			skill_r_hitbox.body_entered.connect(_on_skill_r_hit)
 
 	# Tạo Health HUD
 	_create_health_hud()
@@ -246,7 +277,12 @@ func _physics_process(delta):
 		_play_attack()
 		return
 
-	# Kỹ năng W (chỉ khi trên sàn và không cúi)
+	# Skill R — dùng được mọi lúc (cả khi nhảy), block toàn bộ hành động khác
+	if Input.is_action_just_pressed("skill_r"):
+		_play_skill_r()
+		return
+
+	# Kỹ năng W/Q/E (chỉ khi trên sàn và không cúi)
 	if is_on_floor() and not is_crouching:
 		if Input.is_action_just_pressed("skill_w"):
 			_play_skill("skill_w")
@@ -255,9 +291,6 @@ func _physics_process(delta):
 			_play_skill("attack")
 			return
 		elif Input.is_action_just_pressed("skill_e"):
-			_play_skill("attack")
-			return
-		elif Input.is_action_just_pressed("skill_r"):
 			_play_skill("attack")
 			return
 
@@ -311,31 +344,104 @@ func _calc_anim_speed_scale(anim_name: String) -> float:
 	# Audio sẽ tự speed up để khớp với animation ngắn hơn
 	return 1.0
 
+## Tính góc từ player đến con trỏ chuột (âm = lên trên, dương = xuống dưới)
+func _get_mouse_angle_deg() -> float:
+	var mouse_global = get_global_mouse_position()
+	var to_mouse = mouse_global - global_position
+	return rad_to_deg(to_mouse.angle())  # 0° = phải, -90° = lên, 90° = xuống
+
 func _play_attack():
 	var frames = anim.sprite_frames
 	if frames == null or not frames.has_animation("attack"):
 		return
+
+	# ── Xác định loại đòn theo góc chuột ──────────────────────────
+	# angle() trả về -90° khi chuột thẳng lên, 90° khi thẳng xuống
+	# Góc < -45° nghĩa là chuột ở phía trên quá 45° → đòn cao
+	var angle_deg = _get_mouse_angle_deg()
+	var use_high = (angle_deg < -45.0) and frames.has_animation("attack_high")
+	_attack_type = "high" if use_high else "normal"
+	var anim_name = "attack_high" if use_high else "attack"
+
 	is_attacking = true
-	_attacked_bodies.clear()  # Reset danh sách body đã bị đánh
+	_attacked_bodies.clear()
 	anim.speed_scale = 3.0
-	anim.play("attack")
+	anim.play(anim_name)
 	_play_sfx("attack")
-	# Cập nhật hướng hitbox
-	if melee_hitbox:
+
+	# ── Chọn hitbox tương ứng ──────────────────────────────────────
+	var active_hitbox: Area2D = melee_hitbox_high if use_high else melee_hitbox
+	var inactive_hitbox: Area2D = melee_hitbox if use_high else melee_hitbox_high
+
+	# Tắt hitbox không dùng
+	if inactive_hitbox:
+		inactive_hitbox.monitoring = false
+
+	if active_hitbox:
+		# Cập nhật hướng hitbox theo flip player
 		var dir = -1 if anim.flip_h else 1
-		if melee_hitbox.has_node("CollisionShape2D"):
-			melee_hitbox.get_node("CollisionShape2D").position.x = abs(melee_hitbox.get_node("CollisionShape2D").position.x) * dir
-		melee_hitbox.monitoring = false
-		# Delay trước khi hitbox active
-		await get_tree().create_timer(attack_hitbox_delay).timeout
+		if active_hitbox.has_node("CollisionShape2D"):
+			var col = active_hitbox.get_node("CollisionShape2D")
+			col.position.x = abs(col.position.x) * dir
+		active_hitbox.monitoring = false
+		# Delay trước khi hitbox bật — chọn đúng biến theo loại đòn
+		var delay = attack_high_hitbox_delay if use_high else attack_hitbox_delay
+		await get_tree().create_timer(delay).timeout
 		if not is_attacking:
 			return
-		melee_hitbox.monitoring = true
-		# Đợi 1 physics frame rồi check overlapping (body đã ở trong zone)
+		active_hitbox.monitoring = true
 		await get_tree().physics_frame
-		if melee_hitbox and melee_hitbox.monitoring:
-			for body in melee_hitbox.get_overlapping_bodies():
+		if active_hitbox and active_hitbox.monitoring:
+			for body in active_hitbox.get_overlapping_bodies():
 				_on_melee_hit(body)
+
+## Kỹ năng R: 50 sát thương + hất văng lên, block mọi hành động khác
+func _play_skill_r() -> void:
+	var frames = anim.sprite_frames
+	if frames == null or not frames.has_animation("skill_r"):
+		# Fallback nếu chưa có animation
+		_play_skill("attack")
+		return
+
+	is_skill_active = true
+	_is_super_armor = true   ## Bật super armor — chịu đòn không bị ngắt
+	_attacked_bodies.clear()
+	anim.speed_scale = 1.0
+	anim.play("skill_r")
+	_play_sfx("skill_r")
+
+	if skill_r_hitbox:
+		skill_r_hitbox.monitoring = false
+		# ── Flip hitbox sang đúng hướng player nhìn ──────────────────
+		if skill_r_hitbox.has_node("CollisionShape2D"):
+			var col = skill_r_hitbox.get_node("CollisionShape2D")
+			var dir = -1 if anim.flip_h else 1
+			col.position.x = abs(col.position.x) * dir
+		# Bật hitbox sau delay — chỉnh trong Inspector để khớp với animation
+		await get_tree().create_timer(skill_r_hitbox_delay).timeout
+		if not is_skill_active:
+			return
+		skill_r_hitbox.monitoring = true
+		await get_tree().physics_frame
+		if skill_r_hitbox and skill_r_hitbox.monitoring:
+			for body in skill_r_hitbox.get_overlapping_bodies():
+				_on_skill_r_hit(body)
+	_is_super_armor = false  ## Tắt super armor khi skill kết thúc
+
+## Xử lý khi Skill R chạm enemy — gây 50 dame + hất văng lên
+func _on_skill_r_hit(body: Node) -> void:
+	if body == self: return
+	if body in _attacked_bodies: return
+	_attacked_bodies.append(body)
+	if body.has_method("take_damage"):
+		body.take_damage(skill_r_damage)
+	# Hất văng đúng 400px theo hướng player nhìn (~14° lên)
+	var facing = -1.0 if anim.flip_h else 1.0
+	var knock_dir = Vector2(facing * 2.0, -0.5).normalized()
+	if body.has_method("apply_knockback_distance"):
+		body.apply_knockback_distance(knock_dir, 400.0, 0.35)
+	elif body.has_method("apply_knockback"):
+		body.apply_knockback(knock_dir, 1000.0)
 
 func _play_skill(anim_name: String):
 	var frames = anim.sprite_frames
@@ -348,11 +454,15 @@ func _play_skill(anim_name: String):
 func _on_animation_finished():
 	if is_attacking:
 		is_attacking = false
-		# Tắt hitbox khi attack animation kết thúc
+		# Tắt cả hitbox
 		if melee_hitbox:
 			melee_hitbox.monitoring = false
+		if melee_hitbox_high:
+			melee_hitbox_high.monitoring = false
 	if is_skill_active:
 		is_skill_active = false
+		if skill_r_hitbox:
+			skill_r_hitbox.monitoring = false
 
 # ---- Combat ----
 
@@ -369,7 +479,7 @@ func _update_animations(direction: float):
 	if is_dead:
 		new_anim = "die"
 	elif is_attacking:
-		new_anim = "attack"
+		new_anim = "attack_high" if _attack_type == "high" else "attack"
 	elif is_skill_active:
 		pass  # skill đang phát, giữ nguyên
 	elif not is_on_floor():
@@ -459,7 +569,13 @@ func take_damage(amount: float) -> void:
 		_die()
 		return
 
-	# Trạng thái hurt (block physics 0.5s)
+	# ── Super Armor (đang dùng Skill R) ──────────────────────────────
+	# Vẫn mất máu + flash đỏ, nhưng KHÔNG bị stagger hay ngắt skill
+	if _is_super_armor:
+		_flash_hurt()
+		return
+
+	# Trạng thái hurt bình thường (block physics 0.5s)
 	is_hurting = true
 	is_attacking = false
 	is_skill_active = false

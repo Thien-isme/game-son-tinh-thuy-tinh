@@ -36,7 +36,9 @@ const ENEMY_FRAME_COUNTS = {
 @export var post_attack_rest_time: float = 0.0
 @export var post_attack_lunge_distance: float = 0.0
 @export var flip_sprite_default: bool = false
-@export var attack_damage_on_last_frame: bool = false  ## Gây sát thương vào frame cuối của attack animation (thay vì gây ngay lập tức)
+@export var attack_damage_on_last_frame: bool = false  ## Gây sát thương vào frame cuối của attack animation
+@export var attack_damage_delay: float = 0.0  ## Delay (giây) từ lúc bắt đầu attack đến khi gây dame — chỉnh để khớp animation
+@export var attack_hitbox_duration: float = 0.2  ## Thời gian hitbox mở (giây) — 0 = gây dame 1 lần rồi đóng
 
 @export_category("Flying")
 @export var can_fly: bool = false          ## Bật chế độ bay (vô hiệu hóa gravity)
@@ -55,6 +57,12 @@ const ENEMY_FRAME_COUNTS = {
 @export var patrol_speed: float = 40.0
 @export var patrol_wait_time: float = 1.5
 @export var avoid_ledges: bool = true
+
+@export_category("Chase & Retreat AI")
+@export var always_chase: bool = false  ## Luôn đuổi player dù không có DetectZone
+@export var retreat_after_attack: bool = false  ## Rút lùi sau khi tấn công
+@export var retreat_time: float = 2.0  ## Thời gian rút lùi (giây)
+@export var retreat_speed_multiplier: float = 1.2  ## Tốc độ rút lùi (×speed)
 
 @export_category("Audio")
 @export var override_audio_folder: String = ""
@@ -90,6 +98,7 @@ var max_health: float = 1.0
 var health_bar: ProgressBar = null
 var _is_resting_after_attack: bool = false
 var _is_attacking_damage: bool = false  ## Đang trong pha gây sát thương (sau windup)
+var _is_retreating: bool = false         ## Đang rút lùi sau công kích
 
 # Patrol
 var start_x: float = 0.0
@@ -195,16 +204,52 @@ func _ready():
 	start_x = global_position.x
 	patrol_target_x = start_x + patrol_distance * patrol_dir
 
+	# ── Kết nối signal bằng code (dự phòng nếu editor connection bị mất) ──
 	if has_node("DetectZone"):
-		for body in $DetectZone.get_overlapping_bodies():
-			if body.is_in_group("player"):
+		var dz = $DetectZone
+		dz.set_collision_mask_value(3, true)  # detect player (layer 3)
+		if not dz.body_entered.is_connected(_on_detect_zone_body_entered):
+			dz.body_entered.connect(_on_detect_zone_body_entered)
+		if not dz.body_exited.is_connected(_on_detect_zone_body_exited):
+			dz.body_exited.connect(_on_detect_zone_body_exited)
+		# Kiểm tra body đã overlap sẵn
+		for body in dz.get_overlapping_bodies():
+			if _is_player(body):
 				player = body
 				break
+
 	if has_node("AttackZone"):
-		for body in $AttackZone.get_overlapping_bodies():
-			if body.is_in_group("player"):
+		var az = $AttackZone
+		az.set_collision_mask_value(3, true)  # detect player (layer 3)
+		if not az.body_entered.is_connected(_on_attack_zone_body_entered):
+			az.body_entered.connect(_on_attack_zone_body_entered)
+		if not az.body_exited.is_connected(_on_attack_zone_body_exited):
+			az.body_exited.connect(_on_attack_zone_body_exited)
+		for body in az.get_overlapping_bodies():
+			if _is_player(body):
 				is_attacking = true
 				break
+
+	# ── Cho phép xuyên qua enemy khác ─────────────────────────────────
+	# Dùng additive: KHÔNG ghi đè toàn bộ mask (giữ nguyên ground layer)
+	# Chỉ thêm enemy vào layer 2 và xóa layer 2 ra khỏi mask
+	# → enemy không block nhau, vẫn đứng trên ground (dù ground ở layer nào)
+	set_collision_layer_value(2, true)   # enemy xuất hiện trên layer 2
+	set_collision_layer_value(1, false)  # không phải layer 1
+	set_collision_mask_value(2, false)   # không detect layer 2 (enemy khác)
+	set_collision_mask_value(3, true)    # detect player (layer 3) → chặn nhau
+
+## Kiểm tra body có phải player không (group hoặc script name)
+func _is_player(body: Node) -> bool:
+	if body.is_in_group("player"):
+		return true
+	# Dự phòng: kiểm tra tên script
+	if body.get_script() != null:
+		var sname = body.get_script().get_global_name()
+		if sname in ["player", "player_map_3", "Player", "PlayerMap3"]:
+			return true
+	return false
+
 
 # ---- Audio ----
 
@@ -286,6 +331,14 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 
+	is_patrol_waiting = false
+
+	# ── LUÔN CHASE: tìm player nếu chưa có ─────────────────────────
+	if always_chase and player == null:
+		var players = get_tree().get_nodes_in_group("player")
+		if players.size() > 0:
+			player = players[0]
+
 	if player == null:
 		if patrol_distance <= 0:
 			velocity.x = 0
@@ -295,10 +348,20 @@ func _physics_process(delta):
 		move_and_slide()
 		return
 
-	is_patrol_waiting = false
+	# ── RÚT LÙI sau khi tấn công ────────────────────────────────────
+	if _is_retreating:
+		var retreat_dir = sign(global_position.x - player.global_position.x)  # ngược chiều player
+		velocity.x = retreat_dir * speed * retreat_speed_multiplier
+		_flip_toward(retreat_dir > 0)  # quay mặt theo hướng chạy lùi
+		if anim.sprite_frames.has_animation("run"):
+			_play_anim("run", true)
+		else:
+			_play_anim("idle", true)
+		move_and_slide()
+		return
 
-	# Sau khi ủi xong: dừng tại chỗ rồi mới bắt đầu đuổi tiếp
-	if _is_resting_after_attack:
+	# Đứng chờ sau khi ủi xong (chỉ khi retreat_after_attack = false)
+	if _is_resting_after_attack and not retreat_after_attack:
 		velocity.x = 0
 		_play_anim("idle", true)
 		move_and_slide()
@@ -328,11 +391,8 @@ func _physics_process(delta):
 			_play_anim("idle", true)
 			_do_melee_attack()
 		else:
-			# Đang chờ cooldown: giữ attack anim
-			if anim.sprite_frames.has_animation("attack"):
-				_play_anim("attack")
-			else:
-				_play_anim("idle", true)
+			# Đang chờ cooldown → play idle, không lặp attack animation
+			_play_anim("idle", true)
 	else:
 		var facing_dir = sign(player.global_position.x - global_position.x)
 		var at_ledge = false
@@ -451,20 +511,40 @@ func _patrol_fly_update() -> void:
 
 func _do_melee_attack():
 	can_attack = false
-	_is_attacking_damage = true  # Bắt đầu pha gây sát thương
+	_is_attacking_damage = true
 	_play_sfx("attack")
-	# Nếu bật attack_damage_on_last_frame: chờ hết animation rồi mới gây sát thương
+
+	# ── Chọn cơ chế căn thời gian dame ─────────────────────────
 	if attack_damage_on_last_frame and anim.sprite_frames.has_animation("attack"):
+		# Chờ hết animation rồi mới gây dame
 		var frame_count = anim.sprite_frames.get_frame_count("attack")
 		var anim_fps   = anim.sprite_frames.get_animation_speed("attack")
-		# speed_scale = 3.0 khi play attack (xem _play_anim)
 		var anim_duration = frame_count / (anim_fps * 3.0)
 		await get_tree().create_timer(anim_duration).timeout
+	elif attack_damage_delay > 0.0:
+		# Chờ đúng số giây do người dùng cài (căn theo animation)
+		await get_tree().create_timer(attack_damage_delay).timeout
+
+	# Gây dame cho player
 	if player and player.has_method("take_damage"):
 		player.take_damage(melee_damage)
+
+	# Reset pha dame NGAY SAU KHI dame xong — không chờ cooldown
+	_is_attacking_damage = false
+
+	# ── Sau khi tấn công: rút lùi NGAY (không đứng idle 3 giây) ───────
+	if retreat_after_attack and retreat_time > 0.0:
+		_is_retreating = true
+		await get_tree().create_timer(retreat_time).timeout
+		_is_retreating = false
+	elif post_attack_rest_time > 0.0:
+		_is_resting_after_attack = true
+		await get_tree().create_timer(post_attack_rest_time).timeout
+		_is_resting_after_attack = false
+
+	# Chờ cooldown trước khi có thể tấn công lại
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
-	_is_attacking_damage = false
 	# Dịch chuyển chính xác n px về phía player sau khi damage xong
 	if post_attack_lunge_distance > 0.0 and player != null:
 		var lunge_dir = sign(player.global_position.x - global_position.x)
@@ -476,11 +556,6 @@ func _do_melee_attack():
 		if h_dist < post_attack_lunge_distance * 1.2 and player.has_method("apply_knockback"):
 			player.apply_knockback(Vector2(lunge_dir, -0.15).normalized(), 350.0)
 		await tw.finished
-	# Dừng tại chỗ sau khi ủi xong
-	if post_attack_rest_time > 0.0:
-		_is_resting_after_attack = true
-		await get_tree().create_timer(post_attack_rest_time).timeout
-		_is_resting_after_attack = false
 
 ## Tween g\u00f3c xoay m\u01b0\u1ee3t khi chuy\u1ec3n tr\u1ea1ng th\u00e1i bay
 var _last_fly_rotation_target: float = 0.0
@@ -546,6 +621,23 @@ func take_damage(amount: float):
 		await get_tree().create_timer(0.4).timeout
 		is_hurting = false
 
+## Áp lực hất enemy theo hướng bất kỳ (dùng khi player kỹ năng)
+func apply_knockback(direction: Vector2, force: float) -> void:
+	if is_dead:
+		return
+	velocity += direction.normalized() * force
+
+## Hất enemy đúng N pixel bằng Tween — không bị triệt tiêu bởi is_hurting
+func apply_knockback_distance(direction: Vector2, distance_px: float, duration: float = 0.35) -> void:
+	if is_dead:
+		return
+	var target_pos = global_position + direction.normalized() * distance_px
+	var tw = create_tween()
+	tw.tween_property(self, "global_position", target_pos, duration)\
+		.set_ease(Tween.EASE_OUT)\
+		.set_trans(Tween.TRANS_QUAD)
+
+
 func _die():
 	if is_dead: return
 	is_dead = true
@@ -570,16 +662,16 @@ func _die():
 # ---- Signals ----
 
 func _on_detect_zone_body_entered(body):
-	if body.is_in_group("player"): player = body
+	if _is_player(body): player = body
 
 func _on_detect_zone_body_exited(body):
-	if body.is_in_group("player"): player = null
+	if _is_player(body): player = null
 
 func _on_attack_zone_body_entered(body):
-	if body.is_in_group("player"): is_attacking = true
+	if _is_player(body): is_attacking = true
 
 func _on_attack_zone_body_exited(body):
-	if body.is_in_group("player"): is_attacking = false
+	if _is_player(body): is_attacking = false
 
 # ---- Editor draw ----
 

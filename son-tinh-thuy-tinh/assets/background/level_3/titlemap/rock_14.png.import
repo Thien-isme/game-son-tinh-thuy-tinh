@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tnq3iwcfgoid"
-path="res://.godot/imported/0192.png-c16c16aab21daf0ade382a0f046fcc2a.ctex"
+uid="uid://2i7ep4yt5soh"
+path="res://.godot/imported/rock_14.png-82918863e1be60a0f3ec7363f944b413.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/thuy_tinh/attack/0192.png"
-dest_files=["res://.godot/imported/0192.png-c16c16aab21daf0ade382a0f046fcc2a.ctex"]
+source_file="res://assets/background/level_3/titlemap/rock_14.png"
+dest_files=["res://.godot/imported/rock_14.png-82918863e1be60a0f3ec7363f944b413.ctex"]
 
 [params]
 

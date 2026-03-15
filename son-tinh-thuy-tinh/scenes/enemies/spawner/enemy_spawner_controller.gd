@@ -44,6 +44,11 @@ func _ready():
 	if Engine.is_editor_hint():
 		return
 
+	# Đảm bảo DetectArea detect được player (player ở layer 3 sau khi đổi layer)
+	if has_node("DetectArea"):
+		$DetectArea.set_collision_mask_value(1, true)  # layer 1 (default)
+		$DetectArea.set_collision_mask_value(3, true)  # layer 3 (player layer mới)
+
 	# Quét tất cả Marker2D con → mỗi cái là 1 spawn point
 	for child in get_children():
 		if child is Marker2D:

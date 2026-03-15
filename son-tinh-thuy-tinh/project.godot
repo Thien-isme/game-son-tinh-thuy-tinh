@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="SonTinhThuyTinh"
-run/main_scene="uid://dhgtjrdgmyc20"
+run/main_scene="uid://b0kl5652sj0qd"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 

@@ -60,6 +60,12 @@ func _check_player_submerged() -> void:
 			_player = players[0]
 		return
 
+	# Ưu tiên dùng check_water_level nếu player hỗ trợ (ví dụ player_map_3)
+	if _player.has_method("check_water_level"):
+		_player.check_water_level(global_position.y)
+		return
+
+	# Fallback: dùng logic cũ (mặt nước chạm tâm player)
 	var water_surface_y: float = global_position.y
 	var player_center_y: float = _player.global_position.y - 50.0
 

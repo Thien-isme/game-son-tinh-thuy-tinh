@@ -1,9 +1,18 @@
 [gd_scene format=3 uid="uid://c0bhmt81ju2xu"]
 
-[ext_resource type="PackedScene" uid="uid://dt5yit4kpwikk" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://grhbunupvmh1" path="res://scenes/player/player_map_3.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://cyxhnjqviyhtr" path="res://scenes/background/level_3.tscn" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://ct7n4an6r1ccj" path="res://assets/background/level_3/titlemap/rockwin.png" id="2_ndq1l"]
 [ext_resource type="Script" uid="uid://c1spyewwbhrtm" path="res://scenes/map/map_3_controller.gd" id="3_m3ctrl"]
+[ext_resource type="Texture2D" uid="uid://c2f1fuwikpsf0" path="res://assets/background/level_3/titlemap/rock_8.png" id="4_mbuit"]
 [ext_resource type="PackedScene" path="res://scenes/map/rising_water.tscn" id="4_water"]
+[ext_resource type="Texture2D" uid="uid://ctfsf1jdhqq57" path="res://assets/background/level_3/titlemap/rock_9.png" id="5_42afk"]
+[ext_resource type="Texture2D" uid="uid://cccfptjmpgmva" path="res://assets/background/level_3/titlemap/rock_10.png" id="6_ja4sp"]
+[ext_resource type="Texture2D" uid="uid://crjf54w0onqad" path="res://assets/background/level_3/titlemap/rock_11.png" id="7_30hrf"]
+[ext_resource type="Texture2D" uid="uid://cwerub71bado0" path="res://assets/background/level_3/titlemap/rock_6.png" id="8_1oqsk"]
+[ext_resource type="Texture2D" uid="uid://cmuxoy8d7sncq" path="res://assets/background/level_3/titlemap/rock_12.png" id="8_86vgx"]
+[ext_resource type="Texture2D" uid="uid://dvxfeegoc4j54" path="res://assets/background/level_3/titlemap/rock_13.png" id="9_1oqsk"]
+[ext_resource type="Texture2D" uid="uid://2i7ep4yt5soh" path="res://assets/background/level_3/titlemap/rock_14.png" id="10_xk2eo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(5343, 70)
@@ -33,26 +42,40 @@ shape = SubResource("RectangleShape2D_floor")
 [node name="map" type="Node2D" parent="World" unique_id=2123597107]
 
 [node name="Sprite2D" type="Sprite2D" parent="World/map" unique_id=746059402]
-
-[node name="Sprite2D2" type="Sprite2D" parent="World/map" unique_id=890966459]
-
-[node name="Sprite2D3" type="Sprite2D" parent="World/map" unique_id=198259310]
-
-[node name="Sprite2D4" type="Sprite2D" parent="World/map" unique_id=2038024946]
-
-[node name="Sprite2D5" type="Sprite2D" parent="World/map" unique_id=1727045131]
-
-[node name="Sprite2D6" type="Sprite2D" parent="World/map" unique_id=696541086]
+position = Vector2(2272, -505)
+texture = ExtResource("2_ndq1l")
 
 [node name="Sprite2D7" type="Sprite2D" parent="World/map" unique_id=1541480291]
-
-[node name="Sprite2D8" type="Sprite2D" parent="World/map" unique_id=858286213]
+position = Vector2(159, 560)
+texture = ExtResource("8_1oqsk")
 
 [node name="Sprite2D9" type="Sprite2D" parent="World/map" unique_id=1293440501]
+position = Vector2(790, 459)
+texture = ExtResource("4_mbuit")
 
 [node name="Sprite2D10" type="Sprite2D" parent="World/map" unique_id=1326384103]
+position = Vector2(717, 572)
+texture = ExtResource("5_42afk")
 
 [node name="Sprite2D11" type="Sprite2D" parent="World/map" unique_id=1231948773]
+position = Vector2(891, 491)
+texture = ExtResource("6_ja4sp")
+
+[node name="Sprite2D12" type="Sprite2D" parent="World/map" unique_id=510074059]
+position = Vector2(1440, 173)
+texture = ExtResource("7_30hrf")
+
+[node name="Sprite2D13" type="Sprite2D" parent="World/map" unique_id=1426646101]
+position = Vector2(812, 211)
+texture = ExtResource("8_86vgx")
+
+[node name="Sprite2D14" type="Sprite2D" parent="World/map" unique_id=2024293064]
+position = Vector2(1326, -2)
+texture = ExtResource("9_1oqsk")
+
+[node name="Sprite2D15" type="Sprite2D" parent="World/map" unique_id=1396543998]
+position = Vector2(1728, -121)
+texture = ExtResource("10_xk2eo")
 
 [node name="LevelBounds" type="Node2D" parent="." unique_id=-1194967287]
 
@@ -66,7 +89,7 @@ position = Vector2(2671, -2000)
 shape = SubResource("RectangleShape2D_win")
 
 [node name="Player" parent="." unique_id=-1194967286 instance=ExtResource("1_player")]
-position = Vector2(126, 515)
+position = Vector2(100, 460)
 
 [node name="Map3Controller" type="Node" parent="." unique_id=-1194967282]
 script = ExtResource("3_m3ctrl")

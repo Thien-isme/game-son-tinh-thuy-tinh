@@ -4462,7 +4462,7 @@ attack_radius = 220.0
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"move"
-frame_progress = 0.072100505
+frame_progress = 0.62613314
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=357467306]
 position = Vector2(12, 8)
