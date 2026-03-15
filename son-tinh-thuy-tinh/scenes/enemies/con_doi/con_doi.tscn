@@ -4459,9 +4459,10 @@ detect_radius = 400.0
 attack_radius = 220.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=947446763]
+scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_1")
-animation = &"attack"
-frame_progress = 0.66952425
+animation = &"move"
+frame_progress = 0.072100505
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=357467306]
 position = Vector2(12, 8)
