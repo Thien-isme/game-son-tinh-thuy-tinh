@@ -161,6 +161,8 @@ position = Vector2(1231, 106)
 gizmo_extents = 30.0
 script = ExtResource("5_proeq")
 enemy_scene = ExtResource("7_vu3cs")
+override_health = 300.0
+override_attack_cooldown = 3.0
 
 [node name="LevelBounds" type="Node2D" parent="." unique_id=2100000009]
 
