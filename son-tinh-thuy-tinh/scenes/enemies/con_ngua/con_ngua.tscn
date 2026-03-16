@@ -799,7 +799,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 20.0
+radius = 56.0803
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e44vc"]
 radius = 0.0
@@ -818,13 +818,13 @@ detect_radius = 0.0
 attack_radius = 0.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=276454721]
-position = Vector2(-14, -32.999992)
-scale = Vector2(0.36041668, 0.41481486)
+position = Vector2(-12.000004, -1)
+scale = Vector2(0.46565977, 0.45)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=536078532]
-position = Vector2(2, 36)
+position = Vector2(1, -10)
 shape = SubResource("CircleShape2D_1")
 
 [node name="DetectZone" type="Area2D" parent="." unique_id=1041746808]

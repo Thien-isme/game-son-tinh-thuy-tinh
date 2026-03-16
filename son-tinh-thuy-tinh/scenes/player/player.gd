@@ -63,11 +63,9 @@ var is_skill_active: bool = false
 var _is_invincible: bool = false
 var _is_super_armor: bool = false  ## Skill R: chịu đòn nhưng không bị gián đoạn
 
-# Health HUD
-var _health_bar: ProgressBar = null
-var _hud_layer: CanvasLayer = null
-var _bar_fill_normal: StyleBoxFlat = null  ## Cache style để tránh new() mỗi call
-var _bar_fill_low: StyleBoxFlat = null
+# Health + Lives HUD
+var _player_hud: PlayerHUD = null
+var _hud_scene: PackedScene = preload("res://scenes/player/player_hud.tscn")
 
 # Camera bounds
 var limit_left_x: float = -10000.0
@@ -145,8 +143,12 @@ func _ready():
 		if not skill_r_hitbox.body_entered.is_connected(_on_skill_r_hit):
 			skill_r_hitbox.body_entered.connect(_on_skill_r_hit)
 
-	# Tạo Health HUD
-	_create_health_hud()
+	# Tạo Health + Lives HUD (từ scene có thể chỉnh trong editor)
+	_player_hud = _hud_scene.instantiate()
+	add_child(_player_hud)
+	_player_hud.set_max_health(max_health)
+	_player_hud.update_health(current_health)
+	_player_hud.update_lives(GameManager.lives)
 
 	# Tìm và apply Level Boundaries sau khi cả scene đã load xong
 	call_deferred("_find_level_bounds")
@@ -615,86 +617,6 @@ func _die() -> void:
 	if anim.sprite_frames.has_animation("die"):
 		anim.play("die")
 
-## T\u1ea1o Health Bar HUD g\u1eafn v\u00e0o g\u00f3c tr\u00ean b\u00ean tr\u00e1i m\u00e0n h\u00ecnh
-func _create_health_hud() -> void:
-	_hud_layer = CanvasLayer.new()
-	_hud_layer.name = "PlayerHealthHUD"
-	_hud_layer.layer = 10
-	add_child(_hud_layer)
-
-	# Container n\u1ebbn
-	var panel = PanelContainer.new()
-	panel.position = Vector2(16, 16)
-	panel.custom_minimum_size = Vector2(220, 44)
-
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.06, 0.04, 0.85)
-	style.corner_radius_top_left    = 8
-	style.corner_radius_top_right   = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
-	style.border_width_left   = 2
-	style.border_width_right  = 2
-	style.border_width_top    = 2
-	style.border_width_bottom = 2
-	style.border_color = Color(0.8, 0.6, 0.1, 0.9)
-	panel.add_theme_stylebox_override("panel", style)
-	_hud_layer.add_child(panel)
-
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 2)
-	panel.add_child(vbox)
-
-	# Nh\u00e3n t\u00ean
-	var name_label = Label.new()
-	name_label.text = "\u2665 S\u01a1n Tinh"
-	name_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3, 1.0))
-	name_label.add_theme_font_size_override("font_size", 11)
-	vbox.add_child(name_label)
-
-	# Thanh m\u00e1u
-	_health_bar = ProgressBar.new()
-	_health_bar.min_value = 0
-	_health_bar.max_value = max_health
-	_health_bar.value = current_health
-	_health_bar.custom_minimum_size = Vector2(200, 14)
-	_health_bar.show_percentage = false
-
-	var bar_bg = StyleBoxFlat.new()
-	bar_bg.bg_color = Color(0.25, 0.05, 0.05)
-	bar_bg.corner_radius_top_left    = 4
-	bar_bg.corner_radius_top_right   = 4
-	bar_bg.corner_radius_bottom_left = 4
-	bar_bg.corner_radius_bottom_right = 4
-	_health_bar.add_theme_stylebox_override("background", bar_bg)
-
-	var bar_fill = StyleBoxFlat.new()
-	bar_fill.bg_color = Color(0.9, 0.15, 0.15)
-	bar_fill.corner_radius_top_left    = 4
-	bar_fill.corner_radius_top_right   = 4
-	bar_fill.corner_radius_bottom_left = 4
-	bar_fill.corner_radius_bottom_right = 4
-	_health_bar.add_theme_stylebox_override("fill", bar_fill)
-	# Cache style boxes để dùng lại (không tạo mới mỗi lần update)
-	_bar_fill_normal = bar_fill
-	var bar_fill_low = StyleBoxFlat.new()
-	bar_fill_low.bg_color = Color(0.95, 0.75, 0.0)
-	bar_fill_low.corner_radius_top_left    = 4
-	bar_fill_low.corner_radius_top_right   = 4
-	bar_fill_low.corner_radius_bottom_left = 4
-	bar_fill_low.corner_radius_bottom_right = 4
-	_bar_fill_low = bar_fill_low
-	vbox.add_child(_health_bar)
-
 func _update_health_bar() -> void:
-	if _health_bar == null:
-		return
-	# Cập nhật giá trị trực tiếp (không tween để tránh tạo object mỗi call)
-	_health_bar.value = current_health
-	# Đổi màu khi máu thấp (dùng cached style, không new() lại)
-	if current_health < max_health * 0.3:
-		if _bar_fill_low != null:
-			_health_bar.add_theme_stylebox_override("fill", _bar_fill_low)
-	else:
-		if _bar_fill_normal != null:
-			_health_bar.add_theme_stylebox_override("fill", _bar_fill_normal)
+	if _player_hud:
+		_player_hud.update_health(current_health)

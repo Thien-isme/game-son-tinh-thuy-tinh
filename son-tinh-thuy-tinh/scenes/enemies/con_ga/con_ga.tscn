@@ -799,7 +799,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 20.0
+radius = 52.23983
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_16nci"]
 radius = 0.0
@@ -822,7 +822,7 @@ sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=885660182]
-position = Vector2(0, 18)
+position = Vector2(2, -8)
 shape = SubResource("CircleShape2D_1")
 
 [node name="DetectZone" type="Area2D" parent="." unique_id=339003636]

@@ -89,6 +89,10 @@ var pause_menu_ref: Node = null
 var score = 0
 var bullet_scene = preload("res://scenes/player/player_bullet.tscn")
 
+# Lives HUD
+var lives_hud_canvas: CanvasLayer = null
+var heart_labels: Array = []
+
 # Giới hạn map
 var limit_left_x: float = 0.0
 var limit_right_x: float = 9999999.0
@@ -103,6 +107,52 @@ func _ready():
 		hud.set_max_health(500)
 		hud.update_health(health)
 		hud.update_score(score)
+	_create_lives_hud()
+
+func _create_lives_hud() -> void:
+	# Tạo CanvasLayer cho lives HUD (luôn hiển thị trên cùng)
+	lives_hud_canvas = CanvasLayer.new()
+	lives_hud_canvas.layer = 5
+	add_child(lives_hud_canvas)
+
+	# Panel nền góc trên bên phải
+	var panel = PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	panel.offset_left = -160.0
+	panel.offset_top = 8.0
+	panel.offset_right = -8.0
+	panel.offset_bottom = 50.0
+	lives_hud_canvas.add_child(panel)
+
+	# Tạo container HBox để xếp trái tim từ trái qua phải
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 6)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	panel.add_child(hbox)
+
+	# Tạo 3 icon trái tim
+	heart_labels.clear()
+	for i in range(GameManager.MAX_LIVES):
+		var heart = Label.new()
+		heart.text = "❤️"
+		heart.add_theme_font_size_override("font_size", 28)
+		hbox.add_child(heart)
+		heart_labels.append(heart)
+
+	# Cập nhật hiển thị theo số mạng hiện tại
+	_update_lives_display()
+
+
+func _update_lives_display() -> void:
+	for i in range(heart_labels.size()):
+		var heart: Label = heart_labels[i]
+		if i < GameManager.lives:
+			heart.text = "❤️"
+			heart.modulate = Color(1, 1, 1, 1)
+		else:
+			# Tim đã mất – làm mờ
+			heart.text = "🖤"
+			heart.modulate = Color(1, 1, 1, 0.4)
 
 func add_score(amount: int):
 	score += amount
@@ -664,12 +714,11 @@ func die():
 	# Đợi animation chết kết thúc
 	await anim.animation_finished
 	
-	# Hiện UI Game Over
-	var game_over_scene = preload("res://ui/menus/game_over.tscn")
-	var game_over_instance = game_over_scene.instantiate()
-	get_tree().root.add_child(game_over_instance)
+	# Giao cho GameManager xử lý: trừ mạng → reload map hoặc Game Over
+	GameManager.lose_life()
 	
-	print("Player died. Showing Game Over UI.")
+	print("Player died. Lives remaining: ", GameManager.lives)
+
 
 # --- Skill W Signals ---
 

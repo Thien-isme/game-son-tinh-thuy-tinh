@@ -71,3 +71,7 @@ skill_r={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+
+[autoload]
+
+GameManager="*res://game_manager.gd"

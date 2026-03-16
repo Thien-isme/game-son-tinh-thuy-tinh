@@ -116,7 +116,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
 theme_override_font_sizes/font_size = 11
-text = "Con Gà"
+text = "Gà 9 cựa"
 horizontal_alignment = 1
 
 [node name="SlotVoi" type="VBoxContainer" parent="SinhLePanel/VBox/HBox" unique_id=555548320]
@@ -167,7 +167,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
 theme_override_font_sizes/font_size = 11
-text = "Con Voi"
+text = "Voi 9 ngà"
 horizontal_alignment = 1
 
 [node name="SlotNgua" type="VBoxContainer" parent="SinhLePanel/VBox/HBox" unique_id=1019670673]
@@ -218,5 +218,6 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
 theme_override_font_sizes/font_size = 11
-text = "Con Ngựa"
+text = "Ngựa 9
+hồng mao"
 horizontal_alignment = 1
