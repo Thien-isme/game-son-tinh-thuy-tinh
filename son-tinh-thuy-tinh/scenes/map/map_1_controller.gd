@@ -49,8 +49,11 @@ func _on_item_collected(item_name: String) -> void:
 		hud.collect(item_name)
 
 func _on_all_collected() -> void:
-	print("[Map1Controller] Thu đủ sính lễ! Map 1 hoàn thành!")
+	print("[Map1Controller] Thu đủ sính lễ! Chuyển sang phân cảnh...")
 	_show_completion_message()
+	# Đợi animation hoàn thành rồi chuyển sang cutscene
+	await get_tree().create_timer(2.5).timeout
+	get_tree().change_scene_to_file("res://scenes/cutscene/cutscene_map1_win.tscn")
 
 func _show_completion_message() -> void:
 	# Tạo overlay thông báo ở giữa màn hình

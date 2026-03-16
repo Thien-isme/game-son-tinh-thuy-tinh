@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://mainmenu123"]
+[gd_scene format=3 uid="uid://mainmenu123"]
 
-[ext_resource type="Script" path="res://scenes/main_menu/main_menu.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dngihxqkbgv" path="res://assets/ui/ui_background/background.jpeg" id="2_bg"]
+[ext_resource type="Script" uid="uid://0l762fkcuwtg" path="res://scenes/main_menu/main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dpumsr37eo1t8" path="res://assets/ui/ui_background/background.jpeg" id="2_bg"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1295211862]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=51353320]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +23,7 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1835274626]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -38,13 +38,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="PlayButton" type="Button" parent="VBoxContainer"]
+[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=574578287]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Bắt Đầu"
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
+[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=1558821438]
+visible = false
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24

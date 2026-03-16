@@ -7,10 +7,10 @@ layer = 10
 script = ExtResource("1_hud")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=912685229]
-offset_left = 273.0
-offset_top = 47.0
-offset_right = 517.0
-offset_bottom = 103.0
+offset_left = 436.0
+offset_top = 35.0
+offset_right = 680.0
+offset_bottom = 91.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1243395847]
 layout_mode = 2
@@ -51,6 +51,5 @@ text = " "
 [node name="HealthBar" type="ProgressBar" parent="Panel/VBox" unique_id=1258190627]
 custom_minimum_size = Vector2(220, 14)
 layout_mode = 2
-max_value = 3000.0
-value = 3000.0
+value = 100.0
 show_percentage = false

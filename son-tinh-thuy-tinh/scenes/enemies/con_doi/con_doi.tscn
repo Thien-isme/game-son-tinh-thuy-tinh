@@ -4439,7 +4439,7 @@ height = 96.0
 radius = 718.8832
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_134j5"]
-radius = 220.0
+radius = 190.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_134j5"]
 size = Vector2(268, 227.43987)
@@ -4456,13 +4456,13 @@ fly_hover_speed = 1.8
 fly_attack_rotation = 39.5
 patrol_distance = 200.0
 detect_radius = 400.0
-attack_radius = 220.0
+attack_radius = 190.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=947446763]
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_1")
-animation = &"move"
-frame_progress = 0.62613314
+animation = &"attack"
+frame_progress = 0.83467
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=357467306]
 position = Vector2(12, 8)

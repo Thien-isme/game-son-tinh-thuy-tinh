@@ -8,21 +8,20 @@
 [ext_resource type="PackedScene" uid="uid://dxvai1bys7qto" path="res://scenes/enemies/tom_tinh/tom_tinh.tscn" id="4_vu3cs"]
 [ext_resource type="Script" uid="uid://cip4cgqrli7dq" path="res://scenes/enemies/spawner/enemy_spawner_item.gd" id="5_proeq"]
 [ext_resource type="PackedScene" uid="uid://67okmewabqa8" path="res://scenes/enemies/cua_tinh/cua_tinh.tscn" id="6_3vu7s"]
-[ext_resource type="PackedScene" uid="uid://dm3ecyq0sskf6" path="res://scenes/enemies/bach_tuot_tinh/bach_tuot_tinh.tscn" id="7_v6y72"]
 [ext_resource type="PackedScene" uid="uid://b0y6ngwivdcdk" path="res://scenes/enemies/thuy_tinh/thuy_tinh.tscn" id="7_vu3cs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(9890.5, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6bn2e"]
+resource_local_to_scene = true
+size = Vector2(1200, 645)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vu3cs"]
 resource_local_to_scene = true
 size = Vector2(1200, 645)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_proeq"]
-resource_local_to_scene = true
-size = Vector2(1200, 645)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3vu7s"]
 resource_local_to_scene = true
 size = Vector2(1200, 645)
 
@@ -95,10 +94,10 @@ enemy_scene = ExtResource("4_vu3cs")
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController" index="0"]
 position = Vector2(-334, 92)
-override_health = 2000.0
+override_health = 40.0
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
-shape = SubResource("RectangleShape2D_vu3cs")
+shape = SubResource("RectangleShape2D_6bn2e")
 
 [node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=426966423]
 position = Vector2(-167, 130)
@@ -112,7 +111,6 @@ override_attack_cooldown = 3.0
 position = Vector2(-61, 137)
 gizmo_extents = 30.0
 script = ExtResource("5_proeq")
-enemy_scene = ExtResource("7_vu3cs")
 override_health = 300.0
 override_attack_cooldown = 3.0
 
@@ -124,7 +122,7 @@ position = Vector2(238, 117)
 enemy_scene = ExtResource("4_vu3cs")
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController2/DetectArea" index="0"]
-shape = SubResource("RectangleShape2D_proeq")
+shape = SubResource("RectangleShape2D_vu3cs")
 
 [node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController2" unique_id=452310120]
 position = Vector2(449, 124)
@@ -136,7 +134,7 @@ enemy_scene = ExtResource("6_3vu7s")
 position = Vector2(756, 100)
 gizmo_extents = 30.0
 script = ExtResource("5_proeq")
-enemy_scene = ExtResource("7_v6y72")
+enemy_scene = ExtResource("4_vu3cs")
 
 [node name="EnemySpawnerController3" parent="World/Enemies" unique_id=660865101 instance=ExtResource("3_6bn2e")]
 position = Vector2(3310, 320)
@@ -147,7 +145,7 @@ position = Vector2(384, 125)
 enemy_scene = ExtResource("4_vu3cs")
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController3/DetectArea" index="0"]
-shape = SubResource("RectangleShape2D_3vu7s")
+shape = SubResource("RectangleShape2D_proeq")
 
 [node name="Items" type="Node2D" parent="World/Enemies/EnemySpawnerController3/DetectArea/CollisionShape2D" index="0" unique_id=2100000008]
 position = Vector2(-3310, -320)
@@ -162,6 +160,7 @@ enemy_scene = ExtResource("4_vu3cs")
 position = Vector2(1231, 106)
 gizmo_extents = 30.0
 script = ExtResource("5_proeq")
+enemy_scene = ExtResource("7_vu3cs")
 
 [node name="LevelBounds" type="Node2D" parent="." unique_id=2100000009]
 

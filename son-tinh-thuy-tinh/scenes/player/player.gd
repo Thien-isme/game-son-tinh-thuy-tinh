@@ -53,8 +53,8 @@ var _prev_anim: String = ""
 var _attacked_bodies: Array = []
 
 # Health & State
-var max_health: float = 3000.0   ## Tạm thời tăng để test
-var current_health: float = 3000.0
+var max_health: float = 100.0
+var current_health: float = 100.0
 var is_dead: bool = false
 var is_attacking: bool = false
 var is_hurting: bool = false  ## Đang nhận damage, block _physics_process
@@ -614,8 +614,18 @@ func _die() -> void:
 	set_physics_process(false)
 	set_process(false)
 	velocity = Vector2.ZERO
+
 	if anim.sprite_frames.has_animation("die"):
 		anim.play("die")
+
+	# Tạm dừng game nhưng cho player tiếp tục chạy để hoàn thành animation
+	get_tree().paused = true
+	self.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Đợi animation chết kết thúc rồi giao GameManager xử lý
+	await anim.animation_finished
+	GameManager.lose_life()
+
 
 func _update_health_bar() -> void:
 	if _player_hud:
