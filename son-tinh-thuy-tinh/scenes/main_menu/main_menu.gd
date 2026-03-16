@@ -7,8 +7,8 @@ func _ready() -> void:
 func _on_play_button_pressed() -> void:
 	# Reset mạng về 3 trước khi bắt đầu game mới
 	GameManager.reset()
-	# Chuyển sang map_1.tscn khi bấm Bắt Đầu
-	get_tree().change_scene_to_file("res://scenes/map/map_1.tscn")
+	# Chuyển sang intro trước, sau intro sẽ vào map_1
+	get_tree().change_scene_to_file("res://scenes/intro/intro.tscn")
 
 func _on_quit_button_pressed() -> void:
 	# Thoát game

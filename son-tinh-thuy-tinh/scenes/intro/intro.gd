@@ -28,7 +28,7 @@ func _ready() -> void:
 		# Load frame đầu tiên
 		_load_frame(_image_paths[0])
 	else:
-		_go_to_main_menu()
+		_go_to_map1()
 
 func _scan_all_images() -> void:
 	_image_paths.clear()
@@ -61,7 +61,7 @@ func _scan_all_images() -> void:
 func _input(event: InputEvent) -> void:
 	# Bỏ qua Intro nếu nhấn Enter (ui_accept), Esc (ui_cancel) hoặc click chuột
 	if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_cancel") or (event is InputEventMouseButton and event.pressed):
-		_go_to_main_menu()
+		_go_to_map1()
 
 func _process(delta: float) -> void:
 	if not is_playing or _image_paths.size() == 0:
@@ -78,7 +78,7 @@ func _advance_frame() -> void:
 	
 	# Kiểm tra xem đã hết mảng ảnh chưa
 	if _current_index >= _image_paths.size():
-		_go_to_main_menu()
+		_go_to_map1()
 		return
 		
 	_load_frame(_image_paths[_current_index])
@@ -92,6 +92,6 @@ func _load_frame(path: String) -> void:
 		# Trường hợp lỗi nạp
 		pass
 
-func _go_to_main_menu() -> void:
+func _go_to_map1() -> void:
 	is_playing = false
-	get_tree().change_scene_to_file("res://scenes/main_menu/main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/map/map_1.tscn")

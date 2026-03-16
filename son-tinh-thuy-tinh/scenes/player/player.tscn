@@ -4044,7 +4044,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("541_3qtrc")
 }],
-"loop": true,
+"loop": false,
 "name": &"die",
 "speed": 60.0
 }, {
@@ -7364,8 +7364,7 @@ shape = SubResource("RectangleShape2D_tbvis")
 position = Vector2(6.9999743, -92.99999)
 scale = Vector2(0.6, 0.694)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
-animation = &"attack_high"
-frame_progress = 0.38079074
+animation = &"die"
 speed_scale = 2.0
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]

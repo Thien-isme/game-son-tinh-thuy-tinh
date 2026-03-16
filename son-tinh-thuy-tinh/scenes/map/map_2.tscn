@@ -93,25 +93,25 @@ position = Vector2(988, 317)
 enemy_scene = ExtResource("4_vu3cs")
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController" index="0"]
-position = Vector2(-334, 92)
-override_health = 40.0
+position = Vector2(232, 92)
+override_health = 20.0
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
 shape = SubResource("RectangleShape2D_6bn2e")
 
 [node name="SpawnPoint2" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=426966423]
-position = Vector2(-167, 130)
+position = Vector2(394, 144)
 gizmo_extents = 30.0
 script = ExtResource("5_proeq")
 enemy_scene = ExtResource("6_3vu7s")
-override_health = 300.0
+override_health = 30.0
 override_attack_cooldown = 3.0
 
 [node name="SpawnPoint3" type="Marker2D" parent="World/Enemies/EnemySpawnerController" unique_id=555272203]
-position = Vector2(-61, 137)
+position = Vector2(638, 126)
 gizmo_extents = 30.0
 script = ExtResource("5_proeq")
-override_health = 300.0
+override_health = 30.0
 override_attack_cooldown = 3.0
 
 [node name="EnemySpawnerController2" parent="World/Enemies" unique_id=732797186 instance=ExtResource("3_6bn2e")]
