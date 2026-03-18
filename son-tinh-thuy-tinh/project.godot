@@ -15,6 +15,10 @@ run/main_scene="res://scenes/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameManager="*res://game_manager.gd"
+
 [input]
 
 move_left={
@@ -71,7 +75,3 @@ skill_r={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
-
-[autoload]
-
-GameManager="*res://game_manager.gd"

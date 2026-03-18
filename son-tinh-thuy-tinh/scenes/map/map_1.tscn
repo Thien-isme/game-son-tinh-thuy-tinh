@@ -2280,7 +2280,7 @@ position = Vector2(3, 11)
 script = ExtResource("4_bounds")
 
 [node name="RightBoundary" type="Marker2D" parent="LevelBounds" unique_id=1000000031]
-position = Vector2(5045, 86)
+position = Vector2(4876, 367)
 script = ExtResource("4_bounds")
 is_right_bound = true
 
