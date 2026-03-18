@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b6hsv44ikimhb"
+path="res://.godot/imported/attack - Copy.mp3-223e3749a4c40fa38d814e600fde10ba.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/con-doi/attack - Copy.mp3"
+dest_files=["res://.godot/imported/attack - Copy.mp3-223e3749a4c40fa38d814e600fde10ba.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

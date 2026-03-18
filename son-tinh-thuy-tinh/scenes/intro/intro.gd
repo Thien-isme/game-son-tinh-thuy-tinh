@@ -13,9 +13,6 @@ var fps: float = 30.0
 var frame_duration: float = 1.0 / 30.0
 
 func _ready() -> void:
-	# Đảm bảo có thể nhận input xử lý phím ấn Skip
-	set_process_input(true)
-	
 	# Quét toàn bộ ảnh thực tế còn lại trong 3 thư mục
 	_scan_all_images()
 	
@@ -58,7 +55,7 @@ func _scan_all_images() -> void:
 		else:
 			print("Không thể mở thư mục Intro part: ", part)
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	# Bỏ qua Intro nếu nhấn Enter (ui_accept), Esc (ui_cancel) hoặc click chuột
 	if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_cancel") or (event is InputEventMouseButton and event.pressed):
 		_go_to_map1()

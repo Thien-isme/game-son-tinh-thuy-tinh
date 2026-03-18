@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b6htgac044wl1"
+path="res://.godot/imported/idle - Copy.mp3-d26a3818d8dbc49b71b161d5697ad9fc.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/tom-tinh/idle - Copy.mp3"
+dest_files=["res://.godot/imported/idle - Copy.mp3-d26a3818d8dbc49b71b161d5697ad9fc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

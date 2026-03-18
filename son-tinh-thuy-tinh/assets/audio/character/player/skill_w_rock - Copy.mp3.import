@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b1ke38jrtqvp5"
+path="res://.godot/imported/skill_w_rock - Copy.mp3-02a06e1f7cddfb612c435a683477b9d9.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/player/skill_w_rock - Copy.mp3"
+dest_files=["res://.godot/imported/skill_w_rock - Copy.mp3-02a06e1f7cddfb612c435a683477b9d9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -65,7 +65,15 @@ const ENEMY_FRAME_COUNTS = {
 @export var retreat_speed_multiplier: float = 1.2  ## Tốc độ rút lùi (×speed)
 
 @export_category("Audio")
-@export var override_audio_folder: String = ""
+@export var override_audio_folder: String = ""  ## Để trống = tự tìm theo tên scene
+@export var attack_sfx: AudioStream
+@export var die_sfx: AudioStream
+@export var hurt_sfx: AudioStream
+@export var idle_sfx: AudioStream
+@export var run_sfx: AudioStream
+@export var fly_sfx: AudioStream
+@export var move_sfx: AudioStream
+@export var jump_sfx: AudioStream
 
 @export_category("Detection Areas")
 @export var detect_radius: float = 500.0 :
@@ -254,6 +262,17 @@ func _is_player(body: Node) -> bool:
 # ---- Audio ----
 
 func _load_audio_for_enemy():
+	# Ưu tiên @export vars gán trực tiếp qua Inspector
+	var export_map = {
+		"attack": attack_sfx, "die": die_sfx, "hurt": hurt_sfx,
+		"idle": idle_sfx, "run": run_sfx, "fly": fly_sfx,
+		"move": move_sfx, "jump": jump_sfx
+	}
+	for key in export_map:
+		if export_map[key] != null:
+			_sfx_cache[key] = export_map[key]
+
+	# Auto-load fallback từ folder cho các key chưa được gán
 	var folder = override_audio_folder
 	if folder == "":
 		var base = scene_file_path.get_file().get_basename() if scene_file_path != "" else ""
@@ -268,21 +287,28 @@ func _load_audio_for_enemy():
 
 	var anims = ["attack", "die", "hurt", "idle", "run", "fly", "move", "jump"]
 	for anim_name in anims:
-		var path = "res://assets/audio/character/%s/%s.mp3" % [folder, anim_name]
-		if ResourceLoader.exists(path):
-			_sfx_cache[anim_name] = load(path)
+		if not _sfx_cache.has(anim_name):  # Chỉ load nếu chưa có từ export
+			var path = "res://assets/audio/character/%s/%s.mp3" % [folder, anim_name]
+			if ResourceLoader.exists(path):
+				_sfx_cache[anim_name] = load(path)
 
 func _play_sfx(anim_name: String):
-	if _sfx_cache.has(anim_name) and sfx_player:
-		# Dừng audio cũ ngay, không chờ kết thúc
+	if not _sfx_cache.has(anim_name) or not sfx_player:
+		return
+	var stream = _sfx_cache[anim_name]
+	var pitch = 1.0
+	if _frame_counts.has(anim_name):
+		var effective_fps = SPRITEFRAMES_SPEED * anim.speed_scale
+		var anim_duration = _frame_counts[anim_name] / effective_fps
+		pitch = clampf(AUDIO_DURATION / anim_duration, 0.1, 4.0)
+	sfx_player.pitch_scale = pitch
+	if sfx_player.stream == stream:
+		# Cùng stream đang phát → restart ngay từ đầu, không stop() để tránh gap
+		sfx_player.play()
+	else:
+		# Khác stream → dừng rồi đổi
 		sfx_player.stop()
-		var pitch = 1.0
-		if _frame_counts.has(anim_name):
-			var effective_fps = SPRITEFRAMES_SPEED * anim.speed_scale
-			var anim_duration = _frame_counts[anim_name] / effective_fps
-			pitch = clampf(AUDIO_DURATION / anim_duration, 0.1, 4.0)
-		sfx_player.pitch_scale = pitch
-		sfx_player.stream = _sfx_cache[anim_name]
+		sfx_player.stream = stream
 		sfx_player.play()
 
 # ---- Health bar ----
@@ -391,8 +417,9 @@ func _physics_process(delta):
 			_play_anim("idle", true)
 			_do_melee_attack()
 		else:
-			# Đang chờ cooldown → play idle, không lặp attack animation
-			_play_anim("idle", true)
+			# Đang chờ cooldown → chỉ chuyển idle khi attack animation đã kết thúc
+			if anim.animation != "attack":
+				_play_anim("idle", true)
 	else:
 		var facing_dir = sign(player.global_position.x - global_position.x)
 		var at_ledge = false

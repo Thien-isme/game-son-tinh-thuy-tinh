@@ -18,7 +18,8 @@ const ANIM_FRAME_COUNTS = {
 @onready var anim = $AnimatedSprite2D
 @onready var melee_hitbox: Area2D = $MeleeHitbox
 @onready var melee_hitbox_high: Area2D = $MeleeHitboxHigh  ## Hitbox cho đòn đánh cao (attack_high)
-@onready var skill_r_hitbox: Area2D = $SkillRHitbox         ## Hitbox kỹ năng R
+@onready var skill_r_hitbox: Area2D = $SkillRHitbox1          ## Hitbox 1 kỹ năng R
+@onready var skill_r_hitbox_2: Area2D = $SkillRHitbox2       ## Hitbox 2 kỹ năng R
 var camera: Camera2D = null
 
 ## Loại đòn đang dùng: "normal" hoặc "high"
@@ -31,8 +32,9 @@ var _attack_type: String = "normal"
 @export var attack_damage: float = 20.0
 @export var attack_hitbox_delay: float = 0.25       ## [Attack] Delay (giây) trước khi hitbox bật
 @export var attack_high_hitbox_delay: float = 0.20  ## [AttackHigh] Delay trước khi hitbox bật
-@export var skill_r_hitbox_delay: float = 0.30       ## [SkillR] Delay trước khi hitbox bật
-@export var skill_r_damage: float = 50.0             ## Sát thương kỹ năng R
+@export var skill_r_hitbox1_frame: int = 95    ## [SkillR] Frame bật Hitbox 1 (tắt ngay sau 1 physics frame)
+@export var skill_r_hitbox2_frame: int = 103   ## [SkillR] Frame bật Hitbox 2 (tắt ngay sau 1 physics frame)
+@export var skill_r_damage: float = 50.0       ## Sát thương kỹ năng R
 
 # ---- Audio Exports (gán trực tiếp qua Inspector hoặc .tscn) ----
 @export_category("Audio")
@@ -45,6 +47,7 @@ var _attack_type: String = "normal"
 @export var crouch_sfx: AudioStream
 @export var skill_w_sfx: AudioStream
 @export var skill_e_sfx: AudioStream
+@export var skill_r_sfx: AudioStream
 
 # Audio cache (auto-load fallback)
 var _sfx_cache: Dictionary = {}
@@ -53,8 +56,8 @@ var _prev_anim: String = ""
 var _attacked_bodies: Array = []
 
 # Health & State
-var max_health: float = 100.0
-var current_health: float = 100.0
+var max_health: float = 1000.0
+var current_health: float = 1000.0
 var is_dead: bool = false
 var is_attacking: bool = false
 var is_hurting: bool = false  ## Đang nhận damage, block _physics_process
@@ -136,12 +139,18 @@ func _ready():
 		if not melee_hitbox_high.body_entered.is_connected(_on_melee_hit):
 			melee_hitbox_high.body_entered.connect(_on_melee_hit)
 
-	# Kết nối SkillRHitbox signal
+	# Kết nối SkillRHitbox 1 signal
 	if skill_r_hitbox:
 		skill_r_hitbox.monitoring = false
-		skill_r_hitbox.set_collision_mask_value(2, true)  # detect enemy layer 2
+		skill_r_hitbox.set_collision_mask_value(2, true)
 		if not skill_r_hitbox.body_entered.is_connected(_on_skill_r_hit):
 			skill_r_hitbox.body_entered.connect(_on_skill_r_hit)
+	# Kết nối SkillRHitbox 2 signal
+	if skill_r_hitbox_2:
+		skill_r_hitbox_2.monitoring = false
+		skill_r_hitbox_2.set_collision_mask_value(2, true)
+		if not skill_r_hitbox_2.body_entered.is_connected(_on_skill_r_hit):
+			skill_r_hitbox_2.body_entered.connect(_on_skill_r_hit)
 
 	# Tạo Health + Lives HUD (từ scene có thể chỉnh trong editor)
 	_player_hud = _hud_scene.instantiate()
@@ -189,7 +198,8 @@ func _load_player_audio():
 	var export_map = {
 		"jump": jump_sfx, "run": run_sfx, "idle": idle_sfx,
 		"hurt": hit_sfx, "die": die_sfx, "attack": attack_sfx,
-		"crouch": crouch_sfx, "skill_w": skill_w_sfx, "skill_e": skill_e_sfx
+		"crouch": crouch_sfx, "skill_w": skill_w_sfx, "skill_e": skill_e_sfx,
+		"skill_r": skill_r_sfx
 	}
 	for key in export_map:
 		if export_map[key] != null:
@@ -197,7 +207,7 @@ func _load_player_audio():
 
 	# Auto-load fallback từ folder player/ cho các key chưa có
 	var audio_folder = "res://assets/audio/character/player"
-	var fallback_anims = ["idle", "run", "jump", "attack", "crouch", "die", "hurt", "skill_w", "skill_e"]
+	var fallback_anims = ["idle", "run", "jump", "attack", "crouch", "die", "hurt", "skill_w", "skill_e", "skill_r"]
 	for anim_name in fallback_anims:
 		if not _sfx_cache.has(anim_name):
 			var path = "%s/%s.mp3" % [audio_folder, anim_name]
@@ -397,38 +407,52 @@ func _play_attack():
 			for body in active_hitbox.get_overlapping_bodies():
 				_on_melee_hit(body)
 
-## Kỹ năng R: 50 sát thương + hất văng lên, block mọi hành động khác
+## Kỹ năng R: 50 sát thương + hất văng lên, 2 hitbox kích hoạt theo frame
 func _play_skill_r() -> void:
 	var frames = anim.sprite_frames
 	if frames == null or not frames.has_animation("skill_r"):
-		# Fallback nếu chưa có animation
 		_play_skill("attack")
 		return
 
 	is_skill_active = true
-	_is_super_armor = true   ## Bật super armor — chịu đòn không bị ngắt
+	_is_super_armor = true
 	_attacked_bodies.clear()
 	anim.speed_scale = 1.0
 	anim.play("skill_r")
 	_play_sfx("skill_r")
 
-	if skill_r_hitbox:
-		skill_r_hitbox.monitoring = false
-		# ── Flip hitbox sang đúng hướng player nhìn ──────────────────
-		if skill_r_hitbox.has_node("CollisionShape2D"):
-			var col = skill_r_hitbox.get_node("CollisionShape2D")
-			var dir = -1 if anim.flip_h else 1
-			col.position.x = abs(col.position.x) * dir
-		# Bật hitbox sau delay — chỉnh trong Inspector để khớp với animation
-		await get_tree().create_timer(skill_r_hitbox_delay).timeout
-		if not is_skill_active:
-			return
-		skill_r_hitbox.monitoring = true
+	# ── Flip cả 2 hitbox theo hướng nhìn ──
+	var _dir = -1 if anim.flip_h else 1
+	for hb in [skill_r_hitbox, skill_r_hitbox_2]:
+		if hb:
+			hb.monitoring = false
+			if hb.has_node("CollisionShape2D"):
+				var col = hb.get_node("CollisionShape2D")
+				col.position.x = abs(col.position.x) * _dir
+
+	# ── Chờ đến frame 95 → bật Hitbox 1 → tắt ngay sau 2 physics frame ──
+	while is_skill_active and anim.animation == "skill_r" and anim.frame < skill_r_hitbox1_frame:
 		await get_tree().physics_frame
-		if skill_r_hitbox and skill_r_hitbox.monitoring:
-			for body in skill_r_hitbox.get_overlapping_bodies():
-				_on_skill_r_hit(body)
-	_is_super_armor = false  ## Tắt super armor khi skill kết thúc
+	if is_skill_active and skill_r_hitbox:
+		skill_r_hitbox.monitoring = true
+		await get_tree().physics_frame  # frame 1: physics engine đăng ký overlap
+		await get_tree().physics_frame  # frame 2: body_entered signal fire, get_overlapping_bodies() đầy đủ
+		for body in skill_r_hitbox.get_overlapping_bodies():
+			_on_skill_r_hit(body)
+		skill_r_hitbox.monitoring = false
+
+	# ── Chờ đến frame 103 → bật Hitbox 2 → tắt ngay sau 2 physics frame ──
+	while is_skill_active and anim.animation == "skill_r" and anim.frame < skill_r_hitbox2_frame:
+		await get_tree().physics_frame
+	if is_skill_active and skill_r_hitbox_2:
+		skill_r_hitbox_2.monitoring = true
+		await get_tree().physics_frame  # frame 1: physics engine đăng ký overlap
+		await get_tree().physics_frame  # frame 2: body_entered signal fire, get_overlapping_bodies() đầy đủ
+		for body in skill_r_hitbox_2.get_overlapping_bodies():
+			_on_skill_r_hit(body)
+		skill_r_hitbox_2.monitoring = false
+
+	_is_super_armor = false
 
 ## Xử lý khi Skill R chạm enemy — gây 50 dame + hất văng lên
 func _on_skill_r_hit(body: Node) -> void:
@@ -465,6 +489,8 @@ func _on_animation_finished():
 		is_skill_active = false
 		if skill_r_hitbox:
 			skill_r_hitbox.monitoring = false
+		if skill_r_hitbox_2:
+			skill_r_hitbox_2.monitoring = false
 
 # ---- Combat ----
 

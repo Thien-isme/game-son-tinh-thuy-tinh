@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dn408lq6ioybd"
+path="res://.godot/imported/skill_e - Copy.mp3-786063d6dbc4ce0215fa6ec431f3b3e1.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/player/skill_e - Copy.mp3"
+dest_files=["res://.godot/imported/skill_e - Copy.mp3-786063d6dbc4ce0215fa6ec431f3b3e1.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

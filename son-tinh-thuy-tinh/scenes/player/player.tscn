@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://dfg371nytcss0" path="res://assets/sprites/son-tinh/attack/0008.png" id="9_ql1ni"]
 [ext_resource type="Texture2D" uid="uid://ciyu0tr5ypw2n" path="res://assets/sprites/son-tinh/attack/0009.png" id="10_17kai"]
 [ext_resource type="AudioStream" uid="uid://0csyruw1kngi" path="res://assets/audio/character/player/skill_e.mp3" id="10_b7fhk"]
+[ext_resource type="AudioStream" uid="uid://djcv0ib81j58s" path="res://assets/audio/character/player/skill-r.mp3" id="11_487r0"]
 [ext_resource type="Texture2D" uid="uid://bdwx1qnjwggcj" path="res://assets/sprites/son-tinh/attack/0010.png" id="11_f3imq"]
 [ext_resource type="Texture2D" uid="uid://lnbdmtx3h6xo" path="res://assets/sprites/son-tinh/attack/0011.png" id="12_610vm"]
 [ext_resource type="Texture2D" uid="uid://dcxh3fim4kfum" path="res://assets/sprites/son-tinh/attack/0012.png" id="13_007kg"]
@@ -7338,14 +7339,16 @@ size = Vector2(165.5, 57)
 size = Vector2(80, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_skill_r"]
-size = Vector2(220, 160)
+size = Vector2(57, 177)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_487r0"]
+size = Vector2(40, 175.5)
 
 [node name="player" type="CharacterBody2D" unique_id=2060062756 groups=["player"]]
 position = Vector2(577, 323)
 script = ExtResource("1_script")
 attack_hitbox_delay = 0.1
 attack_high_hitbox_delay = 0.25
-skill_r_hitbox_delay = 1.4
 jump_sfx = ExtResource("2_cps8l")
 run_sfx = ExtResource("3_dvjb1")
 idle_sfx = ExtResource("4_cprfw")
@@ -7355,6 +7358,7 @@ attack_sfx = ExtResource("7_mpq1w")
 crouch_sfx = ExtResource("8_p2pte")
 skill_w_sfx = ExtResource("9_07fbi")
 skill_e_sfx = ExtResource("10_b7fhk")
+skill_r_sfx = ExtResource("11_487r0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2042003537]
 position = Vector2(0, -49)
@@ -7364,8 +7368,10 @@ shape = SubResource("RectangleShape2D_tbvis")
 position = Vector2(6.9999743, -92.99999)
 scale = Vector2(0.6, 0.694)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
-animation = &"die"
-speed_scale = 2.0
+animation = &"jump"
+frame = 80
+frame_progress = 0.289996
+speed_scale = 0.2
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]
 
@@ -7387,10 +7393,16 @@ monitoring = false
 position = Vector2(93, -114)
 shape = SubResource("RectangleShape2D_hitbox_high")
 
-[node name="SkillRHitbox" type="Area2D" parent="." unique_id=2100000005]
+[node name="SkillRHitbox1" type="Area2D" parent="." unique_id=2100000005]
 collision_layer = 0
 monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SkillRHitbox" unique_id=2100000006]
-position = Vector2(100, -80)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SkillRHitbox1" unique_id=2100000006]
+position = Vector2(-96.5, -88.5)
 shape = SubResource("RectangleShape2D_skill_r")
+
+[node name="SkillRHitbox2" type="Area2D" parent="." unique_id=518271749]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SkillRHitbox2" unique_id=322255937]
+position = Vector2(160, -88.75)
+shape = SubResource("RectangleShape2D_487r0")

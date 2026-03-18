@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://btwjq2l17pbi4"
+path="res://.godot/imported/attack - Copy.mp3-9e5b6d9f7eb079b0a3d8df7a9d7d6fa4.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/tom-tinh/attack - Copy.mp3"
+dest_files=["res://.godot/imported/attack - Copy.mp3-9e5b6d9f7eb079b0a3d8df7a9d7d6fa4.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

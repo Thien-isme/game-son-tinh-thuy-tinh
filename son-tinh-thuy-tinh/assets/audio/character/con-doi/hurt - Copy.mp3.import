@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dii1w3frqwiug"
+path="res://.godot/imported/hurt - Copy.mp3-9adf72134f3b61ce4a5145bccd7858cd.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/con-doi/hurt - Copy.mp3"
+dest_files=["res://.godot/imported/hurt - Copy.mp3-9adf72134f3b61ce4a5145bccd7858cd.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

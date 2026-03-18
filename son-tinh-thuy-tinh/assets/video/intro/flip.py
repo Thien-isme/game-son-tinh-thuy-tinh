@@ -1,7 +1,7 @@
 from moviepy import VideoFileClip
 import os
 
-video_name = "Son_tinh_61s_202603160301_jkqws.mp4"
+video_name = "intro_newmp4.mp4"
 
 def split_video_into_three(filename):
     if not os.path.exists(filename):
