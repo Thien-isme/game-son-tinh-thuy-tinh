@@ -1,6 +1,7 @@
 extends Control
 
 @onready var frames_display: TextureRect = $FramesDisplay
+@onready var audio_player: AudioStreamPlayer = $AudioStreamPlayer
 
 # Lưu trữ danh sách các đường dẫn ảnh đã quét được theo thứ tự
 var _image_paths: Array[String] = []
@@ -91,4 +92,5 @@ func _load_frame(path: String) -> void:
 
 func _go_to_map1() -> void:
 	is_playing = false
+	audio_player.stop()  # Dừng nhạc intro trước khi chuyển cảnh
 	get_tree().change_scene_to_file("res://scenes/map/map_1.tscn")
