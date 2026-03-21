@@ -2,8 +2,11 @@
 
 [ext_resource type="Script" uid="uid://0l762fkcuwtg" path="res://scenes/main_menu/main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dpumsr37eo1t8" path="res://assets/ui/ui_background/background.jpeg" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://cmm2txjlxgnwx" path="res://assets/ui/button/btn_Play.png" id="3_btn_play"]
+[ext_resource type="Texture2D" uid="uid://dgfimypwq7tmj" path="res://assets/ui/button/btn_Setting.png" id="4_btn_setting"]
+[ext_resource type="Texture2D" uid="uid://bhfrvkt0vb1i0" path="res://assets/ui/button/btn_Exit.png" id="5_btn_exit"]
 
-[node name="MainMenu" type="Control" unique_id=1295211862]
+[node name="MainMenu" type="Control" unique_id=1465720266]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=51353320]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=477543945]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,32 +26,39 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1835274626]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -20.0
-offset_right = 100.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
+[node name="PlayButton" type="TextureButton" parent="." unique_id=1140504567]
+layout_mode = 0
+offset_left = 444.0
+offset_top = 292.0
+offset_right = 701.0
+offset_bottom = 380.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_btn_play")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=574578287]
-custom_minimum_size = Vector2(200, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
+[node name="SettingButton" type="TextureButton" parent="." unique_id=1140876900]
+layout_mode = 0
+offset_left = 461.0
+offset_top = 384.0
+offset_right = 691.0
+offset_bottom = 465.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_btn_setting")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=1558821438]
-visible = false
-custom_minimum_size = Vector2(200, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Thoát Game"
+[node name="QuitButton" type="TextureButton" parent="." unique_id=1509628824]
+layout_mode = 0
+offset_left = 462.0
+offset_top = 471.0
+offset_right = 695.0
+offset_bottom = 554.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("5_btn_exit")
+ignore_texture_size = true
+stretch_mode = 0
 
-[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="SettingButton" to="." method="_on_setting_button_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]

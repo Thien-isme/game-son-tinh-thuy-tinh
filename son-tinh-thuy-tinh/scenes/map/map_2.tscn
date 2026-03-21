@@ -162,7 +162,7 @@ script = ExtResource("4_bounds")
 is_right_bound = true
 
 [node name="Player" parent="." unique_id=2100000010 instance=ExtResource("1_player")]
-position = Vector2(158, 386)
+position = Vector2(163, 419)
 
 [editable path="World/Enemies/EnemySpawnerController"]
 [editable path="World/Enemies/EnemySpawnerController2"]
