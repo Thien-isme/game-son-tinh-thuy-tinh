@@ -28,4 +28,3 @@ motion_scale = Vector2(0.7, 0)
 [node name="Sprite2D" type="Sprite2D" parent="Layer3_Near" unique_id=2053228871]
 texture = ExtResource("3_fg")
 centered = false
-
