@@ -125,6 +125,10 @@ func _ready():
 	if anim.animation_looped.get_connections().size() == 0:
 		anim.animation_looped.connect(_on_animation_finished)
 
+	# Auto-restart audio loop khi SFXPlayerLoop phát xong
+	if sfx_loop and not sfx_loop.finished.is_connected(_on_sfx_loop_finished):
+		sfx_loop.finished.connect(_on_sfx_loop_finished)
+
 	# Kết nối MeleeHitbox signal (đòn ngang)
 	if melee_hitbox:
 		melee_hitbox.monitoring = false
@@ -230,20 +234,38 @@ func _play_sfx(anim_name: String):
 	sfx_player.stream = _sfx_cache[anim_name]
 	sfx_player.play()
 
-func _play_loop_sfx(anim_name: String):
-	if not _sfx_cache.has(anim_name): return
-	if sfx_loop:
-		# Dừng audio cũ rồi play mới ngị lp
-		if sfx_loop.stream != _sfx_cache[anim_name]:
-			sfx_loop.stop()
-			sfx_loop.stream = _sfx_cache[anim_name]
-			sfx_loop.play()
-		elif not sfx_loop.playing:
-			sfx_loop.play()
+# Tên animation đang loop hiện tại (dùng để auto-restart)
+var _current_loop_anim: String = ""
 
-func _stop_loop_sfx():
+func _play_loop_sfx(anim_name: String) -> void:
+	if not _sfx_cache.has(anim_name): return
+	if not sfx_loop: return
+	var stream = _sfx_cache[anim_name]
+
+	# Bật loop trực tiếp trên stream nếu có property (MP3/OGG)
+	if stream.has_meta("loop") or "loop" in stream:
+		stream.set("loop", true)
+
+	_current_loop_anim = anim_name
+
+	if sfx_loop.stream != stream:
+		# Đổi sang bài mới → play từ đầu
+		sfx_loop.stop()
+		sfx_loop.stream = stream
+		sfx_loop.play()
+	elif not sfx_loop.playing:
+		# Cùng bài nhưng đã dừng → play lại
+		sfx_loop.play()
+
+func _stop_loop_sfx() -> void:
+	_current_loop_anim = ""
 	if sfx_loop and sfx_loop.playing:
 		sfx_loop.stop()
+
+func _on_sfx_loop_finished() -> void:
+	# Khi audio kết thúc mà vẫn đang ở trạng thái loop → restart
+	if _current_loop_anim != "" and sfx_loop:
+		sfx_loop.play()
 
 # ---- Level Bounds ----
 
