@@ -30,8 +30,8 @@ var _attack_type: String = "normal"
 # ---- Combat Exports ----
 @export_category("Combat")
 @export var attack_damage: float = 20.0
-@export var attack_hitbox_delay: float = 0.25       ## [Attack] Delay (giây) trước khi hitbox bật
-@export var attack_high_hitbox_delay: float = 0.20  ## [AttackHigh] Delay trước khi hitbox bật
+@export var attack_hitbox_frame: int = 55      ## [Attack] Frame bật hitbox (gây dame)
+@export var attack_high_hitbox_frame: int = 83 ## [AttackHigh] Frame bật hitbox (gây dame)
 @export var skill_r_hitbox1_frame: int = 95    ## [SkillR] Frame bật Hitbox 1 (tắt ngay sau 1 physics frame)
 @export var skill_r_hitbox2_frame: int = 103   ## [SkillR] Frame bật Hitbox 2 (tắt ngay sau 1 physics frame)
 @export var skill_r_damage: float = 50.0       ## Sát thương kỹ năng R
@@ -56,8 +56,8 @@ var _prev_anim: String = ""
 var _attacked_bodies: Array = []
 
 # Health & State
-var max_health: float = 1000.0
-var current_health: float = 1000.0
+var max_health: float = 100.0
+var current_health: float = 100.0
 var is_dead: bool = false
 var is_attacking: bool = false
 var is_hurting: bool = false  ## Đang nhận damage, block _physics_process
@@ -299,12 +299,6 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("skill_w"):
 			_play_skill("skill_w")
 			return
-		elif Input.is_action_just_pressed("skill_q"):
-			_play_skill("attack")
-			return
-		elif Input.is_action_just_pressed("skill_e"):
-			_play_skill("attack")
-			return
 
 	var direction = Input.get_axis("move_left", "move_right")
 
@@ -396,16 +390,19 @@ func _play_attack():
 			var col = active_hitbox.get_node("CollisionShape2D")
 			col.position.x = abs(col.position.x) * dir
 		active_hitbox.monitoring = false
-		# Delay trước khi hitbox bật — chọn đúng biến theo loại đòn
-		var delay = attack_high_hitbox_delay if use_high else attack_hitbox_delay
-		await get_tree().create_timer(delay).timeout
+		# Chờ đến đúng frame rồi bật hitbox (giống cơ chế Skill R)
+		var target_frame = attack_high_hitbox_frame if use_high else attack_hitbox_frame
+		while is_attacking and anim.animation == anim_name and anim.frame < target_frame:
+			await get_tree().physics_frame
 		if not is_attacking:
 			return
 		active_hitbox.monitoring = true
-		await get_tree().physics_frame
+		await get_tree().physics_frame  # frame 1: physics engine đăng ký overlap
+		await get_tree().physics_frame  # frame 2: body_entered signal fire
 		if active_hitbox and active_hitbox.monitoring:
 			for body in active_hitbox.get_overlapping_bodies():
 				_on_melee_hit(body)
+		active_hitbox.monitoring = false  # Tắt ngay sau khi check xong — tránh gây dame muộn khi player di chuyển
 
 ## Kỹ năng R: 50 sát thương + hất văng lên, 2 hitbox kích hoạt theo frame
 func _play_skill_r() -> void:

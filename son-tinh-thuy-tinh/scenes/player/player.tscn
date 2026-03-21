@@ -7342,13 +7342,11 @@ size = Vector2(80, 100)
 size = Vector2(57, 177)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_487r0"]
-size = Vector2(40, 175.5)
+size = Vector2(111, 175.5)
 
 [node name="player" type="CharacterBody2D" unique_id=2060062756 groups=["player"]]
 position = Vector2(577, 323)
 script = ExtResource("1_script")
-attack_hitbox_delay = 0.1
-attack_high_hitbox_delay = 0.25
 jump_sfx = ExtResource("2_cps8l")
 run_sfx = ExtResource("3_dvjb1")
 idle_sfx = ExtResource("4_cprfw")
@@ -7368,9 +7366,8 @@ shape = SubResource("RectangleShape2D_tbvis")
 position = Vector2(6.9999743, -92.99999)
 scale = Vector2(0.6, 0.694)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
-animation = &"jump"
-frame = 80
-frame_progress = 0.289996
+animation = &"attack_high"
+frame = 88
 speed_scale = 0.2
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]
@@ -7404,5 +7401,5 @@ shape = SubResource("RectangleShape2D_skill_r")
 [node name="SkillRHitbox2" type="Area2D" parent="." unique_id=518271749]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SkillRHitbox2" unique_id=322255937]
-position = Vector2(160, -88.75)
+position = Vector2(124.5, -88.75)
 shape = SubResource("RectangleShape2D_487r0")
