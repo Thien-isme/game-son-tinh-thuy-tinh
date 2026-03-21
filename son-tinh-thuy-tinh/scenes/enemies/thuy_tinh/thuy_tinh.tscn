@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b0y6ngwivdcdk"]
 
-[ext_resource type="Script" uid="uid://bp6nq4kq3ny3f" path="res://base_scripts/enemy_melee_script.gd" id="1_melee_script"]
+[ext_resource type="Script" uid="uid://bsmp687x6rs3v" path="res://scenes/enemies/thuy_tinh/thuy_tinh_boss.gd" id="1_fvhis"]
 [ext_resource type="Texture2D" uid="uid://cfy6cyv3knbkv" path="res://assets/sprites/thuy_tinh/attack/0001.png" id="1_sprite"]
 [ext_resource type="Texture2D" uid="uid://bbdxw5aoqolgg" path="res://assets/sprites/thuy_tinh/attack/0002.png" id="2_sprite"]
 [ext_resource type="Texture2D" uid="uid://5wiuomakt0tw" path="res://assets/sprites/thuy_tinh/attack/0003.png" id="3_sprite"]
@@ -3736,7 +3736,7 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v8tu4"]
 radius = 37.0
-height = 200.0
+height = 178.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
 radius = 200.0
@@ -3751,21 +3751,14 @@ size = Vector2(60, 60)
 size = Vector2(279, 48.5)
 
 [node name="thuy_tinh" type="CharacterBody2D" unique_id=123158920]
-script = ExtResource("1_melee_script")
-attack_cooldown = 3.0
-melee_damage = 15.0
-attack_damage_delay = 0.5
-always_chase = true
-retreat_after_attack = true
-detect_radius = 800.0
-attack_radius = 120.0
+script = ExtResource("1_fvhis")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1165917350]
 position = Vector2(-3, -48.000004)
 scale = Vector2(0.8193966, 0.8055556)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"attack"
-frame_progress = 0.25594825
+frame_progress = 0.17249548
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=230367593]
 position = Vector2(5, -23)
@@ -3802,7 +3795,7 @@ position = Vector2(-102, -68)
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox2" unique_id=2146926463]
-position = Vector2(85.5, -12.25)
+position = Vector2(63, -3)
 shape = SubResource("RectangleShape2D_fvhis")
 
 [node name="SFXPlayer2" type="AudioStreamPlayer" parent="." unique_id=353363713]

@@ -94,8 +94,8 @@ enemy_scene = ExtResource("4_vu3cs")
 override_health = 1000.0
 
 [node name="SpawnPoint1" parent="World/Enemies/EnemySpawnerController" index="0"]
-position = Vector2(232, 92)
-override_health = 1000.0
+position = Vector2(267, 124)
+override_health = 30.0
 
 [node name="CollisionShape2D" parent="World/Enemies/EnemySpawnerController/DetectArea" index="0"]
 shape = SubResource("RectangleShape2D_6bn2e")
