@@ -9,7 +9,7 @@
 extends CharacterBody2D
 
 # ── Animations ─────────────────────────────────────────────────────────────
-const ANIM_ATTACK_FRAME_DEAL_DAMAGE := 55  ## Frame gây dame trong animation attack
+const ANIM_ATTACK_FRAME_DEAL_DAMAGE := 50  ## Frame gây dame trong animation attack
 
 # ── Constants ───────────────────────────────────────────────────────────────
 const GRAVITY := 900.0
@@ -73,6 +73,7 @@ var _attack_cd_timer: float = 0.0
 var _jump_attack_cd_timer: float = 0.0
 var _dodge_cd_timer: float = 0.0
 var _reaction_timer: float = 0.0        ## Đang chờ phản ứng
+var _is_deciding: bool = false          ## Ngăn coroutine decide bị gọi trùng lặp
 var _is_in_action: bool = false         ## Đang thực hiện attack/dodge (coroutine)
 var _phase2_active: bool = false
 
@@ -231,11 +232,14 @@ func _tick_hurt() -> void:
 # ────────────────────────────────────────────────────────────────────────────
 
 func _decide_next_action() -> void:
-	if is_dead or player == null: return
+	if is_dead or player == null or _is_deciding: return
+	_is_deciding = true
 
 	# Reaction delay: giống người thật, không phản ứng ngay tức thì
 	_reaction_timer = randf_range(reaction_delay_min, reaction_delay_max)
 	await get_tree().create_timer(_reaction_timer).timeout
+	
+	_is_deciding = false
 	if is_dead or player == null: return
 
 	var dist = _dist_to_player()
@@ -291,25 +295,18 @@ func _do_attack() -> void:
 	anim.frame = 0
 	anim.play("attack")
 	_play_sfx("attack")
-
-	# ── Tính thời gian đến frame gây dame bằng timer (đáng tin cậy hơn frame check) ──
-	# attack có 192 frames, chạy ở speed_scale=3.0 × 60fps = 180fps thực tế
-	# frame 55 tương đương: 55 / 180 ≈ 0.305 giây
-	const ATTACK_FPS_EFFECTIVE := 60.0 * 3.0
-	var time_to_hit := ANIM_ATTACK_FRAME_DEAL_DAMAGE / ATTACK_FPS_EFFECTIVE
-	await get_tree().create_timer(time_to_hit).timeout
-
-	# ── Gây dame trực tiếp cho player nếu còn trong tầm ──────────────────────
-	# (Cách này đáng tin cậy hơn get_overlapping_bodies())
-	if not is_dead and player != null and _dist_to_player() <= attack_range * 1.5:
-		if player.has_method("take_damage"):
-			player.take_damage(attack_damage)
-
-	# ── Chờ phần còn lại của animation bằng timer ──────────────────────────
-	# Tổng animation: 192 frames / 180fps = 1.067s. Còn lại: 1.067 - time_to_hit
-	var total_duration := 192.0 / ATTACK_FPS_EFFECTIVE
-	var remaining := maxf(0.0, total_duration - time_to_hit)
-	await get_tree().create_timer(remaining).timeout
+	
+	var has_dealt_damage = false
+	# Kiểm tra từng frame của animation để gây sát thương chuẩn xác
+	while _is_in_action and anim.is_playing() and anim.animation == "attack":
+		if not has_dealt_damage and anim.frame >= ANIM_ATTACK_FRAME_DEAL_DAMAGE:
+			has_dealt_damage = true
+			if not is_dead and player != null and _dist_to_player() <= attack_range * 1.5:
+				if player.has_method("take_damage"):
+					player.take_damage(attack_damage)
+		await get_tree().physics_frame
+		
+	if not _is_in_action: return
 
 	# Cooldown
 	var cd := phase2_attack_cooldown if _phase2_active else attack_cooldown
@@ -341,8 +338,11 @@ func _do_jump_attack() -> void:
 
 	# Chờ đến khi chạm đất
 	await get_tree().create_timer(0.12).timeout  # buffer nhỏ trước khi check
+	if not _is_in_action: return
+	
 	while not is_on_floor():
 		await get_tree().physics_frame
+		if not _is_in_action: return
 
 	# Đánh ngay khi đáp xuống
 	_is_in_action = false
@@ -373,6 +373,8 @@ func _do_dodge() -> void:
 		_play_anim("run")
 		await get_tree().create_timer(0.3).timeout
 		velocity.x = 0
+		
+	if not _is_in_action: return
 
 	_is_in_action = false
 	_decide_next_action()
@@ -400,6 +402,8 @@ func take_damage(amount: float) -> void:
 		_is_in_action = false
 		if melee_hitbox:
 			melee_hitbox.monitoring = false
+	
+	_is_deciding = false
 
 	_change_state(State.HURT)
 	anim.speed_scale = 1.0
@@ -431,6 +435,7 @@ func _die() -> void:
 	if is_dead: return
 	is_dead = true
 	_is_in_action = false
+	_is_deciding = false
 	_change_state(State.DEATH)
 
 	if melee_hitbox:
