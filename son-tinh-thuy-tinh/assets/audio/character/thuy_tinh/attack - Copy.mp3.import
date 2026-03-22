@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://blo0kd3t43l34"
+path="res://.godot/imported/attack - Copy.mp3-09bd404a1ef15c86a5bba93b2835e478.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/character/thuy_tinh/attack - Copy.mp3"
+dest_files=["res://.godot/imported/attack - Copy.mp3-09bd404a1ef15c86a5bba93b2835e478.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
