@@ -40,6 +40,14 @@ const GRAVITY := 900.0
 @export var phase2_attack_cooldown: float = 0.7   ## Cooldown ngắn hơn ở phase 2
 @export var phase2_dodge_chance: float = 0.65     ## Dodge nhiều hơn ở phase 2
 
+@export_category("Audio")
+@export var audio_attack: AudioStream
+@export var audio_die: AudioStream
+@export var audio_hurt: AudioStream
+@export var audio_idle: AudioStream
+@export var audio_run: AudioStream
+@export var audio_jump: AudioStream
+
 # ── State Machine ───────────────────────────────────────────────────────────
 enum State {
 	IDLE,        ## Đứng yên / quan sát
@@ -324,7 +332,6 @@ func _do_jump_attack() -> void:
 	_jump_attack_cd_timer = jump_attack_cooldown
 
 	_flip_toward(_dir_to_player() > 0)
-	_play_sfx("jump")
 
 	# Nhảy về phía player
 	var dir = _dir_to_player()
@@ -397,7 +404,6 @@ func take_damage(amount: float) -> void:
 	_change_state(State.HURT)
 	anim.speed_scale = 1.0
 	_play_anim("hurt")
-	_play_sfx("hurt")
 	_flash_hurt()
 
 	await get_tree().create_timer(0.4).timeout
@@ -435,7 +441,6 @@ func _die() -> void:
 		_health_bar.visible = false
 
 	anim.speed_scale = 1.0
-	_play_sfx("die")
 	if anim.sprite_frames.has_animation("die"):
 		anim.sprite_frames.set_animation_loop("die", false)
 		_play_anim("die")
@@ -496,6 +501,7 @@ func _play_anim(anim_name: String) -> void:
 	if anim.sprite_frames and anim.sprite_frames.has_animation(anim_name):
 		if anim.animation != anim_name:
 			anim.play(anim_name)
+			_play_sfx(anim_name)
 
 func _flash_hurt() -> void:
 	var tw = create_tween().set_loops(2)
@@ -505,12 +511,12 @@ func _flash_hurt() -> void:
 # ── Audio ────────────────────────────────────────────────────────────────────
 
 func _load_audio() -> void:
-	var folder = "thuy_tinh"
-	var anims = ["attack", "die", "hurt", "idle", "run", "jump"]
-	for a in anims:
-		var path = "res://assets/audio/character/%s/%s.mp3" % [folder, a]
-		if ResourceLoader.exists(path):
-			_sfx_cache[a] = load(path)
+	if audio_attack: _sfx_cache["attack"] = audio_attack
+	if audio_die: _sfx_cache["die"] = audio_die
+	if audio_hurt: _sfx_cache["hurt"] = audio_hurt
+	if audio_idle: _sfx_cache["idle"] = audio_idle
+	if audio_run: _sfx_cache["run"] = audio_run
+	if audio_jump: _sfx_cache["jump"] = audio_jump
 
 func _play_sfx(anim_name: String) -> void:
 	if not _sfx_cache.has(anim_name) or not sfx_player: return

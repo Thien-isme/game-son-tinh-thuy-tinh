@@ -56,8 +56,8 @@ var _prev_anim: String = ""
 var _attacked_bodies: Array = []
 
 # Health & State
-var max_health: float = 200.0
-var current_health: float = 200.0
+var max_health: float = 2000.0
+var current_health: float = 2000.0
 var is_dead: bool = false
 var is_attacking: bool = false
 var is_hurting: bool = false  ## Đang nhận damage, block _physics_process
