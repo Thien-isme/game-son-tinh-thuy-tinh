@@ -7368,7 +7368,6 @@ scale = Vector2(0.6, 0.694)
 sprite_frames = SubResource("SpriteFrames_rpgdq")
 animation = &"attack_high"
 frame = 88
-speed_scale = 0.2
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=2089341234]
 
